@@ -12,6 +12,8 @@ export const primary = "#f7701e"
 export const greenPrimary = "#2A8919"
 export const disableColor = 'rgb(212,212,212)'
 export const midGreen = '#52B141'
+export const darkgreen01 = '#3FA72D'
+
 export const warmGrey = 'rgb(113,113,113)'
 export const grey = '#717171'
 export const grey01= '#C9CED2'

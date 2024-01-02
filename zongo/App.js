@@ -1,5 +1,5 @@
-import React from 'react';
-import {StyleSheet, useColorScheme} from 'react-native';
+import React, { useEffect } from 'react';
+import {Platform, StyleSheet, useColorScheme} from 'react-native';
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
@@ -8,48 +8,137 @@ import store from './src/redux/store/store';
 import { Provider } from 'react-redux';
 import persistStore from 'redux-persist/es/persistStore';
 import { PersistGate } from 'redux-persist/integration/react';
-
+import messaging from '@react-native-firebase/messaging';
+import { Log } from './src/commonComponents/Log';
+import { DisplayMessage } from './src/commonComponents/AlertManager';
+import { storeData } from './src/commonComponents/AsyncManager';
+import { FCM_TOKEN } from './src/constants/ConstantKey';
+import {
+  mediaDevices,
+  MediaStream,
+  MediaStreamTrack,
+  RTCIceCandidate,
+  RTCPeerConnection,
+  RTCSessionDescription,
+} from 'react-native-webrtc';
 let persistedStore = persistStore(store)
+window.RTCPeerConnection = window.RTCPeerConnection || RTCPeerConnection;
+window.RTCIceCandidate = window.RTCIceCandidate || RTCIceCandidate;
+window.RTCSessionDescription =
+  window.RTCSessionDescription || RTCSessionDescription;
+window.MediaStream = window.MediaStream || MediaStream;
+window.MediaStreamTrack = window.MediaStreamTrack || MediaStreamTrack;
+window.navigator.mediaDevices = window.navigator.mediaDevices || mediaDevices;
+window.navigator.getUserMedia =
+  window.navigator.getUserMedia || mediaDevices.getUserMedia;
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
+  var test = "test"
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+useEffect(()=>{
+  if (Platform.OS == 'ios') {
+    requestUserPermission();
+  } else {
+    getFcmToken()
+  }
+    /** Use when Tap on Notification & app is in backgroud state to foreground */
+    messaging().onNotificationOpenedApp(remoteMessage => {
 
+      Log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification,
+        'Data Is ',
+        remoteMessage.data,
+      );
+
+      let data = remoteMessage.data
+
+      setTimeout(() => {
+        Log("BACKGROUND STATE TO FOREGROUND STATE")
+      }, 3000);
+
+    })
+
+    /** Use when Tap on Notification & app is in Kill state to foreground */
+    messaging().getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          Log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+            'Data Is ',
+            remoteMessage.data,
+          );
+          let data = remoteMessage.data
+          setTimeout(() => {
+            Log("KILL STATE TO FOREGROUND STATE")
+          }, 3000);
+        }
+      });
+
+      messaging().setBackgroundMessageHandler(async remoteMessage => {
+        // Handle the background message here.
+        Log('Received background message', remoteMessage);
+      });
+
+    /** Use when app is in foreground state & display a notification*/
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Log("A new FCM message arrived!" + JSON.stringify(remoteMessage));
+
+      let notification = remoteMessage.notification
+
+      DisplayMessage({
+        title: notification.title,
+        description: notification.body,
+        type: 'success',
+        onPress: () => {
+
+          let data = remoteMessage.data
+          // navigate("Notification")
+        }
+      })
+
+    });
+    return unsubscribe;
+
+},)
+
+ 
+
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+
+      Log('Authorization status:', authStatus);
+
+      getFcmToken()
+
+    } else {
+      await messaging().requestPermission({
+        sound: true,
+        alert: true,
+        badge: true,
+        announcement: true,
+      });
+    }
+  }
+  const getFcmToken = async () => {
+    const fcmToken = await messaging().getToken();
+    if (fcmToken) {
+
+      Log(" Firebase Token :", fcmToken);
+      storeData(FCM_TOKEN, fcmToken)
+
+    } else {
+      Log("Failed", "No token received");
+    }
+  }
   return (
-    // <SafeAreaView style={backgroundStyle}>
-    //   <StatusBar
-    //     barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-    //     backgroundColor={backgroundStyle.backgroundColor}
-    //   />
-    //   <ScrollView
-    //     contentInsetAdjustmentBehavior="automatic"
-    //     style={backgroundStyle}>
-    //     <Header />
-    //     <Icon name="rocket" size={30} color="#900" />
-    //     <View
-    //       style={{
-    //         backgroundColor: isDarkMode ? Colors.black : Colors.white,
-    //       }}>
-    //       <Section title="Step One">
-    //         Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-    //         screen and then come back to see your edits.
-    //       </Section>
-    //       <Section title="See Your Changes">
-    //         <ReloadInstructions />
-    //       </Section>
-    //       <Section title="Debug">
-    //         <DebugInstructions />
-    //       </Section>
-    //       <Section title="Learn More">
-    //         Read the docs to discover what to do next:
-    //       </Section>
-    //       <LearnMoreLinks />
-    //     </View>
-    //   </ScrollView>
-    // </SafeAreaView>
     <Provider store={store} >
       <PersistGate persistor={persistedStore}>
     <AppNavigator  />

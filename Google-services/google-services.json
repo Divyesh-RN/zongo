@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "566711664163",
+    "project_id": "zongo-e12e3",
+    "storage_bucket": "zongo-e12e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566711664163:android:507b7e69741e81c73b3b96",
+        "android_client_info": {
+          "package_name": "com.zongo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYJezKDmkxObPh-GFRwjWXuQh6PrftUEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

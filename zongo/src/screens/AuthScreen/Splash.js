@@ -1,21 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Image, StatusBar} from 'react-native';
-import {black, greenPrimary, offWhite} from '@constants/Color';
-import {resetScreen} from '@navigation/RootNavigation';
-import {BOLD, FontSize, MEDIUM} from '@constants/Fonts';
-import {getData, storeData} from '@commonComponents/AsyncManager';
-import {SplashImg} from '@constants/Images';
-import {useSelector, useDispatch} from 'react-redux';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Image, StatusBar } from 'react-native';
+import { black, greenPrimary, offWhite } from '@constants/Color';
+import { resetScreen } from '@navigation/RootNavigation';
+import { BOLD, FontSize, MEDIUM } from '@constants/Fonts';
+import { getData, storeData } from '@commonComponents/AsyncManager';
+import { SplashImg } from '@constants/Images';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   pixelSizeHorizontal,
   pixelSizeVertical,
 } from '@commonComponents/ResponsiveScreen';
-import {USER_DATA} from '@constants/ConstantKey';
-import {storeUserData} from '@redux/reducers/userReducer';
+import { USER_DATA } from '@constants/ConstantKey';
+import { storeUserData } from '@redux/reducers/userReducer';
+import { Log } from '../../commonComponents/Log';
 
 const Splash = props => {
 
   const userData = useSelector(state => state.userRedux.user_data);
+  
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,13 +28,18 @@ const Splash = props => {
 
   const GetUserData = () => {
     getData(USER_DATA, data => {
-      console.log('USER_DATA Splash: ' + JSON.stringify(data));
+      Log('user_data splash: ' + JSON.stringify(data));
       if (data == null) {
         resetScreen('Login');
+        
       } else {
         storeData(USER_DATA, data, () => {
           dispatch(storeUserData(data));
           resetScreen('Home');
+          // resetScreen('EditExtension');
+          // resetScreen('Availability');
+          // resetScreen('RingGroup');
+          // resetScreen('Call');
         });
       }
     });

@@ -7,14 +7,11 @@ import {
   StatusBar,
   Image,
   Platform,
-  TouchableOpacity,
+  Dimensions,
+  Alert,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import TextInputView from '../../commonComponents/TextInputView';
-import {
-  pixelSizeHorizontal,
-  widthPixel,
-} from '../../commonComponents/ResponsiveScreen';
 import {
   bgColor01,
   black,
@@ -22,27 +19,92 @@ import {
   disableColor,
   greenPrimary,
   grey,
-  grey01,
   midGreen,
-  offWhite,
   transparent,
-  warmGrey,
   white,
 } from '../../constants/Color';
-import {ic_ellipse_big, ic_ellipse_small, ic_facebook, ic_google} from '../../constants/Images';
-import {WIDTH} from '../../constants/ConstantKey';
+import {
+  ic_ellipse_big,
+  ic_ellipse_small,
+  ic_facebook,
+  ic_google,
+} from '../../constants/Images';
 import Translate from '../../translation/Translate';
-import {FontSize, MEDIUM, REGULAR, SEMIBOLD} from '../../constants/Fonts';
-import {Formik} from 'formik';
+import { FontSize, MEDIUM, REGULAR, SEMIBOLD } from '../../constants/Fonts';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import PrimaryButton from '../../commonComponents/PrimaryButton';
-import Icon from "react-native-vector-icons/MaterialCommunityIcons"
-import { navigate } from '../../navigation/RootNavigation';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { navigate, resetScreen } from '../../navigation/RootNavigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetApiStatus, storeUserData } from '../../redux/reducers/userReducer';
+import {
+  STATUS_FULFILLED,
+  STATUS_REJECTED,
+  TOKEN,
+  USER_DATA,
+} from '../../constants/ConstantKey';
+import { Log } from '../../commonComponents/Log';
+import { AuthLogin } from '../../redux/api/Api';
+import LoadingView from '../../commonComponents/LoadingView';
+import { storeData } from '../../commonComponents/AsyncManager';
 
+const WIDTH = Dimensions.get('window').width;
 
 const Login = () => {
-  const [Email, setEmail] = useState('');
-  const [Password, setPassword] = useState('');
+  const [Email, setEmail] = useState('ipnfullfullstack@gmail.com');
+  const [Password, setPassword] = useState('123456');
+
+  const dispatch = useDispatch();
+
+  const apiLoginStatus = useSelector(state => state.userRedux.apiLoginStatus);
+  const isLoading = useSelector(state => state.userRedux.isLoader);
+  const isError = useSelector(state => state.userRedux.isError);
+  const error_message = useSelector(state => state.userRedux.error_message);
+  const user_data = useSelector(state => state.userRedux.user_data);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetApiStatus());
+    };
+  }, []);
+
+  useEffect(() => {
+    Log('apiLoginStatus :', apiLoginStatus);
+    if (apiLoginStatus == STATUS_FULFILLED) {
+      if (user_data !== null) {
+        storeData(USER_DATA, user_data?.data, () => {
+            dispatch(storeUserData(user_data?.data));
+            resetScreen('Home');
+        });
+        storeData(TOKEN, user_data?.data?.token)
+      }
+    } else if (apiLoginStatus == STATUS_REJECTED) {
+      if (isError) {
+        Alert.alert('Alert', error_message);
+      }
+    }
+  }, [apiLoginStatus]);
+
+  const onLoginBtn = value => {
+
+    if (value !== '' && value !== undefined && value !== null) {
+      if (
+        (value?.EMAIL !== '' &&
+          value?.EMAIL !== undefined &&
+          value?.EMAIL !== null) ||
+        (value?.PASSWORD !== '' &&
+          value?.PASSWORD !== undefined &&
+          value?.PASSWORD !== null)
+      ) {
+        var dict = {};
+        (dict.email = value?.EMAIL), (dict.password = value?.PASSWORD);
+        Log('LOGIN DICT', dict);
+
+        dispatch(AuthLogin(dict));
+      }
+    }
+  };
 
   const LoginSchema = Yup.object().shape({
     EMAIL: Yup.string()
@@ -67,117 +129,134 @@ const Login = () => {
         bounces={false}
         keyboardShouldPersistTaps="handled">
         <SafeAreaView style={styles.safeAreaView}>
-          <View>
-            <View style={styles.ellipsesContainer}>
-              <Image source={ic_ellipse_big} style={styles.ellipseBig} />
-            </View>
-            <View style={styles.ellipsesContainer}>
-              <Image source={ic_ellipse_small} style={styles.ellipseSmall} />
-            </View>
-            <View style={{alignItems: 'center'}}>
-              <Text style={styles.welcomeTextLogin}>
-                {Translate.t('login_welcome_text')}
-              </Text>
-              <Formik
-                enableReinitialize
-                initialValues={{
-                  EMAIL: Email,
-                  PASSWORD: Password,
-                }}
-                validationSchema={LoginSchema}
-                onSubmit={values => {
-                  console.log('val :', values);
-                }}>
-                {({
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                  values,
-                  errors,
-                  touched,
-                }) => (
-                  <View style={{marginTop: pixelSizeHorizontal(20)}}>
-                    <TextInputView
-                      imageSource={'email'}
-                      onChangeText={handleChange('EMAIL')}
-                      onBlur={handleBlur('EMAIL')}
-                      value={values.EMAIL}
-                      placeholder={'Email Address'}
-                      keyboardType={'email-address'}
-                    />
-                    {errors.EMAIL && touched.EMAIL && (
-                      <Text style={styles.errorText}>{errors.EMAIL}</Text>
-                    )}
-                    <TextInputView
-                      imageSource={'eye'}
-                      onChangeText={handleChange('PASSWORD')}
-                      onBlur={handleBlur('PASSWORD')}
-                      value={values.PASSWORD}
-                      placeholder={'Password'}
-                      keyboardType={'default'}
-                    />
-                    {errors.PASSWORD && touched.PASSWORD && (
-                      <Text style={styles.errorText}>{errors.PASSWORD}</Text>
-                    )}
-                    <Text style={styles.forgetPasswordText}>
-                      {Translate.t('forget_password')}
-                    </Text>
+          <View style={styles.ellipsesContainer}>
+            <Image source={ic_ellipse_big} style={styles.ellipseBig} />
+          </View>
+          <View style={styles.ellipsesContainer}>
+            <Image source={ic_ellipse_small} style={styles.ellipseSmall} />
+          </View>
+          <View
+            style={{
+              alignItems: 'center',
+              marginTop: Platform.OS == 'android' ? WIDTH / 1.5 : '45%',
+            }}>
+            <Text style={styles.welcomeTextLogin}>
+              {Translate.t('login_welcome_text')}
+            </Text>
+            <Formik
+              enableReinitialize
+              initialValues={{
+                EMAIL: Email,
+                PASSWORD: Password,
+              }}
+              validationSchema={LoginSchema}
+              onSubmit={values => {
+                onLoginBtn(values);
+              }}>
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                touched,
+              }) => (
+                <View style={{marginTop: 20}}>
+                  <TextInputView
+                    imageSource={'email'}
+                    onChangeText={handleChange('EMAIL')}
+                    onBlur={handleBlur('EMAIL')}
+                    value={values.EMAIL}
+                    placeholder={'Email Address'}
+                    keyboardType={'email-address'}
+                  />
+                  {errors.EMAIL && touched.EMAIL && (
+                    <Text style={styles.errorText}>{errors.EMAIL}</Text>
+                  )}
+                  <TextInputView
+                    imageSource={'eye'}
+                    onChangeText={handleChange('PASSWORD')}
+                    onBlur={handleBlur('PASSWORD')}
+                    value={values.PASSWORD}
+                    placeholder={'Password'}
+                    keyboardType={'default'}
+                  />
+                  {errors.PASSWORD && touched.PASSWORD && (
+                    <Text style={styles.errorText}>{errors.PASSWORD}</Text>
+                  )}
+                  <Text
+                    onPress={() => {
+                      navigate('ForgetPassword');
+                    }}
+                    style={styles.forgetPasswordText}>
+                    {Translate.t('forget_password')}
+                  </Text>
 
-                    <PrimaryButton onPress={handleSubmit} text="sign_in" />
-                  </View>
-                )}
-              </Formik>
+                  <PrimaryButton onPress={handleSubmit} text="sign_in" />
+                  {/* <PrimaryButton onPress={()=>{
+                       navigate("Register")
+                    }} text="sign_in" /> */}
+                </View>
+              )}
+            </Formik>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginHorizontal: 25,
+                marginVertical: 15,
+              }}>
               <View
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  margin: 25,
-                }}>
-                <View
-                  style={{
-                    height: 1,
-                    backgroundColor: disableColor,
-                    flex: 1,
-                  }}></View>
-                <View style={styles.orContainer}>
-                  <Text style={styles.or}>or</Text>
-                </View>
-                <View
-                  style={{
-                    height: 1,
-                    backgroundColor: disableColor,
-                    flex: 1,
-                  }}></View>
+                  height: 1,
+                  backgroundColor: disableColor,
+                  flex: 1,
+                }}></View>
+              <View style={styles.orContainer}>
+                <Text style={styles.or}>or</Text>
               </View>
-              <View style={styles.Hstack}>
-                <View style={styles.fbSquare}>
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: disableColor,
+                  flex: 1,
+                }}></View>
+            </View>
+            <View style={styles.Hstack}>
+              <View style={styles.fbSquare}>
                 <Image
-               style={{width:33,height:33}}
+                  style={{width: 33, height: 33}}
                   resizeMode="contain"
                   source={ic_facebook}
                 />
-                </View>
-                <View style={styles.goggleSquare}>
+              </View>
+              <View style={styles.goggleSquare}>
                 <Image
-               style={{width:33,height:33}}
+                  style={{width: 33, height: 33}}
                   resizeMode="contain"
                   source={ic_google}
                 />
-                </View>
-                <View style={styles.appleSquare}>
-                <Icon  name={"apple"} size={38} color={black} /> 
-                </View>
               </View>
-              <View style={{marginVertical:50}}>
-                <Text style={styles.doNotHaveText}>{Translate.t("dont_have_account")}
-                <Text onPress={()=>{
-                  navigate("Register")
-                }} style={styles.registerNowText}>{Translate.t("register_now")}</Text></Text>
+              <View style={styles.appleSquare}>
+                <Icon name={'apple'} size={38} color={black} />
               </View>
+            </View>
+            <View style={{marginVertical: 50}}>
+              <Text style={styles.doNotHaveText}>
+                {Translate.t('dont_have_account')}
+                <Text
+                  onPress={() => {
+                    navigate('Register');
+                  }}
+                  style={styles.registerNowText}>
+                  {Translate.t('register_now')}
+                </Text>
+              </Text>
             </View>
           </View>
         </SafeAreaView>
       </ScrollView>
+      {isLoading && <LoadingView />}
     </>
   );
 };
@@ -186,6 +265,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 14,
   },
   appleSquare: {
     backgroundColor: white,
@@ -230,7 +310,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: offWhite,
+    backgroundColor: bgColor01,
   },
   safeAreaView: {
     flex: 1,
@@ -240,7 +320,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   ellipseBig: {
-    width: WIDTH - 120,
+    width: WIDTH - 145,
     height: Platform.OS == 'ios' ? WIDTH - 180 : WIDTH - 190,
     resizeMode: 'contain',
   },
@@ -251,7 +331,6 @@ const styles = StyleSheet.create({
     marginLeft: '15%',
   },
   welcomeTextLogin: {
-    marginTop: WIDTH / 1.5,
     fontSize: FontSize.FS_17,
     color: darkGrey,
     fontFamily: SEMIBOLD,
@@ -272,16 +351,16 @@ const styles = StyleSheet.create({
     fontSize: FontSize.FS_14,
     fontFamily: MEDIUM,
   },
-  doNotHaveText:{
+  doNotHaveText: {
     color: darkGrey,
     fontSize: FontSize.FS_16,
     fontFamily: REGULAR,
   },
-  registerNowText:{
+  registerNowText: {
     color: midGreen,
     fontSize: FontSize.FS_16,
     fontFamily: SEMIBOLD,
-  }
+  },
 });
 
 export default Login;

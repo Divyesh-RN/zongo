@@ -1,13 +1,18 @@
 import { View, Text, SafeAreaView, StyleSheet, StatusBar, ScrollView, Image } from 'react-native'
 import React from 'react'
-import { greenPrimary, midGreen, offWhite, transparent, white } from '../constants/Color'
+import { greenPrimary, midGreen, offWhite, red, transparent, white } from '../constants/Color'
 import { heightPixel, pixelSizeHorizontal, widthPixel } from './ResponsiveScreen'
 import IconButton from './IconButton'
 import { BackImg, ic_user } from '../constants/Images'
 import { BOLD, FontSize, SEMIBOLD } from '../constants/Fonts'
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
+import { useSelector } from 'react-redux'
+import MenuDrawer from 'react-native-side-drawer'
 
-const HeaderView = ({ title = "", isProfilePic = true, children, onPress = {}, containerStyle = {},imgUri ="", ...props }) => {
+
+const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile = {}, onPressSearch= {}, containerStyle = {},imgUri ="",isRegister =false, ...props }) => {
+    const user_data = useSelector(state => state.userRedux.user_data);
+    const user_register_status = useSelector(state => state.userRedux.user_register_status);
     return (
         <>
 
@@ -28,14 +33,17 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPress = {}, c
                                 <View style={{flexDirection:"row",alignItems:"center"}}>
                                 {isProfilePic &&
                                     <IconButton additionalStyle={styles.btnBack}
-                                        onPress={onPress}>
+                                        onPress={onPressProfile}>
                                         <Image source={{uri :imgUri}} style={{ width: widthPixel(40), height: widthPixel(40),resizeMode:"contain" }}
                                         />
+                                        <View style={{backgroundColor:user_register_status?"#72ff21":red,width:15,height:15,borderRadius:20,position:"absolute",bottom:10,right:10}}>
+
+                                        </View>
                                     </IconButton>}
-                                <Text style={[styles.textTitle, { marginHorizontal: !isProfilePic ? pixelSizeHorizontal(25) : 0 }]}>{title}</Text>
+                                <Text style={[styles.textTitle, { marginHorizontal: !isProfilePic ? pixelSizeHorizontal(25) : 0 }]}>{user_data?.data?.first_name + ' ' + user_data?.data?.last_name}</Text>
                                 </View>
                                  <IconButton additionalStyle={styles.btnBack}
-                                        onPress={onPress}>
+                                        onPress={onPressSearch}>
                                           <Icon name="magnify" size={34} color={white} />
                                     </IconButton>
                             </View>
@@ -64,7 +72,7 @@ const styles = StyleSheet.create({
         backgroundColor: offWhite
     },
     textTitle: {
-        fontSize: FontSize.FS_20,
+        fontSize: FontSize.FS_18,
         fontFamily: SEMIBOLD,
         color: white,
     },

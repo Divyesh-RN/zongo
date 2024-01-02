@@ -1,3 +1,5 @@
+$RNFirebaseAsStaticFramework = true
+
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
@@ -24,12 +26,18 @@ if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
   use_frameworks! :linkage => linkage.to_sym
 end
-pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
 target 'zongo' do
   config = use_native_modules!
-
+  use_frameworks! :linkage => :static
+  # right after `use_frameworks! :linkage => :static`
   # Flags change depending on the env values.
   flags = get_default_flags()
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'ReactNativeIncallManager', :path => '../node_modules/react-native-incall-manager'
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -40,7 +48,7 @@ target 'zongo' do
     #
     # Note that if you have use_frameworks! enabled, Flipper will not work and
     # you should disable the next line.
-    :flipper_configuration => flipper_config,
+    #:flipper_configuration => flipper_config,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
