@@ -1,18 +1,18 @@
-import React, { useEffect } from 'react';
-import {Platform, StyleSheet, useColorScheme} from 'react-native';
+import React, { useCallback, useEffect } from 'react';
+import { Platform, StyleSheet, useColorScheme } from 'react-native';
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 import AppNavigator from './src/navigation/AppNavigator';
 import store from './src/redux/store/store';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import persistStore from 'redux-persist/es/persistStore';
 import { PersistGate } from 'redux-persist/integration/react';
 import messaging from '@react-native-firebase/messaging';
 import { Log } from './src/commonComponents/Log';
 import { DisplayMessage } from './src/commonComponents/AlertManager';
-import { storeData } from './src/commonComponents/AsyncManager';
-import { FCM_TOKEN } from './src/constants/ConstantKey';
+import { getData, storeData } from './src/commonComponents/AsyncManager';
+import { FCM_TOKEN, USER_DATA } from './src/constants/ConstantKey';
 import {
   mediaDevices,
   MediaStream,
@@ -21,6 +21,10 @@ import {
   RTCPeerConnection,
   RTCSessionDescription,
 } from 'react-native-webrtc';
+import { WEBSOCKET_URL } from './src/constants/ApiUrl';
+import { useFocusEffect } from '@react-navigation/native';
+import { navigate, resetScreen } from './src/navigation/RootNavigation';
+import { storeUserData } from './src/redux/reducers/userModuleReducer';
 let persistedStore = persistStore(store)
 window.RTCPeerConnection = window.RTCPeerConnection || RTCPeerConnection;
 window.RTCIceCandidate = window.RTCIceCandidate || RTCIceCandidate;
@@ -33,15 +37,17 @@ window.navigator.getUserMedia =
   window.navigator.getUserMedia || mediaDevices.getUserMedia;
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-  var test = "test"
 
-useEffect(()=>{
-  if (Platform.OS == 'ios') {
-    requestUserPermission();
-  } else {
-    getFcmToken()
-  }
+
+
+
+
+  useEffect(() => {
+    if (Platform.OS == 'ios') {
+      requestUserPermission();
+    } else {
+      getFcmToken()
+    }
     /** Use when Tap on Notification & app is in backgroud state to foreground */
     messaging().onNotificationOpenedApp(remoteMessage => {
 
@@ -77,10 +83,10 @@ useEffect(()=>{
         }
       });
 
-      messaging().setBackgroundMessageHandler(async remoteMessage => {
-        // Handle the background message here.
-        Log('Received background message', remoteMessage);
-      });
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      // Handle the background message here.
+      Log('Received background message', remoteMessage);
+    });
 
     /** Use when app is in foreground state & display a notification*/
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -102,9 +108,7 @@ useEffect(()=>{
     });
     return unsubscribe;
 
-},)
-
- 
+  },)
 
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
@@ -138,11 +142,12 @@ useEffect(()=>{
       Log("Failed", "No token received");
     }
   }
+
   return (
     <Provider store={store} >
       <PersistGate persistor={persistedStore}>
-    <AppNavigator  />
-    </PersistGate>
+        <AppNavigator />
+      </PersistGate>
     </Provider>
   );
 }

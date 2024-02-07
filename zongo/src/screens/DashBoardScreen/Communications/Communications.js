@@ -1,8 +1,8 @@
-import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import React, {useRef} from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useRef } from 'react';
 import HeaderView from '../../../commonComponents/HeaderView';
-import {pixelSizeHorizontal} from '../../../commonComponents/ResponsiveScreen';
-import {ScrollView} from 'react-native-gesture-handler';
+import { pixelSizeHorizontal } from '../../../commonComponents/ResponsiveScreen';
+import { ScrollView } from 'react-native-gesture-handler';
 import HeaderBackView from '../../../commonComponents/HeaderBackView';
 import CustomBottomSheet from '../../../commonComponents/CustomBottomSheet';
 import {
@@ -16,11 +16,13 @@ import {
   ic_emails,
   ic_phone_call,
 } from '../../../constants/Images';
-import {black, white} from '../../../constants/Color';
-import {FontSize, MEDIUM, SEMIBOLD} from '../../../constants/Fonts';
-import {goBack, navigate} from '../../../navigation/RootNavigation';
+import { black, white } from '../../../constants/Color';
+import { FontSize, MEDIUM, SEMIBOLD } from '../../../constants/Fonts';
+import { goBack, navigate } from '../../../navigation/RootNavigation';
+import { useSelector } from 'react-redux';
+import SideMenuModuleCheck from '../../../commonComponents/RolePermission/SideMenuModuleCheck';
 
-const Communications = ({navigation}) => {
+const Communications = ({ navigation }) => {
   const bottomSheetRef = useRef(null);
 
   const openBottomSheet = () => {
@@ -28,7 +30,14 @@ const Communications = ({navigation}) => {
       bottomSheetRef.current.open();
     }
   };
- 
+
+  const user_data = useSelector(state => state.userRedux.user_data);
+
+  var call_status = SideMenuModuleCheck("extensions", user_data);
+  var email_status = SideMenuModuleCheck("email", user_data);
+  var contact_status = SideMenuModuleCheck("contacts", user_data);
+  var sms_status = SideMenuModuleCheck("contacts", user_data);
+  console.log("d", call_status);
   return (
     <>
       <HeaderView
@@ -52,30 +61,31 @@ const Communications = ({navigation}) => {
         />
 
         <View
-          style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+          style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
+          {call_status !== "hidden" &&
+            <TouchableOpacity
+              onPress={() => { navigate("Call") }}
+              style={styles.communicationCardMainContainer}>
+              <View
+                style={{
+                  backgroundColor: '#DEFFD8',
+                  width: 75,
+                  height: 75,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 50,
+                }}>
+                <Image
+                  style={{ width: 40, height: 40 }}
+                  resizeMode="contain"
+                  source={ic_phone_call}
+                />
+              </View>
+              <Text style={styles.dashBoardCardText}>{'Calls'}</Text>
+            </TouchableOpacity>
+          }
           <TouchableOpacity
-            onPress={() => {navigate("Call")}}
-            style={styles.communicationCardMainContainer}>
-            <View
-              style={{
-                backgroundColor: '#DEFFD8',
-                width: 75,
-                height: 75,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 50,
-              }}>
-              <Image
-                style={{width: 40, height: 40}}
-                resizeMode="contain"
-                source={ic_phone_call}
-              />
-            </View>
-            <Text style={styles.dashBoardCardText}>{'Calls'}</Text>
-          </TouchableOpacity>
-          <View style={{flex: 0.1}}></View>
-          <TouchableOpacity
-            onPress={() => {navigate("Message")}}
+            onPress={() => { navigate("Message") }}
             style={styles.communicationCardMainContainer}>
             <View
               style={{
@@ -87,7 +97,7 @@ const Communications = ({navigation}) => {
                 borderRadius: 50,
               }}>
               <Image
-                style={{width: 40, height: 40}}
+                style={{ width: 40, height: 40 }}
                 resizeMode="contain"
                 source={ic_email_color}
               />
@@ -96,19 +106,20 @@ const Communications = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View
-          style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-          <TouchableOpacity
-            onPress={() => {}}
-            style={styles.communicationCardMainContainer}>
-            <Image
-              style={{width: 75, height: 75}}
-              resizeMode="contain"
-              source={ic_emails}
-            />
-            <Text style={styles.dashBoardCardText}>{'Emails'}</Text>
-          </TouchableOpacity>
-          <View style={{flex: 0.1}}></View>
-          <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
+          {email_status !== "hidden" &&
+            <TouchableOpacity
+              onPress={() => { }}
+              style={styles.communicationCardMainContainer}>
+              <Image
+                style={{ width: 75, height: 75 }}
+                resizeMode="contain"
+                source={ic_emails}
+              />
+              <Text style={styles.dashBoardCardText}>{'Emails'}</Text>
+            </TouchableOpacity>
+          }
+         {contact_status !== "hidden" && <TouchableOpacity
             onPress={() => {
               navigate("Contacts")
             }}
@@ -123,7 +134,7 @@ const Communications = ({navigation}) => {
                 borderRadius: 50,
               }}>
               <Image
-                style={{width: 40, height: 40}}
+                style={{ width: 40, height: 40 }}
                 resizeMode="contain"
                 source={ic_contact}
               />
@@ -131,9 +142,10 @@ const Communications = ({navigation}) => {
 
             <Text style={styles.dashBoardCardText}>{'Contacts'}</Text>
           </TouchableOpacity>
+            }
         </View>
 
-        <CustomBottomSheet  bottomSheetRef={bottomSheetRef} />
+        <CustomBottomSheet bottomSheetRef={bottomSheetRef} />
       </HeaderView>
     </>
   );
@@ -152,6 +164,7 @@ const styles = StyleSheet.create({
   communicationCardMainContainer: {
     flex: 1,
     backgroundColor: white,
+    marginHorizontal:10,
     alignItems: 'center',
     paddingVertical: 26,
     borderRadius: 6,

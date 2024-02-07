@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, TouchableOpacity, Text, View, LayoutAnimation, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, Text, View, LayoutAnimation, TextInput, TouchableWithoutFeedback, Modal, PermissionsAndroid } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderView from '@commonComponents/HeaderView';
 import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
@@ -24,6 +24,9 @@ import { greenPrimary, paleGreen } from '../../../constants/Color';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob'
 import Share from 'react-native-share';
+import PermissionCheck from '../../../commonComponents/RolePermission/PermissionCheck';
+import CheckModulePermisson from '../../../commonComponents/RolePermission/CheckModulePermisson';
+import DoNotAccess from '../../../commonComponents/DoNotAccess';
 
 
 
@@ -36,6 +39,22 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete, onEdit, onAction
             setLayoutHeight(0);
         }
     }, [item.isExpanded]);
+    const module_name = "blocked-numbers";
+    let edit_show = PermissionCheck(
+        module_name,
+        "edit",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
+
+    let delete_show = PermissionCheck(
+        module_name,
+        "delete",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
 
     return (
 
@@ -104,7 +123,7 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete, onEdit, onAction
                 }}>
                 <View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 40, marginVertical: 14 }}>
-                        <TouchableOpacity onPress={() => onEdit(item, true)}
+                        {edit_show !== "hidden" ? <TouchableOpacity onPress={() => onEdit(item, true)}
                             style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
                             <Icon name="pencil-box-outline" size={22} color={yellow} />
                             <Text style={{
@@ -114,8 +133,10 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete, onEdit, onAction
                                 marginLeft: 6
                             }}>{"Manage"}</Text>
                         </TouchableOpacity>
-
-                        <TouchableOpacity
+                            :
+                            <></>
+                        }
+                        {delete_show !== "hidden" ? <TouchableOpacity
                             onPress={() => onDelete(item, true)}
                             style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
                             <Icon name="trash-can" size={22} color={red} />
@@ -126,6 +147,9 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete, onEdit, onAction
                                 marginLeft: 6
                             }}>{"Delete"}</Text>
                         </TouchableOpacity>
+                            :
+                            <></>
+                        }
                         <TouchableOpacity onPress={() => { }}
                             style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
                             <FontAwesome5 name={'chart-area'} size={19} color={grey} />
@@ -155,10 +179,11 @@ const BlockNumbers = ({ navigation }) => {
     const [ModalNumberId, setModalNumberId] = useState("");
     const [ModalNumber, setModalNumber] = useState("");
     const [ModalNumberError, setModalNumberError] = useState("");
-    const [ModalDescription, setModalDescription] = useState(false);
+    const [ModalDescription, setModalDescription] = useState("");
     const [ModalDescriptionError, setModalDescriptionError] = useState(false);
     const [isEditModal, setisEditModal] = useState(false);
     const [IsModalVisible, setIsModalVisible] = useState(false);
+    const [isSelectAll, setIsSelectAll] = useState(false);
 
     const ref = useRef(null);
 
@@ -183,12 +208,32 @@ const BlockNumbers = ({ navigation }) => {
     const error_message = useSelector(state => state.blockNumberRedux.error_message);
     const user_data = useSelector(state => state.userRedux.user_data);
 
+    const module_name = "blocked-numbers";
+    const [isPermission, setIsPermission] = useState(true);
+    const user_type = user_data.role;
+    let module_per = CheckModulePermisson(module_name);
+    let listing_per = PermissionCheck(module_name, "listing", "", "", "");
+    let add_per = PermissionCheck(module_name, "add", "", "", "");
+    let delete_per = PermissionCheck(module_name, "deleteAll", "", "", "");
+    let group_uuid = "";
     const GetBlockedNumbersList = () => {
         if (user_data !== null) {
+            if (listing_per == "none") {
+                navigate("Error");
+            }
+            if (listing_per == "group") {
+                group_uuid = user_data?.data?.group_id;
+            }
+
+            if (module_per === "" || user_type === "admin") {
+                setIsPermission(true);
+            } else {
+                setIsPermission(false)
+            }
             var dict = {};
-            dict.user_type = "admin",
-                dict.group_per = "all",
-                dict.group_uuid = "",
+            dict.user_type = user_type,
+                dict.group_per = listing_per,
+                dict.group_uuid = group_uuid,
                 dict.search = "",
                 dict.off_set = 0,
                 dict.limits = 10,
@@ -300,17 +345,66 @@ const BlockNumbers = ({ navigation }) => {
 
     const saveAndDownloadCSV = async (data) => {
         const csvData = convertArrayToCSV(data);
-        const filePath = `${RNFS.ExternalDirectoryPath}/234.csv`;
+        const filePath = `${RNFS.ExternalDirectoryPath}/block_Numbers.csv`;
         const m = `${RNFS.ExternalCachesDirectoryPath}/234.csv`;
         const d = `${RNFS.ExternalStorageDirectoryPath}/234.csv`;
+        const s = `${RNFetchBlob.fs.dirs}`;
 
         console.log("csvData", csvData);
         console.log("filePath :", filePath);
         console.log("n :", m);
         console.log("d :", d);
+
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+        const granteds = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            const fs = RNFetchBlob.fs;
+            console.log("fs", fs)
+            const dirs = RNFetchBlob.fs.dirs;
+            console.log("dirs", dirs)
+
+            const realPath = "file:///storage/emulated/0/DCIM/zongo";
+            var destPath = dirs.DCIMDir + "/zongo/";
+            console.log("destPath", destPath)
+
+            RNFetchBlob.fs.isDir(destPath)
+                .then(async (isDir) => {
+                    if (!isDir) {
+                        RNFetchBlob.fs.mkdir(destPath)
+                            .then(async () => {
+                                let cur_path = destPath + 'BlockNumber_' + '.csv'
+                                await fs.cp(realPath, cur_path)
+                                    .then(() => {
+                                        Alert.alert("Download Successfully", destPath)
+                                    })
+                                    .catch((err) => {
+                                        console.log("error: ", err)
+                                    })
+                            })
+                            .catch((err) => { console.log("error create: ", err) })
+                    }
+                    else {
+                        console.log("update");
+                        let cur_path = destPath + 'BlockNumber_' + '.csv';
+                        try {
+                            await fs.cp(realPath, cur_path);
+                            console.log("update");
+                            Alert.alert("Download Successfully", destPath);
+                        } catch (err) {
+                            console.log("error: ", err, cur_path, realPath);
+                        }
+                    }
+                })
+        } else {
+            console.log('Permission denied');
+        }
         // try {
-        //     await RNFS.writeFile(filePath, csvData, 'utf8');
-        
+        //     await RNFS.downloadFile(filePath, csvData, 'utf8');
+
         //     // Open the file after saving
         //     RNFetchBlob.android.actionViewIntent(filePath, 'text/csv');
         //   } catch (error) {
@@ -338,19 +432,20 @@ const BlockNumbers = ({ navigation }) => {
         // } catch (error) {
         //     console.error('Error writing CSV file:', error);
         // }
-        Share.open({
-            title: 'Download CSV',
-            message: 'Download CSV file',
-            url: `file://${filePath}`,
-            type: 'text/csv',
-
-        })
-            .then((res) => {
-                console.log("res",res);
-            })
-            .catch((err) => {
-                console.error("err",err);
-            });
+        // Share.open({
+        //     title: 'Download CSV',
+        //     message: 'Download CSV file',
+        //     url: `file://${filePath}`,
+        //     type: 'text/csv',
+        //     saveToFiles: true,
+        //     showAppsToView:true
+        // })
+        //     .then((res) => {
+        //         console.log("res", res);
+        //     })
+        //     .catch((err) => {
+        //         console.log("err", err);
+        //     });
         // try {
         //   await RNFS.writeFile(filePath, csvData, 'utf8');
         //   const options = {
@@ -622,8 +717,10 @@ const BlockNumbers = ({ navigation }) => {
                         }}
                     />
                 </View>
+                {isPermission == true ?
+                <>
                 <View style={{ marginHorizontal: 20, marginVertical: 22, flexDirection: "row", alignItems: "center", }}>
-                    <Dropdown
+             {   BlockedNumbersList.length > 0  &&  <Dropdown
                         itemTextStyle={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12 }}
                         itemContainerStyle={{ marginVertical: -6 }}
                         ref={ref}
@@ -640,10 +737,12 @@ const BlockNumbers = ({ navigation }) => {
                             if (item.value == "all") {
                                 setSelection(true)
                                 setSelectedItems(BlockedNumbersList)
+                                setIsSelectAll(true)
                             }
                             else if (item.value == "clear") {
                                 setSelection(false)
                                 setSelectedItems([])
+                                setIsSelectAll(false)
                             }
                             else {
                                 handleExportList()
@@ -652,6 +751,7 @@ const BlockNumbers = ({ navigation }) => {
                         onChangeText={() => { }} // Keep search keyword
                         renderRightIcon={renderIcon}
                     />
+}
                     <View style={{
                         flexDirection: "row", alignItems: "center", borderWidth: 1,
                         borderColor: grey,
@@ -699,15 +799,39 @@ const BlockNumbers = ({ navigation }) => {
 
                     </TouchableOpacity>
                 </View>
-                {Selection == true &&
-                    <Text style={{
-                        fontSize: FontSize.FS_12,
-                        color: black,
-                        fontFamily: SEMIBOLD,
-                        textAlign: "left",
-                        marginLeft: 20,
-                        marginBottom: 8
-                    }}>{"Total Select : " + selectedItems?.length}</Text>
+                {selectedItems?.length > 0 &&
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 20 }}>
+                        <Text style={{
+                            fontSize: FontSize.FS_12,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            textAlign: "left",
+                            marginBottom: 8
+                        }}>{"Total Select : " + selectedItems?.length}</Text>
+                        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: SEMIBOLD,
+                                textAlign: "left",
+                            }}>{"All"}</Text>
+                            <TouchableOpacity onPress={() => {
+                                if (Selection == true && isSelectAll == false) {
+                                    setSelectedItems(BlockedNumbersList)
+                                    setIsSelectAll(true)
+                                }
+                                else {
+                                    setSelectedItems([])
+                                    setIsSelectAll(false)
+                                    setSelection(false)
+
+                                }
+                            }}
+                                style={{ marginLeft: 5 }}>
+                                <Icon name={isSelectAll ? "checkbox-marked" : 'checkbox-blank-outline'} size={19} color={greenPrimary} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 }
                 {
                     BlockedNumbersList.length > 0 ?
@@ -738,7 +862,7 @@ const BlockNumbers = ({ navigation }) => {
                         :
                         <View style={{
                             flex: 1,
-                            justifyContent: "flex-end",
+                            justifyContent: "center",
 
                         }}>
                             <Text style={{
@@ -756,7 +880,7 @@ const BlockNumbers = ({ navigation }) => {
                         flexDirection: "row", alignItems: "center", position: "absolute",
                         bottom: 0,
                     }}>
-                        <TouchableOpacity onPress={() => {
+                   {add_per === "yes" &&      <TouchableOpacity onPress={() => {
                             handleAddToList()
                         }}
                             style={{
@@ -776,8 +900,9 @@ const BlockNumbers = ({ navigation }) => {
                                 marginLeft: 10
                             }}>{"Add to list"}</Text>
                         </TouchableOpacity>
+}
                         <View style={{ width: "4%" }}></View>
-                        <TouchableOpacity onPress={() => {
+                        {add_per === "yes" &&    <TouchableOpacity onPress={() => {
                             navigate("BulkImport")
                         }}
                             style={{
@@ -799,13 +924,14 @@ const BlockNumbers = ({ navigation }) => {
                                 marginLeft: 10
                             }}>{"Bulk Import"}</Text>
                         </TouchableOpacity>
+}
                     </View>
                     :
                     <View style={{
                         flexDirection: "row", alignItems: "center", position: "absolute",
                         bottom: 0,
                     }}>
-                        <TouchableOpacity onPress={() => {
+                      {delete_per != "none" &&   <TouchableOpacity onPress={() => {
                             handleSelectedDelete()
                         }}
                             style={{
@@ -814,7 +940,7 @@ const BlockNumbers = ({ navigation }) => {
                                 alignItems: "center",
                                 paddingVertical: 14,
                                 justifyContent: "center",
-                                width: "48%",
+                                width: "100%",
                             }}>
                             <Icon name="trash-can" size={22} color={white} />
                             <Text style={{
@@ -825,7 +951,8 @@ const BlockNumbers = ({ navigation }) => {
                                 marginLeft: 10
                             }}>{"Delete"}</Text>
                         </TouchableOpacity>
-                        <View style={{ width: "4%" }}></View>
+}
+                        {/* <View style={{ width: "4%" }}></View>
                         <TouchableOpacity onPress={() => {
                             handleExportList()
                         }}
@@ -847,9 +974,12 @@ const BlockNumbers = ({ navigation }) => {
                                 lineHeight: 24,
                                 marginLeft: 10
                             }}>{"Export List"}</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>}
-
+                    </>
+                    :
+                    <DoNotAccess/>
+}
                 {/* Add /Update Number Modal */}
                 <Modal
                     animationType="slide"

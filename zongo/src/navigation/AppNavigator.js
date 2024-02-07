@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { navigationRef } from './RootNavigation';
 import { NavigationContainer } from '@react-navigation/native';
 import InitialFlow from './AppStack';
 import { AlertNotificationRoot } from 'react-native-alert-notification';
 import FlashMessage from 'react-native-flash-message';
-
+import Incoming from './incomingRoot/incoming';
+import Global from '../constants/Global';
+import { Log } from '../commonComponents/Log';
 
 function AppNavigator({}) {
+	
 	return (
 		<NavigationContainer ref={navigationRef} >
 			<AlertNotificationRoot>
 			<InitialFlow />
+		 	<Incoming/>
 			<FlashMessage position="top" />
 			</AlertNotificationRoot>
 

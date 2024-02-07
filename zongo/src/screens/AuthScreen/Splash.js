@@ -13,6 +13,7 @@ import {
 import { USER_DATA } from '@constants/ConstantKey';
 import { storeUserData } from '@redux/reducers/userReducer';
 import { Log } from '../../commonComponents/Log';
+import { changeIncomingAlertState } from '../../redux/reducers/userReducer';
 
 const Splash = props => {
 
@@ -21,6 +22,8 @@ const Splash = props => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(changeIncomingAlertState(false));
+
     setTimeout(() => {
       GetUserData();
     }, 2000);

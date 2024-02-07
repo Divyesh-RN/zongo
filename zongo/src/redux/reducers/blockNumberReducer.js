@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { STATUS_FULFILLED, STATUS_IDLE, STATUS_PENDING, STATUS_REJECTED } from '../../constants/ConstantKey';
-import { Blocked_Numbers_List, Create_Blocked_Numbers, Delete_Blocked_Numbers, Delete_Multiple_Blocked_Numbers, Get_Blocked_Numbers_Settings, Get_Export_Blocked_Numbers, Get_Number_Map_Fields, Import_Numbers_Csv, Update_Blocked_Numbers, Update_Blocked_Numbers_Settings } from '../api/Api';
+import { Blocked_Numbers_List, Create_Blocked_Numbers, Delete_Blocked_Numbers, Delete_Multiple_Blocked_Numbers, Get_Blocked_Numbers_Settings, Get_Export_Blocked_Numbers, Get_Number_Map_Fields, Import_Numbers_Csv, Import_Numbers_Csv_Data, Update_Blocked_Numbers, Update_Blocked_Numbers_Settings } from '../api/Api';
 import { Log } from '../../commonComponents/Log';
 
 export const blockNumberReducer = createSlice({
@@ -13,6 +13,7 @@ export const blockNumberReducer = createSlice({
     blocked_numbers: null,
     blocked_numbers_setting: null,
     export_blocked_numbers: null,
+    blocked_numbers_file: null,
     map_blocked_numbers: null,
     apiBlockNumbersList: STATUS_IDLE,
     apiGetBlockedNumbersSetting: STATUS_IDLE,
@@ -24,6 +25,7 @@ export const blockNumberReducer = createSlice({
     apiGetExportBlockedNumbers: STATUS_IDLE,
     apiBlockNumbersCsv: STATUS_IDLE,
     apiGetNumbersMapFields: STATUS_IDLE,
+    apiImporNumberCsvData: STATUS_IDLE,
 
   },
 
@@ -42,6 +44,7 @@ export const blockNumberReducer = createSlice({
         (state.apiGetExportBlockedNumbers = STATUS_IDLE);
         (state.apiBlockNumbersCsv = STATUS_IDLE);
         (state.apiGetNumbersMapFields = STATUS_IDLE);
+        (state.apiImporNumberCsvData = STATUS_IDLE);
     },
     clearBlockNumbersData: state => {
       state.blocked_numbers = null;
@@ -229,6 +232,7 @@ export const blockNumberReducer = createSlice({
         Log('Import_Numbers_Csv fulfilled : ', JSON.stringify(action));
         state.apiBlockNumbersCsv = STATUS_FULFILLED;
         state.isLoader = false;
+        state.blocked_numbers_file = action.payload?.data;
         state.isError = false;
         state.error_message = '';
       });
@@ -260,6 +264,27 @@ export const blockNumberReducer = createSlice({
         state.isError = true;
         state.error_message = action.payload?.message;
         state.apiGetNumbersMapFields = STATUS_REJECTED;
+      });
+
+      builder.addCase(Import_Numbers_Csv_Data.pending, (state, action) => {
+        state.apiImporNumberCsvData = STATUS_PENDING;
+        state.isLoader = true;
+        state.isError = false;
+        state.error_message = '';
+      });
+      builder.addCase(Import_Numbers_Csv_Data.fulfilled, (state, action) => {
+        Log('Import_Numbers_Csv_Data fulfilled : ', JSON.stringify(action));
+        state.apiImporNumberCsvData = STATUS_FULFILLED;
+        state.isLoader = false;
+        state.isError = false;
+        state.error_message = '';
+      });
+      builder.addCase(Import_Numbers_Csv_Data.rejected, (state, action) => {
+        Log('Import_Numbers_Csv_Data rejected : ', JSON.stringify(action));
+        state.isLoader = false;
+        state.isError = true;
+        state.error_message = action.payload?.message;
+        state.apiImporNumberCsvData = STATUS_REJECTED;
       });
   },
 });

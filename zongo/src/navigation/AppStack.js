@@ -41,6 +41,23 @@ import FileTypeList from '../screens/DashBoardScreen/AudioFIles/FIleTypeList';
 import BlockNumbers from '../screens/DashBoardScreen/BlockedNumbers/BlockNumbers';
 import BlockNumberSetting from '../screens/DashBoardScreen/BlockedNumbers/BlockNumberSetting';
 import BulkImport from '../screens/DashBoardScreen/BlockedNumbers/BulkImport';
+import DncLists from '../screens/DashBoardScreen/DncList/DncList';
+import DncBulkImport from '../screens/DashBoardScreen/DncList/DncBulkImport';
+import Users from '../screens/DashBoardScreen/Users/Users';
+import ManageUser from '../screens/DashBoardScreen/Users/ManageUser';
+import UserAvaliability from '../screens/DashBoardScreen/Users/UserAvaliability';
+import UserE911 from '../screens/DashBoardScreen/Users/UserE911';
+import ContactInformation from '../screens/AuthScreen/ContactInformation';
+import InComingCallScreen from './incomingRoot/inComingCallScreen';
+import { useSelector } from 'react-redux';
+import Error from '../screens/DashBoardScreen/Error/Error';
+import { user_data } from '../redux/reducers/userReducer';
+import SideMenuModuleCheck from '../commonComponents/RolePermission/SideMenuModuleCheck';
+import Crm from '../screens/DashBoardScreen/Crm/Crm';
+import Calendar from '../screens/DashBoardScreen/Calender/Calendar';
+import { AppProvider, useAppContext } from '../commonComponents/Context/AppContext';
+import { COMMUNICATIONS } from '../constants/DATA/DrawerData';
+
 const { createBottomTabNavigator } = require('@react-navigation/bottom-tabs');
 const { createNativeStackNavigator } = require('@react-navigation/native-stack');
 
@@ -49,65 +66,54 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
-const DATA = [
-  {
-    id: 1,
-    title: 'Dashboard',
-    image: ic_dashboard,
-  },
-  {
-    id: 2,
-    title: 'Inbound Numbers',
-    image: ic_dashboard,
-  },
-  {
-    id: 3,
-    title: 'Extensions',
-    image: ic_dashboard,
-  },
-  {
-    id: 4,
-    title: 'Auto Attendant',
-    image: ic_dashboard,
-  },
-  {
-    id: 5,
-    title: 'Business Hours',
-    image: ic_dashboard,
-  },
-  {
-    id: 6,
-    title: 'Audio Files',
-    image: ic_dashboard,
-  },
-  {
-    id: 7,
-    title: 'Ring Groups',
-    image: ic_dashboard,
-  },
-  {
-    id: 8,
-    title: 'Call Campaigns',
-    image: ic_dashboard,
-  },
-  {
-    id: 9,
-    title: 'Blocked Numbers',
-    image: ic_dashboard,
-  },
-  {
-    id: 10,
-    title: 'DNC List',
-    image: ic_dashboard,
-  },
-  {
-    id: 11,
-    title: 'Dashlets',
-    image: ic_dashboard,
-  },
-];
-
+//bottom tab 
 function HomeTabs() {
+  var DialerStatus = true;
+  var CommunicationsStatus = true;
+  var EmailStatus = true;
+  var MessageStatus = true;
+  var AccountStatus = true;
+
+  const user_data = useSelector(state => state.userRedux.user_data);
+  const userRole = user_data?.data?.role;
+  const permission = user_data?.data?.role_permission
+  const tab = user_data?.data?.tab_per
+console.log("user_-data",user_data)
+  if (user_data !== null) {
+    DialerStatus = tab?.find(tab => tab.tab_name === "Web Phone" && tab.status === "enable");
+    CommunicationsStatus = tab?.find(tab => tab.tab_name === "Commumication" && tab.status === "enable");
+    EmailStatus = permission?.find(permission => permission.slug === "email" && permission.status === "enable");
+    MessageStatus = permission?.find(permission => permission.slug === "chat-sms" && permission.status === "enable");
+  }
+
+  const tabs = [
+    { name: 'DashBoard', component: DashBoard, icon: ic_dashboard, label: 'Dashboard' },
+    { name: 'Message', component: Message, icon: ic_message, label: 'Message' },
+    { name: 'Email', component: Email, icon: ic_email, label: 'Email' },
+    { name: 'Dialer', component: Dialer, icon: ic_dialer, label: 'Dialer' },
+    { name: 'Account', component: Account, icon: ic_account, label: 'Account' },
+  ];
+  const filteredTabs = tabs.filter(tab => {
+    if (userRole !== "admin" || userRole !== "superadmin") {
+      if (tab.name === "Dialer" && DialerStatus?.status == "disable") {
+        return false;
+      }
+      if (tab.name === "Email" && EmailStatus?.status == "disable") {
+        return false;
+      }
+      if (tab.name === "Account" && AccountStatus == false) {
+        return false;
+      }
+      if (CommunicationsStatus?.status == "disable" && tab.name === "Message" && MessageStatus?.status == "enable") {
+        return false
+      }
+      if (tab.name === "Message" && MessageStatus?.status == "disable") {
+        return false;
+      }
+    }
+    return true;
+  });
+
   return (
     <>
       <Tab.Navigator
@@ -120,7 +126,7 @@ function HomeTabs() {
           tabBarStyle: {
             backgroundColor: greenPrimary,
             height: Platform.OS == 'ios' ? 80 : 55,
-            paddingHorizontal: 10
+            paddingHorizontal: 10,
           },
           tabBarLabelStyle: {
             fontFamily: REGULAR,
@@ -129,167 +135,41 @@ function HomeTabs() {
           },
           tabBarHideOnKeyboard: true,
         }}>
-        <Tab.Screen
-          name={'DashBoard'}
-          component={DashBoard}
-          options={{
-            tabBarIcon: ({ color, size, focused }) => (
-              <View
-                style={{
-                  alignItems: 'center',
-                  backgroundColor: focused ? white : greenPrimary,
-                  width: 65,
-                  paddingVertical: 8,
-                  flex: 1
-                }}>
-                <Image
-                  style={{ width: size - 5, height: size - 5 }}
-                  tintColor={focused ? greenPrimary : white}
-                  resizeMode="contain"
-                  source={focused ? ic_dashboard : ic_dashboard}
-                />
-                <Text
+        {filteredTabs.map(tab => (
+          <Tab.Screen
+            key={tab.name}
+            name={tab.name}
+            component={tab.component}
+            options={{
+              tabBarIcon: ({ color, size, focused }) => (
+                <View
                   style={{
-                    fontSize: FontSize.FS_09,
-                    color: focused ? greenPrimary : white,
-                    fontFamily: SEMIBOLD,
-                    marginTop: 3
+                    alignItems: 'center',
+                    backgroundColor: focused ? white : greenPrimary,
+                    width: 65,
+                    paddingVertical: 8,
+                    flex: 1,
                   }}>
-                  Dashboard
-                </Text>
-              </View>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={'Message'}
-          component={Message}
-          options={{
-            tabBarIcon: ({ color, size, focused }) => (
-              <View
-                style={{
-                  alignItems: 'center',
-                  backgroundColor: focused ? white : greenPrimary,
-                  width: 65,
-                  paddingVertical: 8,
-                  flex: 1
-                }}>
-                <Image
-                  style={{ width: size - 5, height: size - 5 }}
-                  tintColor={focused ? greenPrimary : white}
-                  resizeMode="contain"
-                  source={focused ? ic_message : ic_message}
-                />
-                <Text
-                  style={{
-                    fontSize: FontSize.FS_09,
-                    color: focused ? greenPrimary : white,
-                    fontFamily: SEMIBOLD,
-                    marginTop: 3
-                  }}>
-                  Message
-                </Text>
-              </View>
-            ),
-          }}
-        />
-
-        <Tab.Screen
-          name={'Email'}
-          component={Email}
-          options={{
-            tabBarIcon: ({ color, size, focused }) => (
-              <View
-                style={{
-                  alignItems: 'center',
-                  backgroundColor: focused ? white : greenPrimary,
-                  width: 65,
-                  paddingVertical: 8,
-                  flex: 1
-                }}>
-                <Image
-                  style={{ width: size - 5, height: size - 5 }}
-                  tintColor={focused ? greenPrimary : white}
-                  resizeMode="contain"
-                  source={focused ? ic_email : ic_email}
-                />
-                <Text
-                  style={{
-                    fontSize: FontSize.FS_09,
-                    color: focused ? greenPrimary : white,
-                    fontFamily: SEMIBOLD,
-                    marginTop: 3
-                  }}>
-                  Email
-                </Text>
-              </View>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={'Dialer'}
-          component={Dialer}
-          options={{
-            tabBarIcon: ({ color, size, focused }) => (
-              <View
-                style={{
-                  alignItems: 'center',
-                  backgroundColor: focused ? white : greenPrimary,
-                  width: 65,
-                  paddingVertical: 8,
-                  flex: 1
-                }}>
-                <Image
-                  style={{ width: size - 5, height: size - 5 }}
-                  tintColor={focused ? greenPrimary : white}
-                  resizeMode="contain"
-                  source={focused ? ic_dialer : ic_dialer}
-                />
-                <Text
-                  style={{
-                    fontSize: FontSize.FS_09,
-                    color: focused ? greenPrimary : white,
-                    fontFamily: SEMIBOLD,
-                    marginTop: 3
-                  }}>
-                  Dialer
-                </Text>
-              </View>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={'Account'}
-          component={Account}
-          options={{
-            tabBarIcon: ({ color, size, focused }) => (
-              <View
-                style={{
-                  alignItems: 'center',
-                  backgroundColor: focused ? white : greenPrimary,
-                  width: 65,
-                  paddingVertical: 8,
-                  flex: 1
-                }}>
-                <Image
-                  style={{ width: size - 5, height: size - 5 }}
-                  tintColor={focused ? greenPrimary : white}
-                  resizeMode="contain"
-                  source={focused ? ic_account : ic_account}
-                />
-                <Text
-                  style={{
-                    fontSize: FontSize.FS_09,
-                    color: focused ? greenPrimary : white,
-                    fontFamily: SEMIBOLD,
-                    marginTop: 3
-                  }}>
-                  Account
-                </Text>
-              </View>
-            ),
-          }}
-        />
+                  <Image
+                    style={{ width: size - 5, height: size - 5 }}
+                    tintColor={focused ? greenPrimary : white}
+                    resizeMode="contain"
+                    source={focused ? tab.icon : tab.icon}
+                  />
+                  <Text
+                    style={{
+                      fontSize: FontSize.FS_09,
+                      color: focused ? greenPrimary : white,
+                      fontFamily: SEMIBOLD,
+                      marginTop: 3,
+                    }}>
+                    {tab.label}
+                  </Text>
+                </View>
+              ),
+            }}
+          />
+        ))}
       </Tab.Navigator>
     </>
   );
@@ -303,9 +183,11 @@ function AppStacks() {
         headerShown: false,
         gesturesEnabled: false,
       }}>
+      <Stack.Screen name="Home" component={HomeTabs} />
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="ContactInformation" component={ContactInformation} />
       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="Communications" component={Communications} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
@@ -331,101 +213,127 @@ function AppStacks() {
       <Stack.Screen name="BlockNumbers" component={BlockNumbers} />
       <Stack.Screen name="BlockNumberSetting" component={BlockNumberSetting} />
       <Stack.Screen name="BulkImport" component={BulkImport} />
-      <Stack.Screen name="Home" component={HomeTabs} />
+      <Stack.Screen name="DncLists" component={DncLists} />
+      <Stack.Screen name="DncBulkImport" component={DncBulkImport} />
+      <Stack.Screen name="Users" component={Users} />
+      <Stack.Screen name="ManageUser" component={ManageUser} />
+      <Stack.Screen name="UserAvaliability" component={UserAvaliability} />
+      <Stack.Screen name="UserE911" component={UserE911} />
+      <Stack.Screen name="InComingCallScreen" component={InComingCallScreen} />
+      <Stack.Screen name="Error" component={Error} />
+      <Stack.Screen name="Crm" component={Crm} />
+      <Stack.Screen name="Calendar" component={Calendar} />
     </Stack.Navigator>
   );
 }
-function CustomDrawerContent({ navigation }) {
-  const openScreen = (screenName) => {
-    navigation.navigate(screenName);
-    navigation.closeDrawer();
-  };
 
+
+
+function CustomDrawerContent({ navigation }) {
+
+  const user_data = useSelector(state => state.userRedux.user_data);
+  const { activeArray } = useAppContext();
+  console.log("activeArray :", activeArray)
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ marginHorizontal: 20, paddingVertical: 20 }}>
       <FlatList
         style={{ paddingTop: "25%" }}
-        data={DATA}
+        data={activeArray}
         renderItem={({ item }) => {
-          let imageSource, url;
+          var permission = "";
+          permission = SideMenuModuleCheck(item?.name, user_data);
+          let imageSource, url, name;
           switch (true) {
-            case item.title.toLowerCase().includes("dashboard"):
-              imageSource = ic_dashboard;
-              break;
             case item.title.toLowerCase().includes("inbound"):
               imageSource = ic_inbound;
-              url = "InBoundNumbers"
+              url = "InBoundNumbers";
+              name = item.title;
               break;
             case item.title.toLowerCase().includes("extension"):
               imageSource = ic_extension;
-              url = "Call"
+              url = "Call";
+              name = item.title
               break;
             case item.title.toLowerCase().includes("attendant"):
               imageSource = ic_auto_attendant;
-              url = "AutoAttendant"
+              url = "AutoAttendant";
+              name = item.title
               break;
             case item.title.toLowerCase().includes("business"):
               imageSource = ic_business_hour;
-              url = "TimebasedRouting"
+              url = "TimebasedRouting";
+              name = item.title
               break;
             case item.title.toLowerCase().includes("audio"):
               imageSource = ic_audio_file;
-              url = "FileTypeList"
+              url = "FileTypeList";
+              name = item.title
               break;
             case item.title.toLowerCase().includes("ring"):
               imageSource = ic_ring_group;
-              url = "RingGroup";
-              break;
-            case item.title.toLowerCase().includes("campaigns"):
-              imageSource = ic_call_campaigns;
+              url = "RingGroup";;
+              name = item.title
               break;
             case item.title.toLowerCase().includes("inbound"):
               imageSource = ic_inbound;
-              url = "InBoundNumbers"
+              url = "InBoundNumbers";
+              name = item.title
               break;
             case item.title.toLowerCase().includes("block"):
               imageSource = ic_block_number;
-              url = "BlockNumbers"
+              url = "BlockNumbers";
+              name = item.title
               break;
             case item.title.toLowerCase().includes("dnc"):
               imageSource = ic_dnc_list;
+              url = "DncLists";
+              name = item.title
               break;
             case item.title.toLowerCase().includes("dashlets"):
               imageSource = ic_dashlets;
+              name = item.title
+              break;
+            case item.title.toLowerCase().includes("users"):
+              imageSource = ic_dashlets;
+              url = "Users";
+              name = item.title
               break;
             default:
               imageSource = ic_dashboard;
+              name = item.title
               break;
           }
-          return (
-            <TouchableOpacity onPress={() => {
-              // navigation.toggleDrawer();
-              console.log("url", url)
-              if (url) {
-                navigate(url)
-              }
-            }}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderBlockColor: " rgba(255, 255, 255, 0.25)",
-                paddingVertical: 14,
-              }}>
-              <Image
-                style={{ width: 20, height: 20, marginRight: 18 }}
-                tintColor={white}
-                resizeMode="contain"
-                source={imageSource}
-              />
-              <Text style={{
-                fontSize: FontSize.FS_16,
-                color: white,
-                fontFamily: MEDIUM
-              }}>{item.title}</Text>
-            </TouchableOpacity>
-          )
-
+          if (permission !== "hidden") {
+            return (
+              <TouchableOpacity onPress={() => {
+                if (url) {
+                  navigate(url)
+                }
+              }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderBlockColor: " rgba(255, 255, 255, 0.25)",
+                  paddingVertical: 14,
+                }}>
+                <Image
+                  style={{ width: 20, height: 20, marginRight: 18 }}
+                  tintColor={white}
+                  resizeMode="contain"
+                  source={imageSource}
+                />
+                <Text style={{
+                  fontSize: FontSize.FS_16,
+                  color: white,
+                  fontFamily: MEDIUM
+                }}>{name}</Text>
+              </TouchableOpacity>
+            )
+          }
+          else {
+            return null;
+          }
         }
         }
         keyExtractor={item => item.id}
@@ -436,25 +344,27 @@ function CustomDrawerContent({ navigation }) {
 
 function MainDrawerNavigator() {
   return (
-    <Drawer.Navigator
-      screenOptions={{
-        drawerPosition: "right",
-        drawerType: Platform.OS == "android" ? "front" : "front",
-        swipeEnabled: false,
-        drawerStyle: {
-          width: Platform.OS == "android" ? WIDTH / 1.7 : WIDTH / 1.7,
-          backgroundColor: midGreen,
-          position: "absolute"
-        }
-      }}
+    <AppProvider>
+      <Drawer.Navigator
+        screenOptions={{
+          drawerPosition: "right",
+          drawerType: Platform.OS == "android" ? "front" : "front",
+          swipeEnabled: false,
+          drawerStyle: {
+            width: Platform.OS == "android" ? WIDTH / 1.7 : WIDTH / 1.7,
+            backgroundColor: midGreen,
+            position: "absolute"
+          }
+        }}
 
-      drawerContent={props => <CustomDrawerContent {...props}
-      />}>
-      <Drawer.Screen name="Homse" component={AppStacks}
-        options={{ headerShown: false }} />
-      {/* Add other screens you want to include in the drawer */}
-    </Drawer.Navigator>
+        drawerContent={props => <CustomDrawerContent {...props}
+        />}>
+        <Drawer.Screen name="Homes" component={AppStacks}
+          options={{ headerShown: false }}
+        />
+
+      </Drawer.Navigator>
+    </AppProvider>
   );
 }
-// export default AppStacks;
 export default MainDrawerNavigator;

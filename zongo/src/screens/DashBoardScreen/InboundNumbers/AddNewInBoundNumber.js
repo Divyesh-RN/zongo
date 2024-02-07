@@ -1,6 +1,6 @@
 
-import { FlatList, StyleSheet, TouchableOpacity, Text, View, Modal, ScrollView, Linking } from 'react-native';
-import React, { useRef, useState } from 'react';
+import { FlatList, StyleSheet, TouchableOpacity, Text, View, Modal, ScrollView, Linking, Alert } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderView from '@commonComponents/HeaderView';
 import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
 import HeaderBackView from '@commonComponents/HeaderBackView';
@@ -10,9 +10,18 @@ import { goBack } from '@navigation/RootNavigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { MEDIUM } from '@constants/Fonts';
 import { black05, greenPrimary, grey, midGreen, red } from '@constants/Color';
-import SelectionBottomSheet from './components/PrefixBottomSheet';
+import PrefixBottomSheet from './components/PrefixBottomSheet';
 import { bgColor01, light_grey } from '../../../constants/Color';
-import { HEIGHT } from '../../../constants/ConstantKey';
+import { HEIGHT, MONTHLY_DIGIT, MONTHLY_PRICE, QUARTELY, SETUP_DIGIT, SETUP_PRICE, STATUS_FULFILLED, STATUS_REJECTED, YEARLY } from '../../../constants/ConstantKey';
+import { useDispatch, useSelector } from 'react-redux';
+import { Get_Area_Code_By_State, Get_Number, Get_Prefix, Get_States } from '../../../redux/api/Api';
+import { Log } from '../../../commonComponents/Log';
+import { useFocusEffect } from '@react-navigation/native';
+import { resetInboundApiStatus } from '../../../redux/reducers/inboundReducer';
+import LoadingView from '../../../commonComponents/LoadingView';
+import BottomSheet from './components/BottomSheet';
+import { resetGeneralApiStatus } from '../../../redux/reducers/generalReducer';
+import { BOLD } from '../../../constants/Fonts';
 
 const AddNewInboundNumber = ({ navigation }) => {
 
@@ -21,18 +30,162 @@ const AddNewInboundNumber = ({ navigation }) => {
     const [TermConditionModel, setTermConditionModel] = useState(false);
     const [ActiveStep, setActiveStep] = useState(1);
     const [selectedNumbers, setSelectedNumbers] = useState([]);
+    const [NumberList, setNumberList] = useState(null);
 
     const [Prefix, setPrefix] = useState(null);
     const [State, setState] = useState(null);
     const [AreaCode, setAreaCode] = useState(null);
     const NUMBERS_PER_ROW = 3;
 
+    var dispatch = useDispatch()
 
+    const isLoading = useSelector(state => state.inboundRedux.isLoader);
+    const isError = useSelector(state => state.inboundRedux.isError);
+    const error_message = useSelector(state => state.inboundRedux.error_message);
+    const user_data = useSelector(state => state.userRedux.user_data);
+    Log('user_data :', user_data?.data?.plan_type);
 
-    const DestinationTobottomSheetRef = useRef(null);
+    const apiGetPrefix = useSelector(state => state.inboundRedux.apiGetPrefix);
+    const prefix_list = useSelector(state => state.inboundRedux.prefix_list);
+
+    const apiGetNumberList = useSelector(state => state.inboundRedux.apiGetNumberList);
+    const number_list = useSelector(state => state.inboundRedux.number_list);
+
+    const apiGetAreaCodeByState = useSelector(state => state.generalRedux.apiGetAreaCodeByState);
+    const area_code = useSelector(state => state.generalRedux.area_code);
+
+    const apiGetStates = useSelector(state => state.generalRedux.apiGetStates);
+    const state = useSelector(state => state.generalRedux.state);
+
     const PrefixbottomSheetRef = useRef(null);
     const StatebottomSheetRef = useRef(null);
     const AreaCodebottomSheetRef = useRef(null);
+
+    const GetPrefix = () => {
+        var dict = {
+            createdby: user_data?.data?.user_uuid,
+        };
+        dispatch(Get_Prefix(dict));
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            GetPrefix()
+            GetState()
+            return () => {
+                dispatch(resetInboundApiStatus());
+                dispatch(resetGeneralApiStatus());
+            };
+        }, [])
+    )
+
+    useEffect(() => {
+        Log('apiGetPrefix :', apiGetPrefix);
+        if (apiGetPrefix == STATUS_FULFILLED) {
+            if (prefix_list !== null) {
+                setPrefix(prefix_list[0])
+                GetFreeNumberList(prefix_list[0])
+            }
+        } else if (apiGetPrefix == STATUS_REJECTED) {
+            if (isError) {
+                Alert.alert('Alert', error_message);
+            }
+        }
+    }, [apiGetPrefix]);
+
+    const GetFreeNumberList = (prefix) => {
+        var dict = {
+            area_code: "",
+            createdby: user_data?.data?.user_uuid,
+            limit: "21",
+            locality: "",
+            main_admin_uuid: user_data?.data?.main_uuid,
+            number_type:"toll-free",
+            prefix: prefix?.prefix,
+            prefix_arr: [prefix?.prefix],
+            user_uuid: user_data?.data?.user_uuid,
+
+        };
+        console.log("GET NUMBER LIST", dict);
+        dispatch(Get_Number(dict));
+    }
+    const GetPaidNumberList = (area) => {
+        var dict = {
+            area_code: area?.area_code,
+            area_code_arr: [area?.area_code],
+            createdby: user_data?.data?.user_uuid,
+            limit: "21",
+            locality: "",
+            main_admin_uuid: user_data?.data?.main_uuid,
+            number_type:"",
+            prefix: "",
+            set_arr_state: [State?.uuid],
+            state_name: State?.state_name,
+            state_uuid: State?.uuid,
+            user_uuid: user_data?.data?.user_uuid,
+
+        };
+        console.log("GET PAID NUMBER LIST", dict);
+        dispatch(Get_Number(dict));
+    }
+
+    useEffect(() => {
+        Log('apiGetNumberList :', apiGetNumberList);
+        if (apiGetNumberList == STATUS_FULFILLED) {
+            if (number_list !== null) {
+                console.log("number_list", number_list)
+                setNumberList(number_list);
+            }
+        } else if (apiGetNumberList == STATUS_REJECTED) {
+            if (isError) {
+                Alert.alert('Alert', error_message);
+            }
+        }
+    }, [apiGetNumberList]);
+
+    const GetState = () => {
+        var dict = {
+            createdby: user_data?.data?.user_uuid,
+        };
+        dispatch(Get_States(dict));
+    }
+
+    useEffect(() => {
+        Log('apiGetStates :', apiGetStates);
+        if (apiGetStates == STATUS_FULFILLED) {
+            Log("state :", state)
+            setState(state[0]);
+            GetAreaCodeByState(state[0])
+        } else if (apiGetStates == STATUS_REJECTED) {
+            if (isError) {
+                Alert.alert('Alert', error_message);
+            }
+        }
+    }, [apiGetStates]);
+
+    const GetAreaCodeByState = (state) => {
+        var dict = {
+            createdby: user_data?.data?.user_uuid,
+            state_uuid: state?.uuid
+        }
+        dispatch(Get_Area_Code_By_State(dict))
+    }
+
+    useEffect(() => {
+        Log('apiGetAreaCodeByState :', apiGetAreaCodeByState);
+        if (apiGetAreaCodeByState == STATUS_FULFILLED) {
+            Log("area_code :", area_code)
+            setAreaCode(area_code[0])
+            console.log("IsTollFreeNumber :",IsTollFreeNumber)
+            if(IsTollFreeNumber == false){
+                GetPaidNumberList(area_code[0])
+            }
+        } else if (apiGetAreaCodeByState == STATUS_REJECTED) {
+            if (isError) {
+                Alert.alert('Alert', error_message);
+            }
+        }
+    }, [apiGetAreaCodeByState]);
 
     const openPrefixBottomSheet = () => {
         if (PrefixbottomSheetRef.current) {
@@ -50,169 +203,11 @@ const AddNewInboundNumber = ({ navigation }) => {
         }
     };
 
-
-    const STATE = [
-        {
-            id: 1,
-            value: "Alaska",
-        },
-        {
-            id: 2,
-            value: "Arizona",
-        },
-        {
-            id: 3,
-            value: "Kansas",
-        },
-        {
-            id: 4,
-            value: "Hawaii",
-        },
-        {
-            id: 5,
-            value: "Indiana",
-        },
-    ];
-    const CODE = [
-        {
-            id: 1,
-            value: 480,
-        },
-        {
-            id: 2,
-            value: 520,
-        },
-        {
-            id: 3,
-            value: 602,
-        },
-        {
-            id: 4,
-            value: 623,
-        },
-        {
-            id: 5,
-            value: 928,
-        },
-    ];
-    const PREFIX = [
-        {
-            id: 1,
-            value: 888,
-        },
-        {
-            id: 2,
-            value: 877,
-        },
-        {
-            id: 3,
-            value: 866,
-        },
-        {
-            id: 4,
-            value: 855,
-        },
-        {
-            id: 5,
-            value: 844,
-        },
-        {
-            id: 6,
-            value: 833,
-        },
-        {
-            id: 7,
-            value: 800,
-        },
-    ]
-    const NUMBERS = [
-        {
-            id: 1,
-            value: "+1857865456",
-            type: "Toll Free",
-            state: "-",
-            nrc: "3$",
-            mrc: "5$"
-        },
-        {
-            id: 2,
-            value: "+1857865456",
-            type: "Toll Free",
-            state: "-",
-            nrc: "3$",
-            mrc: "5$"
-        },
-        {
-            id: 3,
-            value: "+1857865456",
-            type: "Local",
-            state: "IN",
-            nrc: "3$",
-            mrc: "5$"
-        },
-        {
-            id: 4,
-            value: "+1857865456",
-            type: "Toll Free",
-            state: "-",
-            nrc: "3$",
-            mrc: "5$"
-        },
-        {
-            id: 5,
-            value: "+1857865456",
-            type: "Local",
-            state: "IN",
-            nrc: "3$",
-            mrc: "5$"
-        },
-        {
-            id: 6,
-            value: "+1857865456",
-            type: "Toll Free",
-            state: "-",
-            nrc: "3$",
-            mrc: "5$"
-        },
-        {
-            id: 7,
-            value: "+1857865456",
-            type: "Toll Free",
-            state: "-",
-            nrc: "3$",
-            mrc: "5$"
-        },
-        {
-            id: 8,
-            value: "+1857865456",
-            type: "Local",
-            state: "IN",
-            nrc: "3$",
-            mrc: "5$"
-        },
-        {
-            id: 9,
-            value: "+1857865456",
-            type: "Toll Free",
-            state: "-",
-            nrc: "3$",
-            mrc: "5$"
-        },
-        {
-            id: 10,
-            value: "+1857865456",
-            type: "Local",
-            state: "IN",
-            nrc: "3$",
-            mrc: "5$"
-        },
-    ]
-
-
     const toggleSelection = (number) => {
-        if (selectedNumbers.some((selected) => selected.id === number.id)) {
+        console.log("number: ", number);
+        if (selectedNumbers.some((selected) => selected.phone_number === number.phone_number)) {
             setSelectedNumbers((prevSelected) =>
-                prevSelected.filter((selected) => selected.id !== number.id)
+                prevSelected.filter((selected) => selected.phone_number !== number.phone_number)
             );
         } else {
             setSelectedNumbers((prevSelected) => [...prevSelected, number]);
@@ -221,12 +216,37 @@ const AddNewInboundNumber = ({ navigation }) => {
 
     const removeSelectedNumber = (number) => {
         setSelectedNumbers((prevSelected) =>
-            prevSelected.filter((selected) => selected.id !== number.id)
+            prevSelected.filter((selected) => selected.phone_number !== number.phone_number)
         );
     };
 
+
+const LocalCount = (selectedNumbers) => {
+    let localCount = 0;
+  
+    selectedNumbers.forEach((item) => {
+      if (item.phone_number_type === 'local') {
+        localCount++;
+      }
+    });
+  
+    return localCount ;
+  };
+
+  const ToolFreeCount = (selectedNumbers) => {
+    let tollFreeCount = 0;
+  
+    selectedNumbers.forEach((item) => {
+      if (item.phone_number_type === 'toll_free') {
+        tollFreeCount++;
+      }
+    });
+  
+    return tollFreeCount ;
+  };
+
     const renderNumberItem = ({ item }) => {
-        const isSelected = selectedNumbers.some((selected) => selected.id === item.id);
+        const isSelected = selectedNumbers.some((selected) => selected.phone_number === item.phone_number);
 
         return (
             <TouchableOpacity
@@ -235,17 +255,18 @@ const AddNewInboundNumber = ({ navigation }) => {
                     flex: 1,
                     margin: 8,
                     borderWidth: 1,
-                    borderColor: isSelected ? "transparent" : grey,
+                    borderColor: isSelected ? "transparent" : black,
                     backgroundColor: isSelected ? grey : 'white',
-                    padding: 10,
+                    paddingVertical: 6,
+                    paddingHorizontal: 6,
                     borderRadius: 4,
                     alignItems: 'center',
                 }}>
                 <Text style={{
-                    fontSize: FontSize.FS_12,
-                    color: isSelected ? white : grey,
+                    fontSize: FontSize.FS_11,
+                    color: isSelected ? white : black,
                     fontFamily: MEDIUM,
-                }}>{item.value}</Text>
+                }}>{item.phone_number}</Text>
             </TouchableOpacity>
         );
     };
@@ -280,6 +301,7 @@ const AddNewInboundNumber = ({ navigation }) => {
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", margin: 20 }}>
                             <TouchableOpacity onPress={() => {
                                 setIsTollFreeNumber(true)
+                                GetPrefix()
                             }}
                                 style={{
                                     backgroundColor: IsTollFreeNumber == true ? midGreen : bgColor01,
@@ -299,6 +321,8 @@ const AddNewInboundNumber = ({ navigation }) => {
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => {
                                 setIsTollFreeNumber(false)
+                                GetPaidNumberList(AreaCode)
+
                             }}
                                 style={{
                                     backgroundColor: IsTollFreeNumber !== true ? midGreen : bgColor01,
@@ -344,7 +368,7 @@ const AddNewInboundNumber = ({ navigation }) => {
                                         color: black,
                                         fontFamily: MEDIUM,
                                         marginTop: 4
-                                    }}>{Prefix == null ? "Select Prifix" : Prefix?.value}</Text>
+                                    }}>{Prefix == null ? "Select Prifix" : Prefix?.prefix}</Text>
                                     <Icon name={"chevron-down"} size={22} color={grey} />
 
                                 </TouchableOpacity>
@@ -355,11 +379,11 @@ const AddNewInboundNumber = ({ navigation }) => {
                                     color: black,
                                     fontFamily: SEMIBOLD,
                                     marginVertical: 12
-                                }}>{"Select Numbers"}{` ( Prefix - ${Prefix == null ? "" : Prefix?.value} )`}</Text>
+                                }}>{"Select Numbers"}{` ( Prefix - ${Prefix == null ? "" : Prefix?.prefix} )`}</Text>
                                 <FlatList
-                                    data={NUMBERS}
+                                    data={NumberList}
                                     renderItem={renderNumberItem}
-                                    keyExtractor={(item) => item.id.toString()}
+                                    keyExtractor={(item) => item.phone_number}
                                     numColumns={NUMBERS_PER_ROW}
                                 />
 
@@ -392,7 +416,7 @@ const AddNewInboundNumber = ({ navigation }) => {
                                         color: black,
                                         fontFamily: MEDIUM,
                                         marginTop: 4
-                                    }}>{State == null ? "Select State" : State?.value}</Text>
+                                    }}>{State == null ? "Select State" : State?.state_name}</Text>
                                     <Icon name={"chevron-down"} size={22} color={grey} />
 
                                 </TouchableOpacity>
@@ -423,7 +447,7 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                 color: black,
                                                 fontFamily: MEDIUM,
                                                 marginTop: 4
-                                            }}>{AreaCode == null ? "Select Area" : AreaCode?.value}</Text>
+                                            }}>{AreaCode == null ? "Select Area" : AreaCode?.area_code}</Text>
                                             <Icon name={"chevron-down"} size={22} color={grey} />
 
                                         </TouchableOpacity></>
@@ -436,12 +460,12 @@ const AddNewInboundNumber = ({ navigation }) => {
                                         color: black,
                                         fontFamily: SEMIBOLD,
                                         marginVertical: 12
-                                    }}>{"Select Numbers"}{` ( ${State == null ? "" : State?.value} - ${AreaCode == null ? "" : AreaCode?.value} )`}</Text>
+                                    }}>{"Select Numbers"}{` ( ${State == null ? "" : State?.state_name} - ${AreaCode == null ? "" : AreaCode?.area_code} )`}</Text>
                                 }
                                 <FlatList
-                                    data={NUMBERS}
+                                    data={NumberList}
                                     renderItem={renderNumberItem}
-                                    keyExtractor={(item) => item.id.toString()}
+                                    keyExtractor={(item) => item.phone_number}
                                     numColumns={NUMBERS_PER_ROW}
                                 />
 
@@ -493,7 +517,7 @@ const AddNewInboundNumber = ({ navigation }) => {
                                         <FlatList
                                             style={{ width: '100%', backgroundColor: white }}
                                             data={selectedNumbers}
-                                            keyExtractor={(item) => item.id}
+                                            keyExtractor={(item) => item.phone_number}
                                             renderItem={({ item, drag, isActive, index }) => {
                                                 return (
                                                     <View
@@ -509,19 +533,19 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                     >
                                                         <Text style={[styles.TableRowText, {
                                                             width: 140, textAlign: "center",
-                                                        }]}>{item.value}</Text>
+                                                        }]}>{item.phone_number}</Text>
                                                         <Text style={[styles.TableRowText, {
                                                             width: 90, textAlign: "center",
-                                                        }]}>{item.type}</Text>
+                                                        }]}>{item.phone_number_type == "toll_free" ? "Toll Free" : "Local"}</Text>
                                                         <Text style={[styles.TableRowText, {
                                                             width: 115, textAlign: "center",
-                                                        }]}>{item.state}</Text>
+                                                        }]}>{item.phone_number_type == "toll_free" ? "-" : item?.region_information[0]?.region_name}</Text>
                                                         <Text style={[styles.TableRowText, {
                                                             width: 100, textAlign: "center",
-                                                        }]}>{item.nrc}</Text>
+                                                        }]}>{SETUP_PRICE}</Text>
                                                         <Text style={[styles.TableRowText, {
                                                             width: 100, textAlign: "center",
-                                                        }]}>{item.mrc}</Text>
+                                                        }]}>{MONTHLY_PRICE}</Text>
                                                         <View style={{ width: 120, alignItems: "center", }}>
                                                             <TouchableOpacity style={{
                                                                 backgroundColor: red,
@@ -572,25 +596,26 @@ const AddNewInboundNumber = ({ navigation }) => {
 
                 {ActiveStep == 2 && (
                     <>
+                    {console.log("selectedNumbers",selectedNumbers)}
                         <View style={{ marginHorizontal: 25, marginVertical: 20 }}>
                             <Text style={{
                                 fontSize: FontSize.FS_13,
                                 color: black,
                                 fontFamily: MEDIUM,
                                 lineHeight: 22
-                            }}>{"Local Number : "}<Text style={{ fontFamily: MEDIUM, }}>{"2"}</Text></Text>
+                            }}>{"Local Number : "}<Text style={{ fontFamily: MEDIUM, }}>{LocalCount(selectedNumbers)}</Text></Text>
                             <Text style={{
                                 fontSize: FontSize.FS_13,
                                 color: black,
                                 fontFamily: MEDIUM,
                                 lineHeight: 22
-                            }}>{"Toll Free : "}<Text style={{ fontFamily: SEMIBOLD, }}>{"1"}</Text></Text>
+                            }}>{"Toll Free : "}<Text style={{ fontFamily: SEMIBOLD, }}>{ToolFreeCount(selectedNumbers)}</Text></Text>
                             <Text style={{
                                 fontSize: FontSize.FS_13,
                                 color: black,
                                 fontFamily: MEDIUM,
                                 lineHeight: 22
-                            }}>{"Total Numbers : "}<Text style={{ fontFamily: SEMIBOLD, }}>{"3"}</Text></Text>
+                            }}>{"Total Numbers : "}<Text style={{ fontFamily: SEMIBOLD, }}>{selectedNumbers?.length}</Text></Text>
                             {selectedNumbers?.length > 0 &&
                                 <View style={{ marginVertical: 20 }}>
                                     <Text style={{
@@ -626,7 +651,7 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                 }]}>{"SETUP \n(*NRC)"}</Text>
                                                 <Text style={[styles.TableHaderText, {
                                                     width: 100, textAlign: "center",
-                                                }]}>{"MONTHLY \n(**MRC)"}</Text>
+                                                }]}>{"MONTHLY \n(*MRC)"}</Text>
                                                 {/* <Text style={[styles.TableHaderText, {
                                                     width: 120, textAlign: "center",
                                                 }]}>{"ACTION"}</Text> */}
@@ -649,21 +674,21 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                                 },
                                                             ]}
                                                         >
-                                                            <Text style={[styles.TableRowText, {
-                                                                width: 140, textAlign: "center",
-                                                            }]}>{item.value}</Text>
-                                                            <Text style={[styles.TableRowText, {
-                                                                width: 90, textAlign: "center",
-                                                            }]}>{item.type}</Text>
-                                                            <Text style={[styles.TableRowText, {
-                                                                width: 115, textAlign: "center",
-                                                            }]}>{item.state}</Text>
-                                                            <Text style={[styles.TableRowText, {
-                                                                width: 100, textAlign: "center",
-                                                            }]}>{item.nrc}</Text>
-                                                            <Text style={[styles.TableRowText, {
-                                                                width: 100, textAlign: "center",
-                                                            }]}>{item.mrc}</Text>
+                                                           <Text style={[styles.TableRowText, {
+                                                            width: 140, textAlign: "center",
+                                                        }]}>{item.phone_number}</Text>
+                                                        <Text style={[styles.TableRowText, {
+                                                            width: 90, textAlign: "center",
+                                                        }]}>{item.phone_number_type == "toll_free" ? "Toll Free" : "Local"}</Text>
+                                                        <Text style={[styles.TableRowText, {
+                                                            width: 115, textAlign: "center",
+                                                        }]}>{item.phone_number_type == "toll_free" ? "-" : item?.region_information[0]?.region_name}</Text>
+                                                        <Text style={[styles.TableRowText, {
+                                                            width: 100, textAlign: "center",
+                                                        }]}>{SETUP_PRICE}</Text>
+                                                        <Text style={[styles.TableRowText, {
+                                                            width: 100, textAlign: "center",
+                                                        }]}>{MONTHLY_PRICE}</Text>
                                                             {/* <View style={{ width: 120, alignItems: "center", }}>
                                                                 <TouchableOpacity style={{
                                                                     backgroundColor: red,
@@ -698,7 +723,7 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                 marginLeft: 10,
                                                 textAlign: "center",
                                                 textDecorationLine: "underline"
-                                            }}>{"Annual"}</Text>
+                                            }}>{user_data?.data?.plan_type == "quarterly" ?"Quarterly" :"Annual"}</Text>
                                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 35, marginTop: 20 }}>
 
                                                 <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -707,7 +732,7 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                         color: black,
                                                         fontFamily: MEDIUM,
                                                         lineHeight: 24,
-                                                    }}>{"2 DID's"}</Text>
+                                                    }}>{selectedNumbers?.length+" DID's"}</Text>
                                                     <View style={{ marginHorizontal: 6 }}>
                                                         <Icon name="close" size={18} color={black} />
                                                     </View>
@@ -716,14 +741,14 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                         color: black,
                                                         fontFamily: MEDIUM,
                                                         lineHeight: 24,
-                                                    }}>{"$3 setup"}</Text>
+                                                    }}>{SETUP_PRICE+" setup"}</Text>
                                                 </View>
                                                 <Text style={{
                                                     fontSize: FontSize.FS_14,
                                                     color: black,
                                                     fontFamily: MEDIUM,
                                                     lineHeight: 24,
-                                                }}>{"$ 6"}</Text>
+                                                }}>{selectedNumbers?.length * Number(SETUP_DIGIT) +"$"}</Text>
                                             </View>
                                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 35, marginTop: 8 }}>
 
@@ -733,7 +758,7 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                         color: black,
                                                         fontFamily: MEDIUM,
                                                         lineHeight: 24,
-                                                    }}>{"2 DID's"}</Text>
+                                                    }}>{selectedNumbers?.length +" DID's"}</Text>
                                                     <View style={{ marginHorizontal: 6 }}>
                                                         <Icon name="close" size={18} color={black} />
                                                     </View>
@@ -742,14 +767,14 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                         color: black,
                                                         fontFamily: MEDIUM,
                                                         lineHeight: 24,
-                                                    }}>{"$5 setup"}</Text>
+                                                    }}>{MONTHLY_DIGIT + "$ monthly"}</Text>
                                                 </View>
                                                 <Text style={{
                                                     fontSize: FontSize.FS_14,
                                                     color: black,
                                                     fontFamily: MEDIUM,
                                                     lineHeight: 24,
-                                                }}>{"$ 10"}</Text>
+                                                }}>{selectedNumbers?.length * Number(MONTHLY_DIGIT) +"$"}</Text>
                                             </View>
                                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 35, marginTop: 8 }}>
 
@@ -759,7 +784,7 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                         color: black,
                                                         fontFamily: MEDIUM,
                                                         lineHeight: 24,
-                                                    }}>{"$ 10"}</Text>
+                                                    }}>{selectedNumbers?.length * Number(MONTHLY_DIGIT)+"$"}</Text>
                                                     <View style={{ marginHorizontal: 6 }}>
                                                         <Icon name="close" size={18} color={black} />
                                                     </View>
@@ -768,29 +793,29 @@ const AddNewInboundNumber = ({ navigation }) => {
                                                         color: black,
                                                         fontFamily: MEDIUM,
                                                         lineHeight: 24,
-                                                    }}>{"12 Months"}</Text>
+                                                    }}>{user_data?.data?.plan_type == "quarterly" ? "3 Months" :"12 Months"}</Text>
                                                 </View>
                                                 <Text style={{
                                                     fontSize: FontSize.FS_14,
                                                     color: black,
                                                     fontFamily: MEDIUM,
                                                     lineHeight: 24,
-                                                }}>{"$ 120"}</Text>
+                                                }}>{user_data?.data?.plan_type == "quarterly" ? selectedNumbers?.length * Number(MONTHLY_DIGIT)*QUARTELY :selectedNumbers?.length * Number(MONTHLY_DIGIT)*YEARLY+ "$" }</Text>
                                             </View>
                                             <View style={{ height: 1, backgroundColor: grey, width: "100%", marginTop: 25 }}></View>
                                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 35, marginTop: 8, marginBottom: 40 }}>
                                                 <Text style={{
                                                     fontSize: FontSize.FS_14,
                                                     color: black,
-                                                    fontFamily: MEDIUM,
+                                                    fontFamily: SEMIBOLD,
                                                     lineHeight: 24,
                                                 }}>{"Total:"}</Text>
                                                 <Text style={{
                                                     fontSize: FontSize.FS_14,
                                                     color: black,
-                                                    fontFamily: MEDIUM,
+                                                    fontFamily: BOLD,
                                                     lineHeight: 24,
-                                                }}>{"$126(USD)"}</Text>
+                                                }}>{"$ "+(user_data?.data?.plan_type == "quarterly" ? selectedNumbers?.length * Number(MONTHLY_DIGIT)*QUARTELY :selectedNumbers?.length * Number(MONTHLY_DIGIT)*YEARLY+selectedNumbers?.length * Number(SETUP_DIGIT))+" USD"}</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -1111,19 +1136,34 @@ const AddNewInboundNumber = ({ navigation }) => {
                         </View>
                     </View>
                 </Modal>
-                <SelectionBottomSheet Name={STATE} bottomSheetRef={StatebottomSheetRef} selectedValue={(data) => {
-                    setState(data)
-                }} />
-                <SelectionBottomSheet Name={CODE} bottomSheetRef={AreaCodebottomSheetRef} selectedValue={(data) => {
-                    setAreaCode(data)
-                }} />
-                <SelectionBottomSheet Name={PREFIX} bottomSheetRef={PrefixbottomSheetRef} selectedValue={(data) => {
+                <BottomSheet
+                    type={"area_code"}
+                    title={"Select Area Code"}
+                    Data={area_code}
+                    selected={AreaCode}
+                    bottomSheetRef={AreaCodebottomSheetRef}
+                    selectedValue={(data) => {
+                        setAreaCode(data)
+                        GetPaidNumberList(data)
+                    }} />
+                <BottomSheet
+                    type={"state"}
+                    title={"Select State"}
+                    Data={state}
+                    selected={State}
+                    bottomSheetRef={StatebottomSheetRef}
+                    selectedValue={(data) => {
+                        setState(data)
+                        GetAreaCodeByState(data)
+                    }} />
+                <PrefixBottomSheet Name={prefix_list} bottomSheetRef={PrefixbottomSheetRef} selectedId={Prefix} selectedValue={(data) => {
                     setPrefix(data)
+                    GetFreeNumberList(data)
                 }} />
 
 
             </HeaderView>
-            {/* {isLoading && <LoadingView />} */}
+            {isLoading && <LoadingView />}
         </>
     );
 };

@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import JsSIP from 'jssip';
 import { useDispatch } from 'react-redux';
-import { storeUseStatus } from '../../../redux/reducers/userReducer';
+import { changeIncomingAlertState, storeUseStatus } from '../../../redux/reducers/userReducer';
 import global from '../../../constants/Global';
 let userAgent = null;
 let session = null;
@@ -105,7 +105,7 @@ console.log("registerData",registerData)
       // traceSip: true, // Enable SIP logging
       // use_preloaded_route: true,
       // with_react_native: true,
-      // contact_uri: 'sip:' + data?.PrivateIdentity + '@' + data?.Realm, // Set your desired contact URI
+      contact_uri: 'sip:' + data?.PrivateIdentity + '@' + data?.Realm, // Set your desired contact URI
       // rtcpMuxPolicy: "negotiate",
       // rel100: "none",
 
@@ -120,22 +120,23 @@ console.log("registerData",registerData)
       if (data.originator === 'remote') {
       }
       const session = e.session;
-      console.log("================== session 11  ================:", session)
-      console.log("================== session 1  ================:", session.direction)
+      console.log("================== session  ================:", session)
+      console.log("================== DISPLAY NAME   ================:", session?._remote_identity?._display_name)
+      console.log("================== USER_NAME   ================:", session?._remote_identity?._uri?._user)
+      console.log("================== DIRECTION  ================:", session.direction)
+      
+      global.session = session
       if (session.direction === 'incoming') {
-        // Display some UI to the user to accept or reject the call
-        // For demonstration purposes, let's automatically answer
-        session.answer();
+        dispatch(changeIncomingAlertState(true));
+        // session.on('accepted', () => {
+        //   // Here, you can show the RTCView and render the remote stream
+        //   let remoteStream = session.connection.getRemoteStreams()[0];
+        //   // ... render remoteStream using RTCView
+        // });
 
-        session.on('accepted', () => {
-          // Here, you can show the RTCView and render the remote stream
-          let remoteStream = session.connection.getRemoteStreams()[0];
-          // ... render remoteStream using RTCView
-        });
-
-        session.on('ended', () => {
-          // Handle call termination
-        })
+        // session.on('ended', () => {
+        //   // Handle call termination
+        // })
       }
 
     })
@@ -177,37 +178,6 @@ console.log("registerData",registerData)
       dispatch(storeUseStatus(false));
       toggleLoading(false);
     });
-    userAgent.on('sipEvent', (e) => {
-      console.log("DATA : ", e)
-      if (e.name === 'sipEvent::unauthorized') {
-        const response = e.response;
-
-        const authenticateHeader = response.headers['www-authenticate'];
-
-        // Retrieve the authentication credentials (username and password) from configuration
-        const username = data.PrivateIdentity;
-        const password = data.Password;
-        // Generate the authorization header using the authenticateHeader and credentials
-        const authorizationHeader = JsSIP.Utils.createAuthorizationHeader({
-          method: 'REGISTER',
-          uri: data.PublicIdentity,
-          username,
-          password,
-          cnonce: JsSIP.Utils.createRandomToken(12),
-          nc: '00000001',
-          realm: authenticateHeader.realm,
-          nonce: authenticateHeader.nonce,
-          qop: authenticateHeader.qop,
-          algorithm: authenticateHeader.algorithm,
-        });
-
-        // Set the authorization header and resend the request
-        const request = userAgent.createRequest('REGISTER', true);
-        request.setHeader('Authorization', authorizationHeader);
-        userAgent.sendRequest(request);
-      }
-    });
-
     try {
       userAgent.start();
     } catch (error) {
@@ -233,18 +203,6 @@ console.log("registerData",registerData)
 
       userAgent.stop();
       userAgent = null;
-    }
-  };
-
-  const answerCall = () => {
-    if (session) {
-      const options = {
-        mediaConstraints: {
-          audio: true, // Adjust media constraints as needed
-        },
-      };
-
-      session.answer(options);
     }
   };
   return (

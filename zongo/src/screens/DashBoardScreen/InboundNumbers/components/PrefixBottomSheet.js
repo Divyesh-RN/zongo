@@ -6,11 +6,10 @@ import { HEIGHT, WIDTH } from '@constants/ConstantKey';
 import { black,bgColor01, red, greenPrimary, disableColor } from '@constants/Color';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const PrefixBottomSheet = ({onPress ={} , bottomSheetRef = "",selectedValue,Name}) => {
+const PrefixBottomSheet = ({onPress ={} , bottomSheetRef = "",selectedValue,Name,selectedId}) => {
 
     const [SelectedId, setSelectedId] = useState(1);
 
- 
     const RenderItem = ({item}) => (
         <TouchableOpacity onPress={() =>{
             bottomSheetRef.current.close();
@@ -26,6 +25,9 @@ const PrefixBottomSheet = ({onPress ={} , bottomSheetRef = "",selectedValue,Name
             paddingVertical:14,
             }}>
           <Text style={styles.title}>{item.prefix}</Text>
+          {selectedId?.prefix_uuid == item.prefix_uuid &&
+                <Icon name={"check"} size={22} color={greenPrimary} />
+            }
         </TouchableOpacity>
       );
   return (

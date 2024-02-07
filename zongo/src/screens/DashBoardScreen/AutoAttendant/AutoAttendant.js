@@ -19,10 +19,14 @@ import { STATUS_FULFILLED, STATUS_REJECTED } from '../../../constants/ConstantKe
 import LoadingView from '../../../commonComponents/LoadingView';
 import moment from 'moment';
 import { resetGeneralApiStatus } from '../../../redux/reducers/generalReducer';
+import CheckModulePermisson from '../../../commonComponents/RolePermission/CheckModulePermisson';
+import PermissionCheck from '../../../commonComponents/RolePermission/PermissionCheck';
+import DoNotAccess from '../../../commonComponents/DoNotAccess';
 
 
 const ExpandableComponent = ({ item, onClickFunction, onDelete }) => {
     const [layoutHeight, setLayoutHeight] = useState(0);
+    const module_name = "ivr";
 
     useEffect(() => {
         if (item.isExpanded) {
@@ -37,6 +41,22 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete }) => {
         const formattedDate = dateObject.format('MM/DD/YYYY');
         return formattedDate;
     }
+
+    let edit_show = PermissionCheck(
+        module_name,
+        "edit",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
+
+    let delete_show = PermissionCheck(
+        module_name,
+        "delete",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
 
     return (
         <View style={[
@@ -124,8 +144,8 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete }) => {
                     </View>
 
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginHorizontal: 40, marginVertical: 14 }}>
-                        <TouchableOpacity onPress={() => {
-                            navigate("ManageAutoAttendant", { isEdit: true,item: item})
+                        {edit_show !== "hidden" ? <TouchableOpacity onPress={() => {
+                            navigate("ManageAutoAttendant", { isEdit: true, item: item })
                         }}
                             style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
                             <Icon name="pencil-box-outline" size={22} color={yellow} />
@@ -136,17 +156,24 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete }) => {
                                 marginLeft: 6
                             }}>{"Manage"}</Text>
                         </TouchableOpacity>
+                            :
+                            <></>
+                        }
+                        {delete_show !== "hidden" ?
 
-                        <TouchableOpacity onPress={() => onDelete(item, true)}
-                            style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
-                            <Icon name="trash-can" size={22} color={red} />
-                            <Text style={{
-                                fontSize: FontSize.FS_12,
-                                color: red,
-                                fontFamily: SEMIBOLD,
-                                marginLeft: 6
-                            }}>{"Delete"}</Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity onPress={() => onDelete(item, true)}
+                                style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
+                                <Icon name="trash-can" size={22} color={red} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: red,
+                                    fontFamily: SEMIBOLD,
+                                    marginLeft: 6
+                                }}>{"Delete"}</Text>
+                            </TouchableOpacity>
+                            :
+                            <></>
+                        }
                     </View>
                 </View>
             </View>
@@ -180,14 +207,32 @@ const AutoAttendant = ({ navigation }) => {
     const isError = useSelector(state => state.AutoAttendantRedux.isError);
     const error_message = useSelector(state => state.AutoAttendantRedux.error_message);
     const user_data = useSelector(state => state.userRedux.user_data);
-
-
+    const [isPermission, setIsPermission] = useState(true);
+    const module_name = "ivr";
+    const user_type = user_data.role;
+    let module_per = CheckModulePermisson(module_name);
+    let listing_per = PermissionCheck(module_name, "listing", "", "", "");
+    let add_per = PermissionCheck(module_name, "add", "", "", "");
+    let group_uuid = "";
     const GetAutoAttendantList = () => {
         if (user_data !== null) {
+            if (listing_per == "none") {
+                navigate("Error");
+            }
+            if (listing_per == "group") {
+                group_uuid = user_data?.data?.group_id;
+            }
+
+            if (module_per === "" || user_type === "admin") {
+                setIsPermission(true);
+            } else {
+                setIsPermission(false)
+            }
+
             var dict = {};
-            dict.user_type = "admin",
-                dict.group_per = "all",
-                dict.group_uuid = "",
+            dict.user_type = user_type,
+                dict.group_per = listing_per,
+                dict.group_uuid = group_uuid,
                 dict.search = "",
                 dict.off_set = 0,
                 dict.limits = 10,
@@ -232,7 +277,7 @@ const AutoAttendant = ({ navigation }) => {
             check_type: "destination",
             createdby: user_data?.data?.user_uuid,
             module_name: "ivr",
-            module_uuid:item?.ivr_menu_uuid
+            module_uuid: item?.ivr_menu_uuid
         }
         dispatch(Check_Assign_Module(dict))
     }
@@ -241,13 +286,13 @@ const AutoAttendant = ({ navigation }) => {
         console.log('apiCheckAssignModule :', apiCheckAssignModule);
         if (apiCheckAssignModule == STATUS_FULFILLED) {
             console.log("assign_module_data :", assign_module_data)
-            console.log("assign_module_data :",  assign_module_data?.length)
+            console.log("assign_module_data :", assign_module_data?.length)
             if (assign_module_data?.length > 0) {
                 setAssignModuleModel(true)
             }
-            else{
-               setAssignModuleModel(false)
-               handleDeleteBtn()
+            else {
+                setAssignModuleModel(false)
+                handleDeleteBtn()
             }
         } else if (apiCheckAssignModule == STATUS_REJECTED) {
             if (isError) {
@@ -259,7 +304,7 @@ const AutoAttendant = ({ navigation }) => {
     const DeleteAutoAttendant = (item) => {
         var dict = {
             createdby: user_data?.data?.user_uuid,
-            ivr_menu_uuid:SelectedAutoAttendant?.ivr_menu_uuid
+            ivr_menu_uuid: SelectedAutoAttendant?.ivr_menu_uuid
         }
         dispatch(Delete_Auto_Attendant(dict))
     }
@@ -341,46 +386,53 @@ const AutoAttendant = ({ navigation }) => {
                         }}
                     />
                 </View>
-
-                {
-                    AutoAttendantList !== null &&
+                {isPermission == true ?
                     <>
-                        {AutoAttendantList.map((item, key) => (
-                            <ExpandableComponent
-                                key={item.ivr_menu_extension}
-                                onClickFunction={() => {
-                                    updateLayout(key);
-                                }}
-                                onDelete={() => {
-                                    checkAssingModule(item)
-                                }}
-                                item={item}
-                            />
-                        ))}
+                        {
+                            AutoAttendantList !== null &&
+                            <>
+                                {AutoAttendantList.map((item, key) => (
+                                    <ExpandableComponent
+                                        key={item.ivr_menu_extension}
+                                        onClickFunction={() => {
+                                            updateLayout(key);
+                                        }}
+                                        onDelete={() => {
+                                            checkAssingModule(item)
+                                        }}
+                                        item={item}
+                                    />
+                                ))}
+                            </>
+                        }
+                        {add_per === "yes" &&
+                            <TouchableOpacity onPress={() => {
+                                navigate("ManageAutoAttendant", { isEdit: false })
+                            }}
+                                style={{
+                                    backgroundColor: midGreen,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    paddingVertical: 20,
+                                    justifyContent: "center",
+                                    position: "absolute",
+                                    bottom: 0,
+                                    width: "100%",
+                                }}>
+                                <Icon name="plus" size={25} color={white} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_13,
+                                    color: white,
+                                    fontFamily: SEMIBOLD,
+                                    lineHeight: 24,
+                                    marginLeft: 10
+                                }}>{"Add New Auto-Attendant"}</Text>
+                            </TouchableOpacity>
+                        }
                     </>
+                    :
+                    <DoNotAccess />
                 }
-                <TouchableOpacity onPress={() => {
-                    navigate("ManageAutoAttendant", { isEdit: false })
-                }}
-                    style={{
-                        backgroundColor: midGreen,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        paddingVertical: 20,
-                        justifyContent: "center",
-                        position: "absolute",
-                        bottom: 0,
-                        width: "100%",
-                    }}>
-                    <Icon name="plus" size={25} color={white} />
-                    <Text style={{
-                        fontSize: FontSize.FS_13,
-                        color: white,
-                        fontFamily: SEMIBOLD,
-                        lineHeight: 24,
-                        marginLeft: 10
-                    }}>{"Add New Auto-Attendant"}</Text>
-                </TouchableOpacity>
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -394,32 +446,32 @@ const AutoAttendant = ({ navigation }) => {
                                 fontSize: FontSize.FS_12,
                                 color: black,
                                 fontFamily: MEDIUM,
-                                marginTop:10
+                                marginTop: 10
                             }}>{"This auto attendant is assign to following module."}</Text>
-                             <Text style={{
+                            <Text style={{
                                 fontSize: FontSize.FS_12,
                                 color: black,
                                 fontFamily: MEDIUM,
                             }}>{"Please, remove from that to delete."}</Text>
-                            <View style={{flexDirection:"row",alignItems:"center",marginTop:20}}>
+                            <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
 
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginRight:5,
-                            }}>{assign_module_data[0]?.module + " : "}</Text>
-                              <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: MEDIUM,
-                            }}>{assign_module_data[0]?.value}</Text>
+                                <Text style={{
+                                    fontSize: FontSize.FS_13,
+                                    color: black,
+                                    fontFamily: SEMIBOLD,
+                                    marginRight: 5,
+                                }}>{assign_module_data[0]?.module + " : "}</Text>
+                                <Text style={{
+                                    fontSize: FontSize.FS_13,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>{assign_module_data[0]?.value}</Text>
                             </View>
 
                             <TouchableOpacity onPress={() => {
                                 setAssignModuleModel(false)
                             }}
-                                style={{ backgroundColor: grey, height: 40, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 40,alignSelf:"center" }}>
+                                style={{ backgroundColor: grey, height: 40, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 40, alignSelf: "center" }}>
                                 <Text style={{
                                     fontSize: FontSize.FS_12,
                                     color: white,

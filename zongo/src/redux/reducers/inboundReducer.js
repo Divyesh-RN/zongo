@@ -5,7 +5,7 @@ import {
   STATUS_PENDING,
   STATUS_REJECTED,
 } from '../../constants/ConstantKey';
-import {Get_Did_Routing, Get_Inbound_Number_List, Get_Prefix, Update_Inbound_Number, Update_Inbound_Number_Route} from '../api/Api';
+import {Get_Did_Routing, Get_Inbound_Number_List, Get_Number, Get_Prefix, Update_Inbound_Number, Update_Inbound_Number_Route} from '../api/Api';
 import {Log} from '../../commonComponents/Log';
 
 export const InboundReducer = createSlice({
@@ -16,12 +16,14 @@ export const InboundReducer = createSlice({
     error_message: '',
     inbound_number_list:null,
     prefix_list:null,
+    number_list:null,
     did_routing_data:null,
     apiGetInboundNumbersList: STATUS_IDLE,
     apiUpdateInboundNumberRoute: STATUS_IDLE,
     apiGetPrefix: STATUS_IDLE,
     apiGetDidRouting: STATUS_IDLE,
     apiUpdateInboundNumber: STATUS_IDLE,
+    apiGetNumberList: STATUS_IDLE,
 
   },
 
@@ -35,6 +37,7 @@ export const InboundReducer = createSlice({
         (state.apiUpdateInboundNumber = STATUS_IDLE);
         (state.apiGetPrefix= STATUS_IDLE);
         (state.apiGetDidRouting = STATUS_IDLE);
+        (state.apiGetNumberList = STATUS_IDLE);
     },
     clearInboundData: state => {
       state.inbound_number_list = null;
@@ -147,6 +150,28 @@ export const InboundReducer = createSlice({
         state.isError = true;
         state.error_message = action.payload?.message;
         state.apiUpdateInboundNumber = STATUS_REJECTED;
+      });
+
+      builder.addCase(Get_Number.pending, (state, action) => {
+        state.apiGetNumberList = STATUS_PENDING;
+        state.isLoader = true;
+        state.isError = false;
+        state.error_message = '';
+      });
+      builder.addCase(Get_Number.fulfilled, (state, action) => {
+        Log('Get_Number fulfilled : ', JSON.stringify(action));
+        state.apiGetNumberList = STATUS_FULFILLED;
+        state.isLoader = false;
+        state.number_list = action.payload?.data;
+        state.isError = false;
+        state.error_message = '';
+      });
+      builder.addCase(Get_Number.rejected, (state, action) => {
+        Log('Get_Number rejected : ', JSON.stringify(action));
+        state.isLoader = false;
+        state.isError = true;
+        state.error_message = action.payload?.message;
+        state.apiGetNumberList = STATUS_REJECTED;
       });
 
   },

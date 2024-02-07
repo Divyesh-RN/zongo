@@ -23,11 +23,15 @@ import PrefixBottomSheet from './components/PrefixBottomSheet';
 import { ROUTE } from '../../../constants/DATA/Route';
 import RouteDestinationBottomSheet from '../../../commonComponents/BottomSheet/RouteDestinationBottomSheet';
 import { resetInboundApiStatus } from '../../../redux/reducers/inboundReducer';
+import CheckModulePermisson from '../../../commonComponents/RolePermission/CheckModulePermisson';
+import PermissionCheck from '../../../commonComponents/RolePermission/PermissionCheck';
+import DoNotAccess from '../../../commonComponents/DoNotAccess';
 
 
 const ExpandableComponent = ({ item, onClickFunction, onDelete, onAction }) => {
     const [layoutHeight, setLayoutHeight] = useState(0);
 
+    const module_name = "did";
 
 
     useEffect(() => {
@@ -71,7 +75,21 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete, onAction }) => {
             return item?.time_condition_name;
         }
     }
+    let edit_show = PermissionCheck(
+        module_name,
+        "edit",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
 
+    let delete_show = PermissionCheck(
+        module_name,
+        "delete",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
 
     return (
         <View style={[
@@ -170,30 +188,37 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete, onAction }) => {
                                 marginLeft: 6
                             }}>{"Action"}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            navigate("InBoundNumberManage", { isEdit: true,item : item })
-                        }}
-                            style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
-                            <Icon name="pencil-box-outline" size={22} color={yellow} />
-                            <Text style={{
-                                fontSize: FontSize.FS_12,
-                                color: yellow,
-                                fontFamily: SEMIBOLD,
-                                marginLeft: 6
-                            }}>{"Manage"}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={() => onDelete(item, true)}
-                            style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
-                            <Icon name="trash-can" size={22} color={red} />
-                            <Text style={{
-                                fontSize: FontSize.FS_12,
-                                color: red,
-                                fontFamily: SEMIBOLD,
-                                marginLeft: 6
-                            }}>{"Delete"}</Text>
-                        </TouchableOpacity>
+                        {edit_show !== "hidden" ?
+                            <TouchableOpacity onPress={() => {
+                                navigate("InBoundNumberManage", { isEdit: true, item: item })
+                            }}
+                                style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
+                                <Icon name="pencil-box-outline" size={22} color={yellow} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: yellow,
+                                    fontFamily: SEMIBOLD,
+                                    marginLeft: 6
+                                }}>{"Manage"}</Text>
+                            </TouchableOpacity>
+                            :
+                            <></>
+                        }
+                        {delete_show !== "hidden" ?
+                            <TouchableOpacity
+                                onPress={() => onDelete(item, true)}
+                                style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
+                                <Icon name="trash-can" size={22} color={red} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: red,
+                                    fontFamily: SEMIBOLD,
+                                    marginLeft: 6
+                                }}>{"Delete"}</Text>
+                            </TouchableOpacity>
+                            :
+                            <></>
+                        }
                     </View>
                 </View>
             </View>
@@ -242,21 +267,43 @@ const InBoundNumbers = ({ navigation }) => {
     const apiGetDestinationList = useSelector(state => state.generalRedux.apiGetDestinationList);
     const destination_list = useSelector(state => state.generalRedux.destination_list);
 
+    const [isPermission, setIsPermission] = useState(true);
+    const module_name = "did";
+    const user_type = user_data.role;
+    let module_per = CheckModulePermisson(module_name);
+    let listing_per = PermissionCheck(module_name, "listing", "", "", "");
+    let add_per = PermissionCheck(module_name, "add", "", "", "");
 
+    let group_uuid = "";
     const GetInboundNumberList = () => {
         if (user_data !== null) {
+
+            if (listing_per == "none") {
+                navigate("Error");
+            }
+            if (listing_per == "group") {
+                group_uuid = user_data?.data?.group_id;
+            }
+
+            if (module_per === "" || user_type === "admin") {
+                setIsPermission(true);
+            } else {
+                setIsPermission(false)
+            }
             var dict = {};
-            dict.user_type = "admin",
-                dict.group_per = "all",
-                dict.group_uuid = "",
+            dict.user_type = user_type,
+                dict.group_per = listing_per,
+                dict.group_uuid = group_uuid,
                 dict.search = "",
                 dict.off_set = 0,
                 dict.limits = 10,
                 dict.orderby = "did_number ASC",
                 dict.createdby = user_data?.data?.user_uuid,
                 dict.filter = "",
-                dict.main_uuid = user_data?.data?.main_uuid,
+                dict.main_uuid = user_data?.data?.main_uuid
+            if (module_per === "" || user_type === "admin") {
                 dispatch(Get_Inbound_Number_List(dict))
+            }
         }
     }
 
@@ -482,7 +529,7 @@ const InBoundNumbers = ({ navigation }) => {
     const handleDeleteBtn = (item) => {
         Alert.alert(
             //title
-            item?.ring_group_name,
+            item?.did_number,
             //body
             'Are you sure to delete this inbound number?',
             [
@@ -543,109 +590,120 @@ const InBoundNumbers = ({ navigation }) => {
                         }}
                     />
                 </View>
-                <View style={{ marginHorizontal: 20, marginVertical: 22 }}>
-                    <View style={{
-                        flexDirection: "row", alignItems: "center", borderWidth: 1,
-                        borderColor: grey,
-                        height: 48,
-                        borderRadius: 4,
-                    }}>
-                        <TouchableOpacity style={{ paddingLeft: 14 }}>
-                            <Icon name="magnify" size={25} color={grey} />
-                        </TouchableOpacity>
-                        <TextInput
-                            value={SearchText}
-                            placeholder='Search Here...'
-                            placeholderTextColor={grey01}
-                            style={{
-                                fontFamily: MEDIUM,
-                                fontSize: FontSize.FS_14,
-                                color: black,
-                                flex: 1,
-                                paddingHorizontal: 14,
 
-                            }}
-                            onChangeText={(txt) => {
-                                handleSearchText(txt)
-                            }}
-                        />
-                        {SearchText?.length > 0 &&
-                            <TouchableOpacity onPress={() => {
-                                setInBoundNumberList(listDataSource)
-                                setSearchText("")
-                            }}
-                                style={{ paddingRight: 14 }}>
-                                <Icon name="close" size={20} color={grey} />
-                            </TouchableOpacity>
-                        }
-                        <TouchableOpacity onPress={() => {
-                            GetPrefix()
-                            setFilterModelVisible(!FilterModelVisible);
-                        }}
-                            style={{ backgroundColor: grey02, padding: 11 }}>
-                            <Icon name="filter-variant" size={24} color={white} />
+                {isPermission == true ?
+                    <>
+                        <View style={{ marginHorizontal: 20, marginVertical: 22 }}>
+                            <View style={{
+                                flexDirection: "row", alignItems: "center", borderWidth: 1,
+                                borderColor: grey,
+                                height: 38,
+                                borderRadius: 4,
+                            }}>
+                                <TouchableOpacity style={{ paddingLeft: 14 }}>
+                                    <Icon name="magnify" size={25} color={grey} />
+                                </TouchableOpacity>
+                                <TextInput
+                                    value={SearchText}
+                                    placeholder='Search Here...'
+                                    placeholderTextColor={grey01}
+                                    style={{
+                                        fontFamily: MEDIUM,
+                                        fontSize: FontSize.FS_13,
+                                        color: black,
+                                        flex: 1,
+                                        paddingHorizontal: 14,
 
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                {
-                    InBoundNumberList.length > 0 ?
-                        <>
-                            {InBoundNumberList.map((item, key) => (
-                                <ExpandableComponent
-                                    key={item.uuid}
-                                    onClickFunction={() => {
-                                        updateLayout(key);
                                     }}
-                                    onDelete={() => {
-                                        handleDeleteBtn(item)
+                                    onChangeText={(txt) => {
+                                        handleSearchText(txt)
                                     }}
-                                    onAction={() => {
-                                        handleAction(item)
-                                    }}
-                                    item={item}
                                 />
-                            ))}
-                        </>
-                        :
-                        <View style={{
-                            flex: 1,
-                            justifyContent: "flex-end",
+                                {SearchText?.length > 0 &&
+                                    <TouchableOpacity onPress={() => {
+                                        setInBoundNumberList(listDataSource)
+                                        setSearchText("")
+                                    }}
+                                        style={{ paddingRight: 14 }}>
+                                        <Icon name="close" size={20} color={grey} />
+                                    </TouchableOpacity>
+                                }
+                                <TouchableOpacity onPress={() => {
+                                    GetPrefix()
+                                    setFilterModelVisible(!FilterModelVisible);
+                                }}
+                                    style={{ backgroundColor: grey02, height: 38, width: 38, alignItems: "center", justifyContent: "center" }}>
+                                    <Icon name="filter-variant" size={24} color={white} />
 
-                        }}>
-                            <Text style={{
-                                fontSize: FontSize.FS_14,
-                                color: black,
-                                fontFamily: MEDIUM,
-                                textAlign: "center",
-                                alignItems: "center",
-                            }}>{"No Data Found"}</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
+                        {
+                            InBoundNumberList.length > 0 ?
+                                <>
+                                    {InBoundNumberList.map((item, key) => (
+                                        <ExpandableComponent
+                                            key={item.uuid}
+                                            onClickFunction={() => {
+                                                updateLayout(key);
+                                            }}
+                                            onDelete={() => {
+                                                handleDeleteBtn(item)
+                                            }}
+                                            onAction={() => {
+                                                handleAction(item)
+                                            }}
+                                            item={item}
+                                        />
+                                    ))}
+                                </>
+                                :
+                                <View style={{
+                                    flex: 1,
+                                    justifyContent: "flex-end",
 
+                                }}>
+                                    <Text style={{
+                                        fontSize: FontSize.FS_14,
+                                        color: black,
+                                        fontFamily: MEDIUM,
+                                        textAlign: "center",
+                                        alignItems: "center",
+                                    }}>{isLoading == false ? "No Data Found" : ""}</Text>
+                                </View>
+
+                        }
+                    
+                {add_per === "yes" ? (
+                    <TouchableOpacity onPress={() => {
+                        navigate("AddNewInboundNumber")
+                    }}
+                        style={{
+                            backgroundColor: midGreen,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            paddingVertical: 20,
+                            justifyContent: "center",
+                            position: "absolute",
+                            bottom: 0,
+                            width: "100%",
+                        }}>
+                        <Icon name="plus" size={25} color={white} />
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: white,
+                            fontFamily: SEMIBOLD,
+                            lineHeight: 24,
+                            marginLeft: 10
+                        }}>{"Add New Phone Numbers"}</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <></>
+                )}
+                </>
+                    :
+                    <DoNotAccess />
                 }
-                <TouchableOpacity onPress={() => {
-                    navigate("AddNewInboundNumber")
-                }}
-                    style={{
-                        backgroundColor: midGreen,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        paddingVertical: 20,
-                        justifyContent: "center",
-                        position: "absolute",
-                        bottom: 0,
-                        width: "100%",
-                    }}>
-                    <Icon name="plus" size={25} color={white} />
-                    <Text style={{
-                        fontSize: FontSize.FS_13,
-                        color: white,
-                        fontFamily: SEMIBOLD,
-                        lineHeight: 24,
-                        marginLeft: 10
-                    }}>{"Add New Phone Numbers"}</Text>
-                </TouchableOpacity>
-
                 <RouteDestinationBottomSheet
                     data={ROUTE}
                     headerTitle={'Select Ring Strategy'}
@@ -873,7 +931,7 @@ const InBoundNumbers = ({ navigation }) => {
                     </View>
                 </Modal>
 
-               {destination_list !== null&& <SectionBottomSheet
+                {destination_list !== null && <SectionBottomSheet
                     data={destination_list}
                     headerTitle={'Update Route'}
                     currentValue={SelectedActionNumber?.did_action_type + "_" + SelectedActionNumber?.did_action_uuid}
@@ -887,7 +945,7 @@ const InBoundNumbers = ({ navigation }) => {
                     }}
                     selectedRouteType={data => { }}
                 />
-            }
+                }
             </HeaderView>
             {isLoading && <LoadingView />}
         </>

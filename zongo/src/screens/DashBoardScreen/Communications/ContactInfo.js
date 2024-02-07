@@ -13,6 +13,7 @@ import { FontSize, MEDIUM, REGULAR, SEMIBOLD } from '../../../constants/Fonts';
 import { HEIGHT, WIDTH } from '../../../constants/ConstantKey';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
+import PermissionCheck from '../../../commonComponents/RolePermission/PermissionCheck';
 
 
 const ContactInfo = ({ navigation, route }) => {
@@ -26,7 +27,23 @@ const ContactInfo = ({ navigation, route }) => {
     const dispatch = useDispatch();
 
     const isLoading = useSelector(state => state.contactRedux.isLoader);
+    const module_name = "extensions";
 
+    let edit_show = PermissionCheck(
+        module_name,
+        "edit",
+        ContactsData.group_uuid,
+        ContactsData.user_created_by,
+        ContactsData.created_by
+    )
+
+    let delete_show = PermissionCheck(
+        module_name,
+        "delete",
+        ContactsData.group_uuid,
+        ContactsData.user_created_by,
+        ContactsData.created_by
+      )
     useEffect(() => {
 
         return () => {
@@ -196,13 +213,16 @@ const ContactInfo = ({ navigation, route }) => {
 
             </ScrollView>
             <View style={{ position: "absolute", bottom: 20, backgroundColor: white, width: WIDTH, height: 60, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
-            <TouchableOpacity onPress={()=>{
+            {edit_show !== "hidden" ? <TouchableOpacity onPress={()=>{
                     navigate("EditExtension",{isEdit:true})
                 }}
                  style={{ alignItems: "center" }}>
                     <Icon name="pencil" size={24} color={black} />
                     <Text style={{ fontSize: FontSize.FS_10, color: black, fontFamily: SEMIBOLD, marginTop: 6 }}>{"Edit"} </Text>
                 </TouchableOpacity>
+                :
+                <></>
+            }
                 <TouchableOpacity onPress={()=>{
                     Share.share({
                         message:
@@ -213,13 +233,16 @@ const ContactInfo = ({ navigation, route }) => {
                     <Icon name="share-variant" size={24} color={black} />
                     <Text style={{ fontSize: FontSize.FS_10, color: black, fontFamily: SEMIBOLD, marginTop: 6 }}>{"Share Contact"} </Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {
+                {delete_show !== "hidden" ?  <TouchableOpacity onPress={() => {
                     handleDeleteBtn()
                 }}
                     style={{ alignItems: "center" }}>
                     <Icon name="trash-can" size={26} color={red} />
                     <Text style={{ fontSize: FontSize.FS_10, color: red, fontFamily: SEMIBOLD, marginTop: 6 }}>{"Delete Contact"} </Text>
                 </TouchableOpacity>
+                :
+                <></>
+            }
             </View>
             {isLoading && <LoadingView />}
         </>

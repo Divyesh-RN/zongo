@@ -13,6 +13,9 @@ import inboundReducer from '../reducers/inboundReducer';
 import autoAttendantReducer from '../reducers/autoAttendantReducer';
 import timeBasedRoutingReducer from '../reducers/timeBasedRoutingReducer';
 import blockNumberReducer from '../reducers/blockNumberReducer';
+import dncListReducer from '../reducers/DncListReducer';
+import callCampaignReducer from '../reducers/callCampaignReducer';
+import userModuleReducer from '../reducers/userModuleReducer';
 
 const persistConfig = {
 	key: 'root',
@@ -30,7 +33,10 @@ let rootReducer = combineReducers({
 	inboundRedux:inboundReducer,
 	AutoAttendantRedux: autoAttendantReducer,
 	TimeBasedRoutingRedux: timeBasedRoutingReducer,
-	blockNumberRedux: blockNumberReducer
+	blockNumberRedux: blockNumberReducer,
+	dncListRedux: dncListReducer,
+	callCampaignRedux: callCampaignReducer,
+	userModuleRedux:userModuleReducer
 })
 
 

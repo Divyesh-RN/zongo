@@ -89,6 +89,7 @@ const Message = ({ navigation }) => {
         }}>
         <HeaderBackView
           title="Message"
+          isMenu={false}
           onPressMenu={() => {
             Log('back', global.userAgent);
             navigation.toggleDrawer();

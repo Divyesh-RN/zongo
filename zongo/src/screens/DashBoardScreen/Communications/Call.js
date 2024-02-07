@@ -16,9 +16,13 @@ import LoadingView from '../../../commonComponents/LoadingView';
 import { getData } from '../../../commonComponents/AsyncManager';
 import { resetApiStatus } from '../../../redux/reducers/callReducer';
 import { useFocusEffect } from '@react-navigation/native';
+import CheckModulePermisson from '../../../commonComponents/RolePermission/CheckModulePermisson';
+import PermissionCheck from '../../../commonComponents/RolePermission/PermissionCheck';
+import DoNotAccess from '../../../commonComponents/DoNotAccess';
 
 const ExpandableComponent = ({ item, onClickFunction }) => {
     const [layoutHeight, setLayoutHeight] = useState(0);
+    const module_name = "extensions";
 
     useEffect(() => {
         if (item.isExpanded) {
@@ -44,6 +48,24 @@ const ExpandableComponent = ({ item, onClickFunction }) => {
         const randomIndex = Math.floor(Math.random() * colors.length);
         return colors[randomIndex];
     };
+
+
+
+    let edit_show = PermissionCheck(
+        module_name,
+        "edit",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
+
+    let delete_show = PermissionCheck(
+        module_name,
+        "delete",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
 
     return (
         <View style={[
@@ -85,9 +107,9 @@ const ExpandableComponent = ({ item, onClickFunction }) => {
                             fontFamily: MEDIUM,
                             lineHeight: 24,
                         }}>{item?.extension}</Text>
-                          <View style={{ alignItems: "center" }}>
-                    <Icon name={item?.isExpanded ? "chevron-down" : "chevron-right"} size={24} color={black} />
-                </View>
+                        <View style={{ alignItems: "center" }}>
+                            <Icon name={item?.isExpanded ? "chevron-down" : "chevron-right"} size={24} color={black} />
+                        </View>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -123,13 +145,17 @@ const ExpandableComponent = ({ item, onClickFunction }) => {
                         <TouchableOpacity style={{ width: 37, height: 37, backgroundColor: greenPrimary, borderRadius: 50, alignItems: "center", justifyContent: "center", }}>
                             <Icon name="video" size={24} color={white} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                             navigate("EditExtension", { isEdit: true,item: item});
+                        {edit_show !== "hidden" ?
+                            <TouchableOpacity onPress={() => {
+                                navigate("EditExtension", { isEdit: true, item: item });
 
-                        }}
-                            style={{ width: 37, height: 37, backgroundColor: yellow, borderRadius: 50, alignItems: "center", justifyContent: "center", }}>
-                            <Icon name="pencil" size={22} color={white} />
-                        </TouchableOpacity>
+                            }}
+                                style={{ width: 37, height: 37, backgroundColor: yellow, borderRadius: 50, alignItems: "center", justifyContent: "center", }}>
+                                <Icon name="pencil" size={22} color={white} />
+                            </TouchableOpacity>
+                            :
+                            <></>
+                        }
                         <TouchableOpacity onPress={() => {
                             navigate("ContactInfo", { item: item, from: "CALLS" })
 
@@ -150,7 +176,7 @@ const Call = ({ navigation }) => {
     const [FcmToken, setFcmToken] = useState(null);
     const [listDataSource, setListDataSource] = useState([]);
     const [multiSelect, setMultiSelect] = useState(false);
-
+    const [isPermission, setIsPermission] = useState(true);
     const dispatch = useDispatch();
 
     if (Platform.OS === 'android') {
@@ -164,6 +190,14 @@ const Call = ({ navigation }) => {
     const calls_data = useSelector(state => state.callRedux.calls_data);
     const user_data = useSelector(state => state.userRedux.user_data);
 
+    const user_type = user_data.role;
+    const module_name = "extensions";
+
+    let module_per = CheckModulePermisson(module_name);
+    let listing_per = PermissionCheck(module_name, "listing", "", "", "");
+    let add_per = PermissionCheck(module_name, "add", "", "", "");
+    let group_uuid = "";
+
     useEffect(() => {
         getData(FCM_TOKEN, data => {
             Log('FCM_TOKEN Call: ', data);
@@ -176,11 +210,28 @@ const Call = ({ navigation }) => {
 
     useFocusEffect(
         useCallback(() => {
+            if (listing_per == "none") {
+                navigate("Error");
+            }
+            if (
+                listing_per === "group" &&
+                user_data.group_id != "" &&
+                user_data.group_id != null
+            ) {
+                group_uuid = user_data?.data?.group_id;
+            }
+
+            if (module_per === "" || user_type === "admin") {
+                setIsPermission(true);
+            } else {
+                setIsPermission(false)
+            }
+
             var dict = {};
-            dict.user_type = "admin",
-                dict.group_per = "all",
-                dict.group_uuid = "",
-                dict.role = "admin",
+            dict.user_type = user_type,
+                dict.group_per = listing_per,
+                dict.group_uuid = group_uuid,
+                dict.role = user_data?.data?.role,
                 dict.permission = "all",
                 dict.role_uuid = user_data?.data?.role_uuid,
                 dict.search = "",
@@ -190,10 +241,12 @@ const Call = ({ navigation }) => {
                 dict.createdby = user_data?.data?.user_uuid,
                 dict.main_uuid = user_data?.data?.main_uuid
             // return
-            dispatch(Get_Local_Extension(dict))
-         
+            if (module_per == "" || user_type == "admin") {
+                dispatch(Get_Local_Extension(dict))
+            }
+
         }, [])
-      );
+    );
 
     useEffect(() => {
         Log('apiGetCallList :', apiGetCallList);
@@ -256,21 +309,30 @@ const Call = ({ navigation }) => {
                         }}
                     />
                 </View>
-                {
-                    listDataSource !== null &&
+                {isPermission == true ?
                     <>
-                        {listDataSource.map((item, key) => (
-                            <ExpandableComponent
-                                key={Math.random()}
-                                onClickFunction={() => {
-                                    updateLayout(key);
-                                }}
-                                item={item}
-                            />
-                        ))}
+                        {
+                            listDataSource !== null &&
+                            <>
+                                {listDataSource.map((item, key) => (
+                                    <ExpandableComponent
+                                        key={Math.random()}
+                                        onClickFunction={() => {
+                                            updateLayout(key);
+                                        }}
+                                        item={item}
+                                    />
+                                ))}
+                            </>
+                        }
                     </>
+                    :
+                    <DoNotAccess />
                 }
-                 <TouchableOpacity onPress={() => {
+            </HeaderView>
+
+            {add_per == "yes" ?
+                <TouchableOpacity onPress={() => {
                     navigate("EditExtension", { isEdit: false })
                 }}
                     style={{
@@ -292,7 +354,10 @@ const Call = ({ navigation }) => {
                         marginLeft: 10
                     }}>{"Add Extension"}</Text>
                 </TouchableOpacity>
-            </HeaderView>
+                :
+                <></>
+            }
+
             {isLoading && <LoadingView />}
         </>
     );

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiManager from "../../commonComponents/ApiManager";
-import { BASE_URL, BLOCKED_NUMBERS_LIST, CHECK_ASSIGN_MODULE, COPY_TIME_SLOT, CREATE_AUTO_ATTENDANT, CREATE_BLOCKED_NUMBERS, CREATE_EXTENSION, CREATE_RING_GROUP, CREATE_TIME_SLOT, DELETE_AUTO_ATTENDANT, DELETE_BLOCKED_NUMBERS, DELETE_MOH_FILE, DELETE_MULTIPLE_BLOCKED_NUMBERS, DELETE_RECORDING_FILE, DELETE_RING_GROUP, DELETE_RING_GROUP_DESTINATION_LIST, DELETE_TIME_BASED_ROUTING, DELETE_TIME_SLOT, DELETE_TIME_SLOT_EVENT, GET_ADMIN_VOICE_MAIL, GET_AUTO_ATTENDANT_DETAILS, GET_AUTO_ATTENDANT_LIST, GET_AUTO_ATTENDANT_NEXT_ID, GET_BLOCKED_NUMBERS_SETTING, GET_BUSINESS_HOURS_TIME_DETAILS, GET_CONTACT_LIST, GET_DESTINATION_LIST, GET_DID_ROUTING, GET_EXPORT_BLOCKED_NUMBERS, GET_EXTENSION_DETAILS, GET_INBOUND_NUMBERS_LIST, GET_LOCAL_EXTENSION, GET_MUSIC_ON_HOLD_FILE, GET_NEXT_EXTENSION, GET_NEXT_RING_GROUP_ID, GET_NUMBERS_MAP_FIELDS, GET_PREFIX, GET_RECORDING_FILE, GET_RECORDING_LIST, GET_RING_GROUP_DETAILS, GET_RING_GROUP_LIST, GET_ROUTE_TO_DESTINATION, GET_SMS_CHAT, GET_TIME_BASED_ROUTING_DETAILS, GET_TIME_BASED_ROUTING_LIST, GET_TIME_SLOT_DETAILS_EVENTS, GET_TIME_SLOT_EVENTS_PERTICULAR, GET_USER_EXTENSION, IMPORT_NUMBERS_CSV, LOGIN, SEND_SMS, SMS_CONTACT_LIST, UPDATE_AUTO_ATTENDANT, UPDATE_AUTO_ATTENDANT_OPTIONS, UPDATE_BLOCKED_NUMBERS, UPDATE_BLOCKED_NUMBERS_SETTING, UPDATE_EXTENSION, UPDATE_INBOUND_NUMBERS_LIST, UPDATE_INBOUND_NUMBERS_ROUTE, UPDATE_MOH_FILE, UPDATE_RECORDING_FILE, UPDATE_RING_GROUP, UPDATE_RING_GROUP_DESTINATION_LIST, UPDATE_TIME_CONDITION, UPDATE_TIME_SLOT, UPDATE_TIME_SLOT_WEEKLY, UPLOAD_RECORDING_FILE } from "../../constants/ApiUrl";
+import { BASE_URL, BLOCKED_NUMBERS_LIST, CHECK_ASSIGN_MODULE, CHECK_USER_EMAIL, COPY_TIME_SLOT, COPY_USER_TIME_SLOT, CREATE_AUTO_ATTENDANT, CREATE_BLOCKED_NUMBERS, CREATE_DNC_LIST, CREATE_EXTENSION, CREATE_RING_GROUP, CREATE_TIME_SLOT, CREATE_USER, DELETE_AUTO_ATTENDANT, DELETE_BLOCKED_NUMBERS, DELETE_DNC_LIST, DELETE_MOH_FILE, DELETE_MULTIPLE_BLOCKED_NUMBERS, DELETE_MULTIPLE_DNC_LIST, DELETE_RECORDING_FILE, DELETE_RING_GROUP, DELETE_RING_GROUP_DESTINATION_LIST, DELETE_TIME_BASED_ROUTING, DELETE_TIME_SLOT, DELETE_TIME_SLOT_EVENT, DELETE_USER_TIME_SLOT, EXTENSION_UPDATE_TIME_SLOT, GET_ADMIN_VOICE_MAIL, GET_AREA_CODE_BY_STATE, GET_AREA_CODE_LIST, GET_AUTO_ATTENDANT_DETAILS, GET_AUTO_ATTENDANT_LIST, GET_AUTO_ATTENDANT_NEXT_ID, GET_BLOCKED_NUMBERS_SETTING, GET_BUSINESS_HOURS_TIME_DETAILS, GET_CALL_CAMPAIGN_LIST, GET_CONTACT_LIST, GET_DESTINATION_LIST, GET_DID_ROUTING, GET_DNC_LIST, GET_DNC_MAPPING_FIELDS, GET_EXPORT_BLOCKED_NUMBERS, GET_EXTENSION_DETAILS, GET_EXTENSION_LIST_DROPDOWN, GET_INBOUND_NUMBERS_LIST, GET_LANGUAGE_LIST, GET_LOCAL_EXTENSION, GET_MUSIC_ON_HOLD_FILE, GET_NEXT_EXTENSION, GET_NEXT_RING_GROUP_ID, GET_NUMBER, GET_NUMBERS_MAP_FIELDS, GET_NUMBER_LIST_DROPDOWN, GET_PERTICULAR_ROLE_PERMISSION, GET_PLAN_ALL_LIST, GET_PREFIX, GET_RECORDING_FILE, GET_RECORDING_LIST, GET_RING_GROUP_DETAILS, GET_RING_GROUP_LIST, GET_ROLE_LIST_DP, GET_ROUTE_TO_DESTINATION, GET_SMS_CHAT, GET_STATES, GET_TIMEZONE_LIST, GET_TIME_BASED_ROUTING_DETAILS, GET_TIME_BASED_ROUTING_LIST, GET_TIME_SLOT_DETAILS_EVENTS, GET_TIME_SLOT_EVENTS_PERTICULAR, GET_USER_AVAILABILITY_DETAILS, GET_USER_AVAILABILITY_TIME_DETAILS, GET_USER_DETAILS, GET_USER_EXTENSION, GET_USER_LIST, GROUP_LIST, IMPORT_DNC_CSV, IMPORT_NUMBERS_CSV, INSERT_DNC_CSV_DATA, INSERT_NUMBER_CSV_DATA, LOGIN, SEND_SMS, SMS_CONTACT_LIST, UPDATE_AUTO_ATTENDANT, UPDATE_AUTO_ATTENDANT_OPTIONS, UPDATE_BLOCKED_NUMBERS, UPDATE_BLOCKED_NUMBERS_SETTING, UPDATE_EXTENSION, UPDATE_INBOUND_NUMBERS_LIST, UPDATE_INBOUND_NUMBERS_ROUTE, UPDATE_MOH_FILE, UPDATE_RECORDING_FILE, UPDATE_RING_GROUP, UPDATE_RING_GROUP_DESTINATION_LIST, UPDATE_TIME_CONDITION, UPDATE_TIME_SLOT, UPDATE_TIME_SLOT_WEEKLY, UPDATE_USER, UPDATE_USER_GROUP, UPLOAD_RECORDING_FILE, USER_CREATE_TIME_SLOT, USER_DELETE } from "../../constants/ApiUrl";
 import { Log } from "../../commonComponents/Log";
 
 
@@ -35,7 +35,7 @@ export const Sms_Chat_Contact_List = createAsyncThunk("Sms_Chat_Contact_List", a
 
         return rejectWithValue(error)
     }
-}); 
+});
 
 export const Get_Sms_Chat = createAsyncThunk("Get_Sms_Chat", async (body, { rejectWithValue }) => {
     try {
@@ -261,7 +261,7 @@ export const Upload_Audio_File = createAsyncThunk("Upload_Audio_File", async (bo
         const headers = {
             'Content-Type': 'multipart/form-data',
         };
-        const response = await ApiManager.post(UPLOAD_RECORDING_FILE, body,{headers})
+        const response = await ApiManager.post(UPLOAD_RECORDING_FILE, body, { headers })
 
         Log(" ==== Upload_Audio_File Response ===   : ", response.data)
 
@@ -278,7 +278,7 @@ export const Update_Audio_File = createAsyncThunk("Update_Audio_File", async (bo
         const headers = {
             'Content-Type': 'multipart/form-data',
         };
-        const response = await ApiManager.post(UPDATE_RECORDING_FILE, body,{headers})
+        const response = await ApiManager.post(UPDATE_RECORDING_FILE, body, { headers })
 
         Log(" ==== Update_Audio_File Response ===   : ", response.data)
 
@@ -524,6 +524,23 @@ export const Get_Prefix = createAsyncThunk("Get_Prefix", async (body, { rejectWi
         return rejectWithValue(error)
     }
 });
+
+export const Get_Number = createAsyncThunk("Get_Number", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_NUMBER, body)
+
+        Log(" ==== Get_Number Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Number Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
 export const Get_Did_Routing = createAsyncThunk("Get_Did_Routing", async (body, { rejectWithValue }) => {
     try {
 
@@ -1016,11 +1033,13 @@ export const Get_Export_Blocked_Numbers = createAsyncThunk("Get_Export_Blocked_N
         return rejectWithValue(error)
     }
 });
-
+// FormData Api
 export const Import_Numbers_Csv = createAsyncThunk("Import_Numbers_Csv", async (body, { rejectWithValue }) => {
     try {
-
-        const response = await ApiManager.post(IMPORT_NUMBERS_CSV, body)
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+        };
+        const response = await ApiManager.post(IMPORT_NUMBERS_CSV, body, { headers })
 
         Log(" ==== Import_Numbers_Csv Response ===   : ", response.data)
 
@@ -1049,3 +1068,525 @@ export const Get_Number_Map_Fields = createAsyncThunk("Get_Number_Map_Fields", a
     }
 });
 
+export const Import_Numbers_Csv_Data = createAsyncThunk("Import_Numbers_Csv_Data", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(INSERT_NUMBER_CSV_DATA, body)
+
+        Log(" ==== Import_Numbers_Csv_Data Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Import_Numbers_Csv_Data Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Dnc_List = createAsyncThunk("Get_Dnc_List", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_DNC_LIST, body)
+
+        Log(" ==== Get_Dnc_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Dnc_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Area_Code_List = createAsyncThunk("Get_Area_Code_List", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_AREA_CODE_LIST, body)
+
+        Log(" ==== Get_Area_Code_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Area_Code_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Area_Code_By_State = createAsyncThunk("Get_Area_Code_By_State", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_AREA_CODE_BY_STATE, body)
+
+        Log(" ==== Get_Area_Code_By_State Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Area_Code_By_State Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_States = createAsyncThunk("Get_States", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_STATES, body)
+
+        Log(" ==== Get_States Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_States Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Create_Dnc_List = createAsyncThunk("Create_Dnc_List", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(CREATE_DNC_LIST, body)
+
+        Log(" ==== Create_Dnc_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Create_Dnc_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Import_Dnc__Csv = createAsyncThunk("Import_Dnc__Csv", async (body, { rejectWithValue }) => {
+    try {
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+        };
+        const response = await ApiManager.post(IMPORT_DNC_CSV, body, { headers })
+
+        Log(" ==== Import_Dnc__Csv Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Import_Dnc__Csv Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Dnc_Csv_Maping_fields = createAsyncThunk("Get_Dnc_Csv_Maping_fields", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_DNC_MAPPING_FIELDS, body)
+
+        Log(" ==== Get_Dnc_Csv_Maping_fields Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Dnc_Csv_Maping_fields Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Insert_Dnc_Csv_Data = createAsyncThunk("Insert_Dnc_Csv_Data", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(INSERT_DNC_CSV_DATA, body)
+
+        Log(" ==== Insert_Dnc_Csv_Data Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Insert_Dnc_Csv_Data Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Delete_Dnc_List = createAsyncThunk("Delete_Dnc_List", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(DELETE_DNC_LIST, body)
+
+        Log(" ==== Delete_Dnc_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Delete_Dnc_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Delete_Multiple_Dnc_List = createAsyncThunk("Delete_Multiple_Dnc_List", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(DELETE_MULTIPLE_DNC_LIST, body)
+
+        Log(" ==== Delete_Multiple_Dnc_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Delete_Multiple_Dnc_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Call_Campaign_List = createAsyncThunk("Get_Call_Campaign_List", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_CALL_CAMPAIGN_LIST, body)
+
+        Log(" ==== Get_Call_Campaign_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Call_Campaign_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_User_List = createAsyncThunk("Get_User_List", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_USER_LIST, body)
+
+        Log(" ==== Get_User_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_User_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+export const User_Delete = createAsyncThunk("User_Delete", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(USER_DELETE, body)
+
+        Log(" ==== User_Delete Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === User_Delete Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Cretae_User = createAsyncThunk("Cretae_User", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(CREATE_USER, body)
+
+        Log(" ==== Cretae_User Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Cretae_User Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Role_List_Dp = createAsyncThunk("Get_Role_List_Dp", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_ROLE_LIST_DP, body)
+
+        Log(" ==== Get_Role_List_Dp Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Role_List_Dp Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_User_Details = createAsyncThunk("Get_User_Details", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_USER_DETAILS, body)
+
+        Log(" ==== Get_User_Details Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_User_Details Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Time_Zone_List = createAsyncThunk("Get_Time_Zone_List", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_TIMEZONE_LIST, body)
+
+        Log(" ==== Get_Time_Zone_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Time_Zone_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Language_List = createAsyncThunk("Get_Language_List", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_LANGUAGE_LIST, body)
+
+        Log(" ==== Get_Language_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Language_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Number_List_Dropdown = createAsyncThunk("Get_Number_List_Dropdown", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_NUMBER_LIST_DROPDOWN, body)
+
+        Log(" ==== Get_Number_List_Dropdown Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Number_List_Dropdown Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Extension_List_Dropdown = createAsyncThunk("Get_Extension_List_Dropdown", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_EXTENSION_LIST_DROPDOWN, body)
+
+        Log(" ==== Get_Extension_List_Dropdown Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Extension_List_Dropdown Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Group_List = createAsyncThunk("Group_List", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GROUP_LIST, body)
+
+        Log(" ==== Group_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Group_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Update_User_group = createAsyncThunk("Update_User_group", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(UPDATE_USER_GROUP, body)
+
+        Log(" ==== Update_User_group Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Update_User_group Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_User_Availablity_Details = createAsyncThunk("Get_User_Availablity_Details", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_USER_AVAILABILITY_DETAILS, body)
+
+        Log(" ==== Get_User_Availablity_Details Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_User_Availablity_Details Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_User_Time_Availablity_Details = createAsyncThunk("Get_User_Time_Availablity_Details", async (body, { rejectWithValue }) => {
+    try {
+
+        const response = await ApiManager.post(GET_USER_AVAILABILITY_TIME_DETAILS, body)
+
+        Log(" ==== Get_User_Time_Availablity_Details Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_User_Time_Availablity_Details Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Update_User = createAsyncThunk("Update_User", async (body, { rejectWithValue }) => {
+    try {
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+        };
+        const response = await ApiManager.post(UPDATE_USER, body, { headers })
+
+        Log(" ==== Update_User Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Update_User Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Extension_Update_Time_Slot = createAsyncThunk("Extension_Update_Time_Slot", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(EXTENSION_UPDATE_TIME_SLOT, body)
+
+        Log(" ==== Extension_Update_Time_Slot Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Extension_Update_Time_Slot Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const User_Create_Time_Slot = createAsyncThunk("User_Create_Time_Slot", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(USER_CREATE_TIME_SLOT, body)
+
+        Log(" ==== User_Create_Time_Slot Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === User_Create_Time_Slot Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Copy_User_Time_Slot = createAsyncThunk("Copy_User_Time_Slot", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(COPY_USER_TIME_SLOT, body)
+
+        Log(" ==== Copy_User_Time_Slot Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Copy_User_Time_Slot Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Delete_User_Time_Slot = createAsyncThunk("Delete_User_Time_Slot", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(DELETE_USER_TIME_SLOT, body)
+
+        Log(" ==== Delete_User_Time_Slot Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Delete_User_Time_Slot Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Plan_List = createAsyncThunk("Get_Plan_List", async (_, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(GET_PLAN_ALL_LIST);
+
+        Log(" ==== Get_Plan_List Response ===   : ", response.data);
+
+        return response.data;
+    } catch (error) {
+        Log(" === Get_Plan_List Error ", error);
+
+        return rejectWithValue(error);
+    }
+});
+
+export const Check_User_Email = createAsyncThunk("Check_User_Email", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(CHECK_USER_EMAIL, body)
+
+        Log(" ==== Check_User_Email Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Check_User_Email Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Perticular_Role_Permission = createAsyncThunk("Get_Perticular_Role_Permission", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(GET_PERTICULAR_ROLE_PERMISSION, body)
+
+        Log(" ==== Get_Perticular_Role_Permission Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Perticular_Role_Permission Error ", error);
+
+        return rejectWithValue(error)
+    }
+});

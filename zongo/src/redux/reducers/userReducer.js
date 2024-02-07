@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {STATUS_FULFILLED, STATUS_IDLE, STATUS_PENDING, STATUS_REJECTED} from '../../constants/ConstantKey';
-import { AuthLogin, Get_User_Extension } from '../api/Api';
+import { AuthLogin, Check_User_Email, Get_Perticular_Role_Permission, Get_User_Extension } from '../api/Api';
 import { Log } from '../../commonComponents/Log';
 
 export const userReducer = createSlice({
@@ -11,20 +11,27 @@ export const userReducer = createSlice({
     error_message: '',
 
     user_data: null,
+    user_new_role_permission: null,
+    incoming_call_alert: false,
     apiLoginStatus: STATUS_IDLE,
     apiGetUserExtension: STATUS_IDLE,
+    apiCheckUserEmail : STATUS_IDLE,
+    apiGetPerticularRolePermission: STATUS_IDLE,
     user_extension_data : null,
     user_register_status : false,
     user_agent : {}
   },
 
   reducers: {
-    resetApiStatus: (state, action) => {
+    resetAuthApiStatus: (state, action) => {
       (state.isLoader = false),
         (state.isError = false),
         (state.error_message = ''),
         (state.apiLoginStatus = STATUS_IDLE);
         (state.apiGetUserExtension= STATUS_IDLE);
+        (state.apiCheckUserEmail= STATUS_IDLE);
+        (state.apiGetPerticularRolePermission= STATUS_IDLE);
+
     },
     storeUserData: (state, action) => {
       state.user_data = action.payload;
@@ -41,6 +48,9 @@ export const userReducer = createSlice({
     clearData: state => {
       state.user_data = null;
       state.user_extension_data = null;
+    },
+    changeIncomingAlertState: (state, action) => {
+      state.incoming_call_alert = action.payload;
     },
   },
   extraReducers: builder => {
@@ -88,11 +98,54 @@ export const userReducer = createSlice({
       state.error_message = action.payload?.message;
       state.apiGetUserExtension = STATUS_REJECTED;
     });
+
+    builder.addCase(Check_User_Email.pending, (state, action) => {
+      state.apiCheckUserEmail = STATUS_PENDING;
+      state.isLoader = true;
+      state.isError = false;
+      state.error_message = '';
+    });
+    builder.addCase(Check_User_Email.fulfilled, (state, action) => {
+      Log('Check_User_Email fulfilled : ', JSON.stringify(action));
+      state.apiCheckUserEmail = STATUS_FULFILLED;
+      state.isLoader = false;
+      state.isError = false;
+      state.error_message = '';
+    });
+    builder.addCase(Check_User_Email.rejected, (state, action) => {
+      Log('Check_User_Email rejected : ', JSON.stringify(action));
+      state.isLoader = false;
+      state.isError = true;
+      state.error_message = action.payload?.message;
+      state.apiCheckUserEmail = STATUS_REJECTED;
+    });
+
+    builder.addCase(Get_Perticular_Role_Permission.pending, (state, action) => {
+      state.apiGetPerticularRolePermission = STATUS_PENDING;
+      state.isLoader = true;
+      state.isError = false;
+      state.error_message = '';
+    });
+    builder.addCase(Get_Perticular_Role_Permission.fulfilled, (state, action) => {
+      // Log('Get_Perticular_Role_Permission fulfilled : ', JSON.stringify(action));
+      state.apiGetPerticularRolePermission = STATUS_FULFILLED;
+      state.isLoader = false;
+      state.user_new_role_permission = action.payload?.data;
+      state.isError = false;
+      state.error_message = '';
+    });
+    builder.addCase(Get_Perticular_Role_Permission.rejected, (state, action) => {
+      Log('Get_Perticular_Role_Permission rejected : ', JSON.stringify(action));
+      state.isLoader = false;
+      state.isError = true;
+      state.error_message = action.payload?.message;
+      state.apiGetPerticularRolePermission = STATUS_REJECTED;
+    });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const {storeUserData,storeUseAgent, storeUseExtensionData, clearData, resetApiStatus,storeUseStatus} = userReducer.actions;
+export const {storeUserData,storeUseAgent, storeUseExtensionData, clearData, resetAuthApiStatus,storeUseStatus,changeIncomingAlertState} = userReducer.actions;
 
 export const user_data = state => state.userRedux.user_data;
 

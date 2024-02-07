@@ -22,6 +22,7 @@ export const ic_email_color = (require("@assets/images/ic_email_color.png"))
 export const ic_emails = (require("@assets/images/ic_emails.png"))
 export const ic_contact = (require("@assets/images/ic_contact.png"))
 export const ic_call_bg = (require("@assets/images/ic_call_bg.png"))
+export const ic_call_bg_sm = (require("@assets/images/ic_call_bg_sm.png"))
 
 export const ic_inbound = (require("@assets/images/ic_inbound.png"))
 export const ic_extension = (require("@assets/images/ic_extension.png"))

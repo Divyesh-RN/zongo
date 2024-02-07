@@ -37,7 +37,7 @@ import PrimaryButton from '../../commonComponents/PrimaryButton';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { navigate, resetScreen } from '../../navigation/RootNavigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetApiStatus, storeUserData } from '../../redux/reducers/userReducer';
+import { resetAuthApiStatus, storeUserData } from '../../redux/reducers/userReducer';
 import {
   STATUS_FULFILLED,
   STATUS_REJECTED,
@@ -52,8 +52,9 @@ import { storeData } from '../../commonComponents/AsyncManager';
 const WIDTH = Dimensions.get('window').width;
 
 const Login = () => {
-  const [Email, setEmail] = useState('ipnfullfullstack@gmail.com');
-  const [Password, setPassword] = useState('123456');
+  // const [Email, setEmail] = useState('ipnfullfullstack@gmail.com');
+  const [Email, setEmail] = useState('fatesing@mailinator.com');
+  const [Password, setPassword] = useState('Test@123');
 
   const dispatch = useDispatch();
 
@@ -65,7 +66,7 @@ const Login = () => {
 
   useEffect(() => {
     return () => {
-      dispatch(resetApiStatus());
+      dispatch(resetAuthApiStatus());
     };
   }, []);
 

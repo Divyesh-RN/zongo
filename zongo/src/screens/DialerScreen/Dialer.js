@@ -285,6 +285,7 @@ export default function Dialer({ navigation }) {
         <HeaderBackView
           title="Dialer"
           isBack={false}
+          isMenu={false}
           onPressMenu={() => {
             navigation.toggleDrawer();
           }}

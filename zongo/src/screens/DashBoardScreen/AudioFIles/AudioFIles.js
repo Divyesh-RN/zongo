@@ -19,6 +19,9 @@ import { resetAudioApiStatus } from '../../../redux/reducers/audioReducer';
 import { useFocusEffect } from '@react-navigation/native';
 import LoadingView from '../../../commonComponents/LoadingView';
 import { MEDIUM } from '../../../constants/Fonts';
+import PermissionCheck from '../../../commonComponents/RolePermission/PermissionCheck';
+import CheckModulePermisson from '../../../commonComponents/RolePermission/CheckModulePermisson';
+import DoNotAccess from '../../../commonComponents/DoNotAccess';
 
 
 const ExpandableComponent = ({ item, onClickFunction, route, onDelete }) => {
@@ -34,7 +37,23 @@ const ExpandableComponent = ({ item, onClickFunction, route, onDelete }) => {
     const Totalfile = (data) => {
         return data?.moh_file?.length
     }
+    const module_name = "audio files";
 
+    let edit_show = PermissionCheck(
+        module_name,
+        "edit",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
+
+    let delete_show = PermissionCheck(
+        module_name,
+        "delete",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
     return (
         <View style={[
             styles.expandableView,
@@ -59,12 +78,12 @@ const ExpandableComponent = ({ item, onClickFunction, route, onDelete }) => {
                         lineHeight: 24
                     }}>{item?.recording_name}</Text>
                     {item?.type == "moh" ?
-                       <Text style={{
-                        fontSize: FontSize.FS_13,
-                        color: black,
-                        fontFamily: MEDIUM,
-                        lineHeight: 24
-                    }}>{"Total File : " +Totalfile(item)}</Text>
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: MEDIUM,
+                            lineHeight: 24
+                        }}>{"Total File : " + Totalfile(item)}</Text>
 
                         : <Text style={{
                             fontSize: FontSize.FS_13,
@@ -87,7 +106,7 @@ const ExpandableComponent = ({ item, onClickFunction, route, onDelete }) => {
                 <View>
 
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginHorizontal: 40, marginVertical: 14 }}>
-                        <TouchableOpacity onPress={() => {
+                        {edit_show !== "hidden" ? <TouchableOpacity onPress={() => {
                             navigate("ManageAudioFiles", { isEdit: true, item: item, type: route?.params?.type })
                         }}
                             style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
@@ -99,8 +118,11 @@ const ExpandableComponent = ({ item, onClickFunction, route, onDelete }) => {
                                 marginLeft: 6
                             }}>{"Manage"}</Text>
                         </TouchableOpacity>
+                            :
+                            <></>
+                        }
 
-                        <TouchableOpacity onPress={() => onDelete(item, true)}
+                        {delete_show !== "hidden" ? <TouchableOpacity onPress={() => onDelete(item, true)}
                             style={{ width: "30%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
                             <Icon name="trash-can" size={22} color={red} />
                             <Text style={{
@@ -110,6 +132,10 @@ const ExpandableComponent = ({ item, onClickFunction, route, onDelete }) => {
                                 marginLeft: 6
                             }}>{"Delete"}</Text>
                         </TouchableOpacity>
+                            :
+
+                            <></>
+                        }
                     </View>
                 </View>
             </View>
@@ -138,6 +164,14 @@ const AudioFiles = ({ navigation, route }) => {
     const error_message = useSelector(state => state.audioRedux.error_message);
     const user_data = useSelector(state => state.userRedux.user_data);
 
+    const module_name = "audio files";
+    const [isPermission, setIsPermission] = useState(true);
+    const user_type = user_data.role;
+    let module_per = CheckModulePermisson(module_name);
+    let listing_per = PermissionCheck(module_name, "listing", "", "", "");
+    let add_per = PermissionCheck(module_name, "add", "", "", "");
+    let group_uuid = "";
+
     useEffect(() => {
 
     }, []);
@@ -154,17 +188,30 @@ const AudioFiles = ({ navigation, route }) => {
 
     const CallAudioApi = () => {
         if (route?.params?.type !== "") {
+            if (listing_per == "none") {
+                navigate("Error");
+            }
+            if (listing_per == "group") {
+                group_uuid = user_data?.data?.group_id;
+            }
+
+            if (module_per === "" || user_type === "admin") {
+                setIsPermission(true);
+            } else {
+                setIsPermission(false)
+            }
             var dict = {};
+
             dict.createdby = user_data?.data?.user_uuid,
-                dict.group_per = "all",
-                dict.group_uuid = "",
+                dict.group_per = listing_per,
+                dict.group_uuid = group_uuid,
                 dict.limits = 10,
                 dict.main_uuid = user_data?.data?.main_uuid,
                 dict.off_set = 0,
                 dict.orderby = "r.created_at DESC",
                 dict.search = "",
                 dict.type = route?.params?.type,
-                dict.user_type = "admin"
+                dict.user_type = user_type
             dispatch(Get_Audio_List_By_Type(dict));
         }
     }
@@ -273,47 +320,54 @@ const AudioFiles = ({ navigation, route }) => {
                         }}
                     />
                 </View>
-
-                {
-                    AudioFileList !== null &&
+                {isPermission == true ?
                     <>
-                        {AudioFileList.map((item, key) => (
-                            <ExpandableComponent
-                                key={item.recording_uuid}
-                                onClickFunction={() => {
-                                    updateLayout(key);
-                                }}
-                                onDelete={() => {
-                                    handleDeleteBtn(item)
-                                }}
-                                route={route}
-                                item={item}
-                            />
-                        ))}
+                        {
+                            AudioFileList !== null &&
+                            <>
+                                {AudioFileList.map((item, key) => (
+                                    <ExpandableComponent
+                                        key={item.recording_uuid}
+                                        onClickFunction={() => {
+                                            updateLayout(key);
+                                        }}
+                                        onDelete={() => {
+                                            handleDeleteBtn(item)
+                                        }}
+                                        route={route}
+                                        item={item}
+                                    />
+                                ))}
+                            </>
+                        }
+                        {add_per === "yes" &&
+                            <TouchableOpacity onPress={() => {
+                                navigate("ManageAudioFiles", { isEdit: false, type: route?.params?.type })
+                            }}
+                                style={{
+                                    backgroundColor: midGreen,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    paddingVertical: 20,
+                                    justifyContent: "center",
+                                    position: "absolute",
+                                    bottom: 0,
+                                    width: "100%",
+                                }}>
+                                <Icon name="plus" size={25} color={white} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_13,
+                                    color: white,
+                                    fontFamily: SEMIBOLD,
+                                    lineHeight: 24,
+                                    marginLeft: 10
+                                }}>{"Upload New File"}</Text>
+                            </TouchableOpacity>
+                        }
                     </>
+                    :
+                    <DoNotAccess />
                 }
-                <TouchableOpacity onPress={() => {
-                    navigate("ManageAudioFiles", { isEdit: false, type: route?.params?.type })
-                }}
-                    style={{
-                        backgroundColor: midGreen,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        paddingVertical: 20,
-                        justifyContent: "center",
-                        position: "absolute",
-                        bottom: 0,
-                        width: "100%",
-                    }}>
-                    <Icon name="plus" size={25} color={white} />
-                    <Text style={{
-                        fontSize: FontSize.FS_13,
-                        color: white,
-                        fontFamily: SEMIBOLD,
-                        lineHeight: 24,
-                        marginLeft: 10
-                    }}>{"Upload New File"}</Text>
-                </TouchableOpacity>
             </HeaderView>
             {isLoading && <LoadingView />}
         </>

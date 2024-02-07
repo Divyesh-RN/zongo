@@ -20,6 +20,7 @@ export const grey01= '#C9CED2'
 export const grey02= '#81888C'
 export const darkGrey = "#555576"
 export const paleGreen = "rgb(213,253,213)"
+export const paleGreen01 = "rgb(238,253,236)"
 
 export const offWhite = "rgb(248,255,248)"
 export const iceBlue = "rgb(227,246,255)"

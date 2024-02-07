@@ -587,7 +587,7 @@ const ManageAutoAttendant = ({ navigation, route }) => {
         }}>
         <View style={{ marginHorizontal: 20 }}>
           <HeaderBackView
-            title="Manage Auto-Ateendant"
+            title="Manage Auto-Attendant"
             isBack={true}
             onPressBack={() => {
               goBack();

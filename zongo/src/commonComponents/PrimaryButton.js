@@ -9,14 +9,14 @@ const PrimaryButton = ({text,onPress}) => {
     <TouchableOpacity onPress={onPress}
      style={{
         backgroundColor:midGreen,
-        paddingVertical:10,
-        borderRadius:6,
+        paddingVertical:8,
+        borderRadius:8,
         alignItems:"center",
         marginVertical:28
       }}>
       <Text style={{
         color:white,
-        fontSize:FontSize.FS_20,
+        fontSize:FontSize.FS_16,
         fontFamily:SEMIBOLD,
       }}>{Translate.t(text)}</Text>
       </TouchableOpacity>

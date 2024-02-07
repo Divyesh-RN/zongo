@@ -17,10 +17,14 @@ import { darkGrey, disableColor, midGreen, red, yellow } from '../../../constant
 import { navigate } from '../../../navigation/RootNavigation';
 import LoadingView from '../../../commonComponents/LoadingView';
 import { useFocusEffect } from '@react-navigation/native';
+import CheckModulePermisson from '../../../commonComponents/RolePermission/CheckModulePermisson';
+import PermissionCheck from '../../../commonComponents/RolePermission/PermissionCheck';
+import DoNotAccess from '../../../commonComponents/DoNotAccess';
 
 
-const ExpandableComponent = ({ item, onClickFunction, onDelete}) => {
+const ExpandableComponent = ({ item, onClickFunction, onDelete, btnEditShow }) => {
     const [layoutHeight, setLayoutHeight] = useState(0);
+    const module_name = "ring group";
 
     useEffect(() => {
         if (item.isExpanded) {
@@ -28,10 +32,25 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete}) => {
         } else {
             setLayoutHeight(0);
         }
+
+
     }, [item.isExpanded]);
 
-  
+    let edit_show = PermissionCheck(
+        module_name,
+        "edit",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
 
+    let delete_show = PermissionCheck(
+        module_name,
+        "delete",
+        item.group_uuid,
+        item.user_created_by,
+        item.created_by
+    )
 
     return (
         <View style={[
@@ -159,34 +178,42 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete}) => {
                                     fontFamily: MEDIUM,
                                     lineHeight: 24,
                                     textTransform: "capitalize"
-                                }}>{item?.ring_group_extension }</Text>
+                                }}>{item?.ring_group_extension}</Text>
 
                             </View>
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 40, marginVertical: 14 }}>
-                        <TouchableOpacity onPress={() => {
-                            navigate("RingGroupManage", { isEdit: true,item : item })
-                        }}
-                            style={{ width: "40%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
-                            <Icon name="pencil-box-outline" size={22} color={yellow} />
-                            <Text style={{
-                                fontSize: FontSize.FS_12,
-                                color: yellow,
-                                fontFamily: SEMIBOLD,
-                                marginLeft: 6
-                            }}>{"Manage"}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => onDelete(item, true)}
-                            style={{ width: "40%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
-                            <Icon name="trash-can" size={22} color={red} />
-                            <Text style={{
-                                fontSize: FontSize.FS_12,
-                                color: red,
-                                fontFamily: SEMIBOLD,
-                                marginLeft: 6
-                            }}>{"Delete"}</Text>
-                        </TouchableOpacity>
+                        {edit_show !== "hidden" ?
+                            <TouchableOpacity onPress={() => {
+                                navigate("RingGroupManage", { isEdit: true, item: item })
+                            }}
+                                style={{ width: "40%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
+                                <Icon name="pencil-box-outline" size={22} color={yellow} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: yellow,
+                                    fontFamily: SEMIBOLD,
+                                    marginLeft: 6
+                                }}>{"Manage"}</Text>
+                            </TouchableOpacity>
+                            :
+                            <></>
+                        }
+                        {delete_show !== "hidden" ?
+                            <TouchableOpacity onPress={() => onDelete(item, true)}
+                                style={{ width: "40%", height: 30, borderRadius: 50, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
+                                <Icon name="trash-can" size={22} color={red} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: red,
+                                    fontFamily: SEMIBOLD,
+                                    marginLeft: 6
+                                }}>{"Delete"}</Text>
+                            </TouchableOpacity>
+                            :
+                            <></>
+                        }
                     </View>
                 </View>
             </View>
@@ -199,6 +226,7 @@ const RingGroup = ({ navigation }) => {
     const [FcmToken, setFcmToken] = useState(null);
     const [listDataSource, setListDataSource] = useState([]);
     const [multiSelect, setMultiSelect] = useState(false);
+    const [isPermission, setIsPermission] = useState(true);
 
 
     const dispatch = useDispatch();
@@ -211,24 +239,45 @@ const RingGroup = ({ navigation }) => {
     const ring_group_list = useSelector(state => state.ringGroupRedux.ring_group_list);
     const user_data = useSelector(state => state.userRedux.user_data);
 
-const GetRingGroupList = () =>{
-    if (user_data !== null) {
-        var dict = {};
-        dict.user_type = "admin",
-            dict.group_per = "all",
-            dict.group_uuid = "",
-            dict.search = "",
-            dict.off_set = 0,
-            dict.limits = 10,
-            dict.orderby = "ring_group_name ASC",
-            dict.createdby = user_data?.data?.user_uuid,
-            dict.main_uuid = user_data?.data?.main_uuid,
-            dispatch(Get_Ring_Group_List(dict))
+
+    const user_type = user_data?.data?.role;
+    const module_name = "ring group";
+    let module_per = CheckModulePermisson(module_name);
+    let listing_per = PermissionCheck(module_name, "listing", "", "", "");
+    let group_uuid = "";
+    let add_per = PermissionCheck(module_name, "add", "", "", "");
+
+    const GetRingGroupList = () => {
+        if (user_data !== null) {
+            var dict = {};
+            dict.user_type = user_type,
+                dict.group_per = listing_per,
+                dict.group_uuid = group_uuid,
+                dict.search = "",
+                dict.off_set = 0,
+                dict.limits = 10,
+                dict.orderby = "ring_group_name ASC",
+                dict.createdby = user_data?.data?.user_uuid,
+                dict.main_uuid = user_data?.data?.main_uuid,
+                dispatch(Get_Ring_Group_List(dict))
+        }
     }
-}
 
     useFocusEffect(
         useCallback(() => {
+
+            if (listing_per == "none") {
+                navigate("Error");
+            }
+            else if (listing_per === "group") {
+                group_uuid = user_data.data?.group_id;
+            }
+
+            if (module_per === "" || user_type === "admin") {
+                setIsPermission(true);
+            } else {
+                setIsPermission(false)
+            }
             GetRingGroupList()
         }, [])
     )
@@ -292,6 +341,7 @@ const GetRingGroupList = () =>{
     }, [apiDeleteRingGroup]);
 
     const handleDeleteBtn = (item) => {
+
         Alert.alert(
             //title
             item?.ring_group_name,
@@ -316,7 +366,9 @@ const GetRingGroupList = () =>{
     }
 
     return (
+
         <>
+
             <HeaderView
                 title={'Zongo'}
                 isProfilePic={true}
@@ -338,46 +390,57 @@ const GetRingGroupList = () =>{
                         }}
                     />
                 </View>
-                {
-                    listDataSource !== null &&
+                {isPermission == true ?
                     <>
-                        {listDataSource.map((item, key) => (
-                            <ExpandableComponent
-                                key={item.uuid}
-                                onClickFunction={() => {
-                                    updateLayout(key);
-                                }}
-                                onDelete={() => {
-                                    handleDeleteBtn(item)
-                                }}
-                                item={item}
-                            />
-                        ))}
+                        {
+                            listDataSource !== null && isPermission == true &&
+                            <>
+                                {listDataSource.map((item, key) => (
+                                    <ExpandableComponent
+                                        key={item.uuid}
+                                        onClickFunction={() => {
+                                            updateLayout(key);
+                                        }}
+                                        onDelete={() => {
+                                            handleDeleteBtn(item)
+                                        }}
+                                        item={item}
+                                    />
+                                ))}
+                            </>
+                        }
+                        {add_per == "yes" ?
+                            <TouchableOpacity onPress={() => {
+                                navigate("RingGroupManage", { isEdit: false })
+                            }}
+                                style={{
+                                    backgroundColor: midGreen,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    paddingVertical: 20,
+                                    justifyContent: "center",
+                                    position: "absolute",
+                                    bottom: 0,
+                                    width: "100%",
+                                }}>
+                                <Icon name="plus" size={25} color={white} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_13,
+                                    color: white,
+                                    fontFamily: SEMIBOLD,
+                                    lineHeight: 24,
+                                    marginLeft: 10
+                                }}>{"Add New Ring Group"}</Text>
+                            </TouchableOpacity>
+                            :
+                            <></>
+                        }
                     </>
+                    :
+                    <DoNotAccess />
                 }
-                <TouchableOpacity onPress={() => {
-                    navigate("RingGroupManage", { isEdit: false })
-                }}
-                    style={{
-                        backgroundColor: midGreen,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        paddingVertical: 20,
-                        justifyContent: "center",
-                        position: "absolute",
-                        bottom: 0,
-                        width: "100%",
-                    }}>
-                    <Icon name="plus" size={25} color={white} />
-                    <Text style={{
-                        fontSize: FontSize.FS_13,
-                        color: white,
-                        fontFamily: SEMIBOLD,
-                        lineHeight: 24,
-                        marginLeft: 10
-                    }}>{"Add New Ring Group"}</Text>
-                </TouchableOpacity>
             </HeaderView>
+
             {isLoading && <LoadingView />}
         </>
     );
