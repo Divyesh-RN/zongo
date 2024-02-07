@@ -6142,10 +6142,10 @@ react-native-alert-notification@^0.4.0:
   resolved "https://registry.yarnpkg.com/react-native-alert-notification/-/react-native-alert-notification-0.4.0.tgz#8acddab483b42d3e2addb1031128a2a3bf1dc649"
   integrity sha512-zzbzoAIFfyMD/IKTyD6W3RRuUUx2BBZsVPTASnAfJ10P++EEnCDhVa510BIOgqNepG+08VQ/xma0DNbGO189ww==
 
-react-native-ble-manager@^10.1.5:
-  version "10.1.5"
-  resolved "https://registry.yarnpkg.com/react-native-ble-manager/-/react-native-ble-manager-10.1.5.tgz#c7b156db336fd554f6fb5100b70771cdb2114569"
-  integrity sha512-74qyH9IV81oY2J1ECul09M3Png7jTHPq74YG6VSa2I2Q/ZvU27NTNUu1DHYsk7Wwpexs+HJ1kAQWgJBaAM9IcQ==
+react-native-ble-manager@^11.2.1:
+  version "11.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-ble-manager/-/react-native-ble-manager-11.2.1.tgz#5587c0f63adf0b6aacc78612e28f23646d00c407"
+  integrity sha512-+Q9TfVWntC5JK/nBsSV5BLBZM3zq7QD60qoelJnrjlPDIPBR1arJjnUni6DnaGTCzrGjbJLQIQv/GsOR/wuehg==
 
 react-native-calendars@^1.1302.0:
   version "1.1303.0"

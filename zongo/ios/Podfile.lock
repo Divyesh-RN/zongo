@@ -942,7 +942,7 @@ PODS:
   - React-Mapbuffer (0.73.4):
     - glog
     - React-debug
-  - react-native-ble-manager (10.1.5):
+  - react-native-ble-manager (11.2.1):
     - React-Core
   - react-native-document-picker (9.1.1):
     - React-Core
@@ -1484,7 +1484,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 9ac353eccf6ab54d1e0a33862ba91221d1e88460
   React-logger: 0a57b68dd2aec7ff738195f081f0520724b35dab
   React-Mapbuffer: 114be72666d7e3e317c1a36fb566cd3ad712fcc8
-  react-native-ble-manager: 09724bad4d06b86a85e0cd7bd97196fecca15e9a
+  react-native-ble-manager: dbc9d1ddc4df3a75bab74dee04adf7796d3afbf2
   react-native-document-picker: 3599b238843369026201d2ef466df53f77ae0452
   react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
   react-native-slider: f6f1c9e85cacac3172feefb16d34c1ced68d5e5b
