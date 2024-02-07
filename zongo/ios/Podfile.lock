@@ -63,7 +63,7 @@ PODS:
   - hermes-engine (0.73.4):
     - hermes-engine/Pre-built (= 0.73.4)
   - hermes-engine/Pre-built (0.73.4)
-  - JitsiWebRTC (111.0.2)
+  - JitsiWebRTC (118.0.0)
   - libevent (2.1.12)
   - nanopb (2.30909.1):
     - nanopb/decode (= 2.30909.1)
@@ -960,8 +960,8 @@ PODS:
     - react-native-video/Video (= 5.2.1)
   - react-native-video/Video (5.2.1):
     - React-Core
-  - react-native-webrtc (111.0.6):
-    - JitsiWebRTC (~> 111.0.0)
+  - react-native-webrtc (118.0.1):
+    - JitsiWebRTC (~> 118.0.0)
     - React-Core
   - React-nativeconfig (0.73.4)
   - React-NativeModulesApple (0.73.4):
@@ -1459,7 +1459,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 57c22343ab29bc686febbf7cbb13bad167c2d8fe
   GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
   hermes-engine: b2669ce35fc4ac14f523b307aff8896799829fe2
-  JitsiWebRTC: 80f62908fcf2a1160e0d14b584323fb6e6be630b
+  JitsiWebRTC: 3a41671ef65a51d7204323814b055a2690b921c7
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
@@ -1490,7 +1490,7 @@ SPEC CHECKSUMS:
   react-native-slider: f6f1c9e85cacac3172feefb16d34c1ced68d5e5b
   react-native-track-player: 97d76dbbd35f27cc709e5f04540615e54264b3f9
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
-  react-native-webrtc: 255a1172fd31525b952b36aef7b8e9a41de325e5
+  react-native-webrtc: 7adbde4b2ad20fb2b804fb11f329425c9323dccc
   React-nativeconfig: ca8b90c736cf3be019cb332ca42d93dd95b32e05
   React-NativeModulesApple: 1fdffcce7772e274baeab33a1900f45feba86cbd
   React-perflogger: 8a1e1af5733004bdd91258dcefbde21e0d1faccd
