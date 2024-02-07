@@ -659,7 +659,6 @@ const InComingCallScreen = ({ route }) => {
           }
         });
         // if (results.length === 0) {
-        //   console.log('No connected bluetooth devices');
         //   setConnectedDevices([])
         //   setConnectedDeviceName("")
         //   setAudioTypeName("Phone")

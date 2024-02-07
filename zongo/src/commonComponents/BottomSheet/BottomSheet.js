@@ -21,7 +21,6 @@ const BottomSheet = ({ bottomSheetRef = "", selectedValue, Data, headerTitle, ti
                 borderBottomColor: disableColor,
                 paddingVertical: 10,
             }}>
-            {console.log("item[titleValue]", item[titleValue])}
             <Text style={styles.title}>{item[titleValue]}</Text>
         </TouchableOpacity>
     );

@@ -86,7 +86,6 @@ const HolidaySpecific = ({ navigation, route }) => {
         useCallback(() => {
             if (route?.params?.isEdit == true) {
                 callAllApi()
-                console.log("1")
             }
             return () => {
                 dispatch(resetTimeBasedRoutingApiStatus());
@@ -131,7 +130,6 @@ const HolidaySpecific = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetRouteToDestination :', apiGetRouteToDestination);
         if (apiGetRouteToDestination == STATUS_FULFILLED) {
-            console.log('route_by_destination_list :', route_by_destination_list);
             if (route_by_destination_list !== null) {
                 setDestinationList(route_by_destination_list);
                 const DestinationByRoute = route_by_destination_list?.find(item => item.text === DestinationTo)?.value || "";
@@ -156,7 +154,6 @@ const HolidaySpecific = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetTimeSlotEventsPerticular :', apiGetTimeSlotEventsPerticular);
         if (apiGetTimeSlotEventsPerticular == STATUS_FULFILLED) {
-            console.log('time_slot_details_events_particular :', time_slot_details_events_particular);
             if (time_slot_details_events_particular !== null) {
                 setEventModel(true)
                 setIsFromEdit(true)
@@ -198,7 +195,6 @@ const HolidaySpecific = ({ navigation, route }) => {
             dict.time_condition_uuid = route?.params?.item[0]?.time_condition_uuid,
             dict.to_time = to,
             dict.user_uuid = user_data?.data?.user_uuid
-        console.log("UPDATE EVENT", dict)
         dispatch(Update_Time_Slot(dict))
 
     }
@@ -234,7 +230,6 @@ const HolidaySpecific = ({ navigation, route }) => {
             dict.time_condition_date = selectedDate
         dict.time_condition_uuid = route?.params?.item[0]?.time_condition_uuid,
             dict.to_time = to,
-            console.log("ADD TIME BLOCK ", dict)
         dispatch(Create_Time_Slot(dict))
     }
 
@@ -410,7 +405,6 @@ const HolidaySpecific = ({ navigation, route }) => {
     };
     const EditDayEvents = (event) => {
         setMoreEventModel(false)
-        console.log("event", event)
         setId(event?.id)
         GetPerticularTimeSlotEvents(event)
 
@@ -448,7 +442,7 @@ const HolidaySpecific = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -527,7 +521,6 @@ const HolidaySpecific = ({ navigation, route }) => {
                             }}
                             onDayPress={handleDayPress}
                             // onMonthChange={(newMonth) =>{
-                            //     console.log("MONTH :", newMonth)
                             //     setCurrentMonth(newMonth)}}
                             markedDates={{
                                 [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' },
@@ -704,12 +697,10 @@ const HolidaySpecific = ({ navigation, route }) => {
                     currentValue={DestinationValue}
                     bottomSheetRef={DestinationTobottomSheetRef}
                     selectedValue={data => {
-                        console.log("data", data);
                         setDestinationTo(data);
                         setDestinationToError("")
                     }}
                     selectedDestination={data => {
-                        console.log("data1", data);
                         setDestinationValue(data)
                         setDestinationToError("")
                     }}

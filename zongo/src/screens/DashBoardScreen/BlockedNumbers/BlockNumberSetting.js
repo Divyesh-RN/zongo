@@ -67,7 +67,6 @@ const BlockNumberSetting = ({ navigation }) => {
     useEffect(() => {
         Log('apiGetBlockedNumbersSetting :', apiGetBlockedNumbersSetting);
         if (apiGetBlockedNumbersSetting == STATUS_FULFILLED) {
-            console.log('blocked_numbers_setting :', blocked_numbers_setting);
             if (blocked_numbers_setting !== null) {
                 setBlockCalls(blocked_numbers_setting?.anonymous_calls == "NO" ? false : true)
                 setBlockSettingId(blocked_numbers_setting?.blocked_numbers_settings_uuid)
@@ -103,7 +102,6 @@ const BlockNumberSetting = ({ navigation }) => {
                 route: RouteValue,
                 route_val: Route,
             }
-            console.log("UPDATE SETTING", dict);
             dispatch(Update_Blocked_Numbers_Settings(dict))
         }
     }
@@ -130,7 +128,6 @@ const BlockNumberSetting = ({ navigation }) => {
     useEffect(() => {
         Log('apiGetRouteToDestination :', apiGetRouteToDestination);
         if (apiGetRouteToDestination == STATUS_FULFILLED) {
-            console.log('route_by_destination_list :', route_by_destination_list);
             if (route_by_destination_list !== null) {
                 setDestinationList(route_by_destination_list);
                 const DestinationByRoute = route_by_destination_list?.find(item => item.value === DestinationId)?.text || "";
@@ -394,12 +391,10 @@ const BlockNumberSetting = ({ navigation }) => {
                     currentValue={RouteValue}
                     bottomSheetRef={DestinationTypebottomSheetRef}
                     selectedValue={data => {
-                        console.log("Destination Type", data)
                         setRoute(data);
                         setRouteError("")
                     }}
                     selectedRoute={data => {
-                        console.log("Destination Type ID ", data)
                         setRouteError("")
                         setRouteValue(data)
                         RouteToDestination(data)

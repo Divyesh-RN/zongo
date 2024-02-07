@@ -156,7 +156,6 @@ const EditExtension = ({ navigation, route }) => {
             var dict = {};
             dict.main_admin_uuid = user_data?.data?.main_uuid;
             (dict.createdby = user_data?.data?.user_uuid),
-                console.log('Dict for Next Extension :', dict);
             dispatch(Get_Next_Extension(dict));
         }
     }, [route?.params?.isEdit]);
@@ -164,7 +163,6 @@ const EditExtension = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetNextExtesnion :', apiGetNextExtesnion);
         if (apiGetNextExtesnion == STATUS_FULFILLED) {
-            // console.log('get_next_extension_data', get_next_extension_data);
             if (get_next_extension_data !== null) {
                 setNewExtension(get_next_extension_data?.extension)
             }
@@ -192,7 +190,6 @@ const EditExtension = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetExtensionDetails :', apiGetExtensionDetails);
         if (apiGetExtensionDetails == STATUS_FULFILLED) {
-            // console.log('extension_details_data', extension_details_data);
             if (extension_details_data !== null) {
                 storeAllExtensionStateData(extension_details_data);
                 setExtensionData(extension_details_data);
@@ -242,7 +239,6 @@ const EditExtension = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiAudioFileList :', apiAudioFileList);
         if (apiAudioFileList == STATUS_FULFILLED) {
-            // console.log('audio_file_list :', audio_file_list);
             if (audio_file_list !== null) {
                 setAudioFileList(audio_file_list);
                 if (MainSelectedAudioFileId !== "") {
@@ -271,7 +267,6 @@ const EditExtension = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetRouteToDestination :', apiGetRouteToDestination);
         if (apiGetRouteToDestination == STATUS_FULFILLED) {
-            // console.log('route_by_destination_list :', route_by_destination_list);
             if (route_by_destination_list !== null) {
                 setDestinationList(route_by_destination_list);
                 const DestinationByRoute = route_by_destination_list?.find(item => item.value === DestinationValue)?.text || "";
@@ -336,7 +331,6 @@ const EditExtension = ({ navigation, route }) => {
                 ivr_menu_name: ExtensionData[0]?.ivr_menu_name,
                 ivr_menu_extension: ExtensionData[0]?.ivr_menu_extension,
             };
-            console.log("dict :", dict)
             dispatch(Update_Extension(dict));
         }
     }
@@ -411,7 +405,6 @@ const EditExtension = ({ navigation, route }) => {
                 // ivr_menu_name: ExtensionData[0]?.ivr_menu_name,
                 // ivr_menu_extension: ExtensionData[0]?.ivr_menu_extension,
             };
-            // console.log("dict :", dict)
             dispatch(Create_Extension(dict));
         }
     }
@@ -419,7 +412,6 @@ const EditExtension = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiCreateExtesnion :', apiCreateExtesnion);
         if (apiCreateExtesnion == STATUS_FULFILLED) {
-            // console.log("create_extension_data", create_extension_data)
             if (create_extension_data !== null) {
                 goBack()
             }

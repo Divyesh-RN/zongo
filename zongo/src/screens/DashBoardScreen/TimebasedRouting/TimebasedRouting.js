@@ -252,7 +252,6 @@ const TimebasedRouting = ({ navigation }) => {
     }, [apiTimeBasedRoutingList]);
 
     const DeleteTimeBasedRouting = (id) => {
-        console.log("ID :", id)
         if (user_data !== null) {
             var dict = {};
             dict.createdby = user_data?.data?.user_uuid,
@@ -304,12 +303,11 @@ const TimebasedRouting = ({ navigation }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
                     onPress: () => {
-                        console.log('Yes Pressed')
                         DeleteTimeBasedRouting(item?.time_condition_uuid)
                     }
                 },

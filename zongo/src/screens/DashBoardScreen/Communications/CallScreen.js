@@ -12,7 +12,6 @@ import { Log } from '../../../commonComponents/Log';
 import { MediaStreamTrack, mediaDevices } from 'react-native-webrtc';
 import InCallManager from 'react-native-incall-manager';
 import DeviceInfo, { useIsHeadphonesConnected } from 'react-native-device-info';
-import Cat from '../components/c';
 import BlutoothDevice from '../components/BlutoothDevice';
 
 let session = null;
@@ -52,7 +51,6 @@ const CallScreen = ({ route }) => {
 
   useEffect(() => {
     mediaDevices.getUserMedia({video :false, audio :true}).then((stream)=>{
-      console.log("stream",stream)
     //   const localVideo = document.getElementById('localVideo'); // Assuming a video element in the HTML with id 'localVideo'
     // localVideo.srcObject = stream;
     })
@@ -119,7 +117,6 @@ const CallScreen = ({ route }) => {
     else {
       if (session) {
         session.mute();
-        console.log("Mute")
         setMuted(true);
       }
     }
@@ -128,14 +125,12 @@ const CallScreen = ({ route }) => {
   const handleHold = () => {
 
     if (isHold == true) {
-      console.log("if")
       if (session) {
         session.unhold();
         setHold(false)
       }
     }
     else {
-      console.log("else")
       session.hold();
       setHold(true)
     }
@@ -203,7 +198,6 @@ const CallScreen = ({ route }) => {
 
     }
     else {
-      console.log("else")
       // session = global.userAgent.call(`sip:9${User}@${domainName}`, options);
       session = global.userAgent.call(`sip:9${User}@default`, options);
 
@@ -573,7 +567,6 @@ const CallScreen = ({ route }) => {
                           </TouchableOpacity>
                           <TouchableOpacity onPress={() => {
                             if (Connected) {
-                              console.log("call mute")
                               handleHold()
                             }
                           }}
@@ -652,7 +645,6 @@ const CallScreen = ({ route }) => {
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => {
                         if (Connected) {
-                          console.log("call mute")
                           handleMute()
                         }
                       }}
@@ -711,7 +703,6 @@ const CallScreen = ({ route }) => {
       }
 
       <BlutoothDevice blutoothData={(results) => {
-        console.log("res:", results)
         DeviceInfo.isHeadphonesConnected().then((enabled) => {
           if (enabled == true && results.length !== 0) {
             const names = results.map(item => item.name);
@@ -729,7 +720,7 @@ const CallScreen = ({ route }) => {
             }
           }
           else {
-            console.log('No connected bluetooth devices');
+            Log('No connected bluetooth devices');
             setConnectedDevices([])
             setConnectedDeviceName("")
             setAudioTypeName("Phone")
@@ -738,7 +729,6 @@ const CallScreen = ({ route }) => {
           }
         });
         // if (results.length === 0) {
-        //   console.log('No connected bluetooth devices');
         //   setConnectedDevices([])
         //   setConnectedDeviceName("")
         //   setAudioTypeName("Phone")

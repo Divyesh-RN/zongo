@@ -66,7 +66,6 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete, onEdit, onAction
 
         ]}>
             <TouchableOpacity onPressOut={() => {
-                console.log("our")
             }}
                 onPress={() => {
                     if (isSelection == false) {
@@ -246,7 +245,6 @@ const DncLists = ({ navigation }) => {
     let add_per = PermissionCheck(module_name, "add", "", "", "");
     let delete_per = PermissionCheck(module_name, "deleteAll", "", "", "");
     let group_uuid = "";
-    console.log("listing_per", listing_per)
 
     const GetDncList = () => {
         if (user_data !== null) {
@@ -278,7 +276,6 @@ const DncLists = ({ navigation }) => {
                     description: FilterDescriptiion.toLowerCase(),
                     state_uuid: FilterState == null ? "" : FilterState?.uuid
                 }
-            console.log("GET DNC LIST", dict);
             dispatch(Get_Dnc_List(dict))
         }
     }
@@ -414,7 +411,6 @@ const DncLists = ({ navigation }) => {
     useEffect(() => {
         Log('apiGetExportBlockedNumbers :', apiGetExportBlockedNumbers);
         if (apiGetExportBlockedNumbers == STATUS_FULFILLED) {
-            console.log("export_blocked_numbers :", export_blocked_numbers)
             if (export_blocked_numbers !== null) {
 
                 saveAndDownloadCSV(export_blocked_numbers);
@@ -440,10 +436,6 @@ const DncLists = ({ navigation }) => {
         const m = `${RNFS.ExternalCachesDirectoryPath}/234.csv`;
         const d = `${RNFS.ExternalStorageDirectoryPath}/234.csv`;
 
-        console.log("csvData", csvData);
-        console.log("filePath :", filePath);
-        console.log("n :", m);
-        console.log("d :", d);
         // try {
         //     await RNFS.writeFile(filePath, csvData, 'utf8');
 
@@ -466,7 +458,6 @@ const DncLists = ({ navigation }) => {
         //     RNFetchBlob.config(config)
         //         .fetch('GET', `file://${filePath}`)
         //         .then((res) => {
-        //             console.log('File downloaded:', res.path());
         //         })
         //         .catch((error) => {
         //             console.error('Error downloading file:', error);
@@ -483,10 +474,10 @@ const DncLists = ({ navigation }) => {
             showAppsToView: true
         })
             .then((res) => {
-                console.log("res", res);
+                Log("res", res);
             })
             .catch((err) => {
-                console.log("err", err);
+                Log("err", err);
             });
         // try {
         //   await RNFS.writeFile(filePath, csvData, 'utf8');
@@ -525,19 +516,17 @@ const DncLists = ({ navigation }) => {
     };
 
     const handleDeleteBtn = (item) => {
-        console.log("itet", item);
         Alert.alert(
             item?.number,
             'Are you sure to delete this DNC number?',
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () =>{}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
                     onPress: () => {
-                        console.log('Yes Pressed')
                         var dict = {
                             dnc_list_uuid: item?.dnc_list_uuid,
                             createdby: user_data?.data?.user_uuid
@@ -577,11 +566,9 @@ const DncLists = ({ navigation }) => {
     };
 
     const handleLongPress = (item) => {
-        console.log("item :", item)
         toggleSelection(item);
     };
     const handleRegularPress = (item) => {
-        console.log("item :", item)
         toggleSelection(item);
     };
 
@@ -596,7 +583,6 @@ const DncLists = ({ navigation }) => {
         setisEditModal(false)
     }
     const handleEdit = (item) => {
-        console.log("item :", item)
         setisEditModal(true)
         setIsModalVisible(true)
         setModalDescription(item?.description)
@@ -628,7 +614,6 @@ const DncLists = ({ navigation }) => {
             return
         }
         else {
-            console.log("Add")
             var dict = {
                 account_name: ModalAccountName,
                 action: "update",
@@ -657,7 +642,6 @@ const DncLists = ({ navigation }) => {
             setModalDescriptionError("* Please enter a description")
         }
         else {
-            console.log("Update")
             var dict = {
                 account_name: ModalAccountName,
                 action: "add",
@@ -683,17 +667,15 @@ const DncLists = ({ navigation }) => {
                 [
                     {
                         text: 'Ok',
-                        onPress: () => console.log('No Pressed'), style: 'cancel'
+                        onPress: () => {}, style: 'cancel'
                     },
                     {
                         text: 'Yes',
                         onPress: () => {
-                            console.log('Yes Pressed')
                             var dict = {
                                 createdby: user_data?.data?.user_uuid,
                                 selectedList: selectedList
                             }
-                            console.log("MULTIPLE DNC DELETE DICT", dict)
                             dispatch(Delete_Multiple_Dnc_List(dict))
                         }
                     },
@@ -708,7 +690,7 @@ const DncLists = ({ navigation }) => {
                 [
                     {
                         text: 'Ok',
-                        onPress: () => console.log('No Pressed'), style: 'cancel'
+                        onPress: () => {}, style: 'cancel'
                     },
                 ],
                 { cancelable: true },
@@ -724,7 +706,6 @@ const DncLists = ({ navigation }) => {
                 createdby: user_data?.data?.user_uuid,
                 selectd_blocked_number: selectedList
             }
-            console.log("SELECTED EXPORT DICT", dict)
             dispatch(Get_Export_Blocked_Numbers(dict))
         } else {
             const All = DncList.map(item => item.dnc_list_uuid);
@@ -732,7 +713,6 @@ const DncLists = ({ navigation }) => {
                 createdby: user_data?.data?.user_uuid,
                 selectd_blocked_number: All
             }
-            console.log("ALL EXPORT DICT", dict)
             dispatch(Get_Export_Blocked_Numbers(dict))
 
         }

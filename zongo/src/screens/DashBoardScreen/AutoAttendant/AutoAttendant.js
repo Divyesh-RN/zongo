@@ -22,6 +22,7 @@ import { resetGeneralApiStatus } from '../../../redux/reducers/generalReducer';
 import CheckModulePermisson from '../../../commonComponents/RolePermission/CheckModulePermisson';
 import PermissionCheck from '../../../commonComponents/RolePermission/PermissionCheck';
 import DoNotAccess from '../../../commonComponents/DoNotAccess';
+import { Log } from '../../../commonComponents/Log';
 
 
 const ExpandableComponent = ({ item, onClickFunction, onDelete }) => {
@@ -254,9 +255,9 @@ const AutoAttendant = ({ navigation }) => {
     )
 
     useEffect(() => {
-        console.log('apiAutoAttendantList :', apiAutoAttendantList);
+        Log('apiAutoAttendantList :', apiAutoAttendantList);
         if (apiAutoAttendantList == STATUS_FULFILLED) {
-            console.log("auto_attendant_list :", auto_attendant_list)
+            Log("auto_attendant_list :", auto_attendant_list)
             if (auto_attendant_list !== null) {
                 const initialListDataSource = auto_attendant_list.map(item => ({
                     ...item,
@@ -283,10 +284,8 @@ const AutoAttendant = ({ navigation }) => {
     }
 
     useEffect(() => {
-        console.log('apiCheckAssignModule :', apiCheckAssignModule);
+        Log('apiCheckAssignModule :', apiCheckAssignModule);
         if (apiCheckAssignModule == STATUS_FULFILLED) {
-            console.log("assign_module_data :", assign_module_data)
-            console.log("assign_module_data :", assign_module_data?.length)
             if (assign_module_data?.length > 0) {
                 setAssignModuleModel(true)
             }
@@ -310,7 +309,7 @@ const AutoAttendant = ({ navigation }) => {
     }
 
     useEffect(() => {
-        console.log('apiDeleteAutoAttendant :', apiDeleteAutoAttendant);
+        Log('apiDeleteAutoAttendant :', apiDeleteAutoAttendant);
         if (apiDeleteAutoAttendant == STATUS_FULFILLED) {
             GetAutoAttendantList()
         } else if (apiDeleteAutoAttendant == STATUS_REJECTED) {
@@ -349,12 +348,11 @@ const AutoAttendant = ({ navigation }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
                     onPress: () => {
-                        console.log('Yes Pressed')
                         DeleteAutoAttendant()
                     }
                 },

@@ -251,7 +251,6 @@ const Call = ({ navigation }) => {
     useEffect(() => {
         Log('apiGetCallList :', apiGetCallList);
         if (apiGetCallList == STATUS_FULFILLED) {
-            // console.log("calls_data", calls_data)
             if (calls_data !== null) {
                 const initialListDataSource = calls_data.map(item => ({
                     ...item,

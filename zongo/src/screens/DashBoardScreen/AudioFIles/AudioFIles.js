@@ -219,7 +219,6 @@ const AudioFiles = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiAudioListByType :', apiAudioListByType);
         if (apiAudioListByType == STATUS_FULFILLED) {
-            console.log('audio_file_list_by_type :', audio_file_list_by_type);
             if (audio_file_list_by_type !== null) {
                 const initialListDataSource = audio_file_list_by_type.map(item => ({
                     ...item,
@@ -283,12 +282,11 @@ const AudioFiles = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
                     onPress: () => {
-                        console.log('Yes Pressed')
                         DeleteBtn(item)
                     }
                 },

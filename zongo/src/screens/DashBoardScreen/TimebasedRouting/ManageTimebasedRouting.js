@@ -132,7 +132,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
             dict.createdby = user_data?.data?.user_uuid,
                 dict.time_condition_data_uuid = data?.time_condition_data_uuid,
 
-                console.log("dict Business Hours Time", dict)
             dispatch(Get_Business_Hours_Time_Details(dict))
         }
     }
@@ -248,7 +247,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetRouteToDestination :', apiGetRouteToDestination);
         if (apiGetRouteToDestination == STATUS_FULFILLED) {
-            console.log('route_by_destination_list :', route_by_destination_list);
             if (route_by_destination_list !== null) {
                 setDestinationList(route_by_destination_list);
                 const DestinationByRoute = route_by_destination_list?.find(item => item.text === DestinationTo)?.value || "";
@@ -309,7 +307,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
             updated_by: null,
             user_uuid: user_data?.data?.user_uuid,
         }
-        console.log("UPDATE ANME", dict)
         dispatch(Update_Time_Condition(dict))
     }
 
@@ -354,7 +351,7 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -413,7 +410,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
                     dict.time_condition_data_uuid = SelectedDay?.time_condition_data_uuid,
                     dict.time_condition_uuid = SelectedDay?.time_condition_uuid,
                     dict.to_time = moment(To).format('h:mm A'),
-                    console.log("ADD TIME BLOCK ", dict)
                 dispatch(Create_Time_Slot(dict))
             }
         }
@@ -421,8 +417,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
     }
 
     const handleUpdateTimeBlock = () => {
-        console.log("EventName", EventName.length)
-        console.log("EventName", typeof EventName)
         if (EventName.trim() === '') {
             setEventNameError("* Please enter slot name.")
             return
@@ -441,9 +435,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
         }
         else {
             if (IsFromEdit == true) {
-                console.log("SelectedSlot", SelectedSlot)
-                console.log("From", From)
-                console.log("TO", To)
                 var dict = {};
                 const from = moment(From, "HH:mm").format("h:mm A");
                 const to = moment(To, "HH:mm").format("h:mm A");
@@ -462,7 +453,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
                         dict.time_condition_uuid = SelectedSlot?.time_condition_uuid,
                         dict.to_time = to,
                         dict.user_uuid = user_data?.data?.user_uuid
-                    console.log("UPDATE TIME SLOT WEEK", dict)
 
                 }
                 dispatch(Update_Time_Slot(dict))
@@ -480,7 +470,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
         }
         else {
             if (IsFromEdit == true) {
-                console.log("SelectedSlot", SelectedSlot)
                 var dict = {};
                 const from = moment(From, "HH:mm").format("h:mm A");
                 const to = moment(To, "HH:mm").format("h:mm A");
@@ -499,7 +488,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
                         dict.time_condition_uuid = SelectedSlot?.time_condition_uuid,
                         dict.to_time = SelectedSlot?.to_time,
                         dict.user_uuid = user_data?.data?.user_uuid
-                    console.log("UPDATE TIME SLOT OFF HOURS", dict)
                 }
                 dispatch(Update_Time_Slot(dict))
             }
@@ -528,7 +516,7 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () =>{}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -548,7 +536,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
     }
 
     const EditTimeData = (item, day) => {
-        console.log("item :", item)
         setSelectedSlot(item)
         if (item?.type == "off_hours") {
             setEditOffHours(item?.type == "off_hours" ? true : false)
@@ -583,14 +570,12 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
                 case 'monday':
                     const Monday = TimeConditionDayData.filter(data => data?.time_condition_day == item)
                     setSelectedDay(Monday[0])
-                    console.log("Monday", Monday[0])
                     setSelectedDayName(SelectedDayName === 'monday' ? null : 'monday');
                     setMondayShow(!MondayShow)
                     GetBusinessHoursTimeDetails(Monday[0])
                     break;
                 case 'tuesday':
                     const Tuesday = TimeConditionDayData.filter(data => data?.time_condition_day == item)
-                    console.log("Tuesday", Tuesday[0])
                     setSelectedDay(Tuesday[0])
                     setSelectedDayName(SelectedDayName === 'tuesday' ? null : 'tuesday');
                     setTuesdayShow(!TuesdayShow)
@@ -599,7 +584,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
                 case 'wednesday':
                     const Wenesday = TimeConditionDayData.filter(data => data?.time_condition_day == item)
                     setSelectedDay(Wenesday[0])
-                    console.log("Wenesday", Wenesday[0])
                     setSelectedDayName(SelectedDayName === 'wednesday' ? null : 'wednesday');
                     setWenesdayShow(!WenesdayShow)
                     GetBusinessHoursTimeDetails(Wenesday[0])
@@ -607,7 +591,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
                 case 'thursday':
                     const Thursday = TimeConditionDayData.filter(data => data?.time_condition_day == item)
                     setSelectedDay(Thursday[0])
-                    console.log("Thursday", Thursday[0])
                     setSelectedDayName(SelectedDayName === 'thursday' ? null : 'thursday');
                     setThursdayShow(!ThursdayShow)
                     GetBusinessHoursTimeDetails(Thursday[0])
@@ -615,7 +598,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
                 case 'friday':
                     const Friday = TimeConditionDayData.filter(data => data?.time_condition_day == item)
                     setSelectedDay(Friday[0])
-                    console.log("Friday", Friday[0])
                     setSelectedDayName(SelectedDayName === 'friday' ? null : 'friday');
                     setFridayShow(!FridayShow)
                     GetBusinessHoursTimeDetails(Friday[0])
@@ -623,7 +605,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
                 case 'saturday':
                     const Saturday = TimeConditionDayData.filter(data => data?.time_condition_day == item)
                     setSelectedDay(Saturday[0])
-                    console.log("Saturday", Saturday[0])
                     setSelectedDayName(SelectedDayName === 'saturday' ? null : 'saturday');
                     setSaturdayShow(!SaturdayShow)
                     GetBusinessHoursTimeDetails(Saturday[0])
@@ -631,7 +612,6 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
                 case 'sunday':
                     const Sunday = TimeConditionDayData.filter(data => data?.time_condition_day == item)
                     setSelectedDay(Sunday[0])
-                    console.log("Sunday", Sunday[0])
                     setSelectedDayName(SelectedDayName === 'sunday' ? null : 'sunday');
                     setSundayShow(!SundayShow)
                     GetBusinessHoursTimeDetails(Sunday[0])
@@ -1611,12 +1591,10 @@ const ManageTimebasedRouting = ({ navigation, route }) => {
                     currentValue={DestinationValue}
                     bottomSheetRef={DestinationTobottomSheetRef}
                     selectedValue={data => {
-                        console.log("data", data);
                         setDestinationTo(data);
                         setDestinationToError("")
                     }}
                     selectedDestination={data => {
-                        console.log("data1", data);
                         setDestinationValue(data)
                         setDestinationToError("")
                     }}

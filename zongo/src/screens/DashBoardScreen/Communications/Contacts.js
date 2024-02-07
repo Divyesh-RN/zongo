@@ -248,7 +248,7 @@ const Contacts = ({navigation}) => {
         
             PermissionsAndroid.requestMultiple(permissions)
                 .then(granted => {
-                    console.log("granted",granted)
+                    Log("granted",granted)
                     if (
                         granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED &&
                         granted[PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT] === PermissionsAndroid.RESULTS.GRANTED &&
@@ -257,10 +257,10 @@ const Contacts = ({navigation}) => {
                         granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED 
 
                     ) {
-                        console.log('User accepted all  permissions');
+                        Log('User accepted all  permissions');
                         // You can perform actions that require these permissions here
                     } else {
-                        console.log('One or more permissions were denied');
+                        Log('One or more permissions were denied');
                         // requestPermissions()
                         // Handle the scenario where permissions were denied
                     }

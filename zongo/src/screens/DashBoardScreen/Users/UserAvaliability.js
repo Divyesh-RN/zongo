@@ -137,7 +137,6 @@ const UserAvaliability = ({ navigation, route }) => {
             dict.createdby = user_data?.data?.user_uuid,
                 dict.user_availability_data_uuid = data?.user_availability_data_uuid,
 
-                console.log("Perticular day", dict)
             dispatch(Get_User_Time_Availablity_Details(dict))
         }
     }
@@ -252,7 +251,6 @@ const UserAvaliability = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetRouteToDestination :', apiGetRouteToDestination);
         if (apiGetRouteToDestination == STATUS_FULFILLED) {
-            console.log('route_by_destination_list :', route_by_destination_list);
             if (route_by_destination_list !== null) {
                 setDestinationList(route_by_destination_list);
                 const DestinationByRoute = route_by_destination_list?.find(item => item.text === DestinationTo)?.value || "";
@@ -329,7 +327,7 @@ const UserAvaliability = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -340,7 +338,6 @@ const UserAvaliability = ({ navigation, route }) => {
                             select_day_uuid: SelectedDay?.user_availability_data_uuid,
                             type: type
                         }
-                        console.log("USER COPY DICT", dict)
                         dispatch(Copy_User_Time_Slot(dict))
                     }
                 },
@@ -387,7 +384,6 @@ const UserAvaliability = ({ navigation, route }) => {
                     dict.to_time = moment(To).format('h:mm A'),
                     dict.user_uuid = user_data?.data?.user_uuid
                     dict.user_availability_data_uuid = SelectedDay?.user_availability_data_uuid,
-                    console.log("ADD TIME BLOCK ", dict)
                     // return
                 dispatch(User_Create_Time_Slot(dict))
             }
@@ -396,8 +392,6 @@ const UserAvaliability = ({ navigation, route }) => {
     }
 
     const handleUpdateTimeBlock = () => {
-        // console.log("EventName", EventName.length)
-        // console.log("EventName", typeof EventName)
         // if (EventName.trim() === '') {
         //     setEventNameError("* Please enter slot name.")
         //     return
@@ -416,9 +410,6 @@ const UserAvaliability = ({ navigation, route }) => {
         }
         else {
             if (IsFromEdit == true) {
-                console.log("SelectedSlot", SelectedSlot)
-                console.log("From", From)
-                console.log("TO", To)
                 var dict = {};
                 const from = moment(From, "HH:mm").format("h:mm A");
                 const to = moment(To, "HH:mm").format("h:mm A");
@@ -436,7 +427,6 @@ const UserAvaliability = ({ navigation, route }) => {
                         dict.user_availability_data_uuid = SelectedSlot?.user_availability_data_uuid,
                         dict.user_availability_times_uuid = SelectedSlot?.user_availability_times_uuid,
                         dict.user_uuid = user_data?.data?.user_uuid
-                    console.log("UPDATE TIME SLOT WEEK", dict)
 
                 }
                 dispatch(Extension_Update_Time_Slot(dict))
@@ -454,7 +444,6 @@ const UserAvaliability = ({ navigation, route }) => {
         }
         else {
             if (IsFromEdit == true) {
-                console.log("SelectedSlot", SelectedSlot)
                 var dict = {};
                 if (SelectedSlot?.type == "off_hours") {
                     dict.createdby = user_data?.data?.user_uuid,
@@ -470,7 +459,6 @@ const UserAvaliability = ({ navigation, route }) => {
                         dict.user_availability_data_uuid = SelectedSlot?.user_availability_data_uuid,
                         dict.user_availability_times_uuid = SelectedSlot?.user_availability_times_uuid,
                         dict.user_uuid = user_data?.data?.user_uuid
-                    console.log("UPDATE TIME SLOT OFF HOURS", dict)
                 }
                 dispatch(Extension_Update_Time_Slot(dict))
             }
@@ -493,14 +481,13 @@ const UserAvaliability = ({ navigation, route }) => {
 
 
     const DeleteTimeBlock = (item) => {
-console.log("delete time block :",item)
         Alert.alert(
             "Alert",
             'Are you sure to delete this time block?',
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -520,7 +507,6 @@ console.log("delete time block :",item)
     }
 
     const EditTimeData = (item, day) => {
-        console.log("item :", item?.route_to)
         setSelectedSlot(item)
         if (item?.type == "off_hours") {
             setEditOffHours(item?.type == "off_hours" ? true : false)
@@ -555,15 +541,12 @@ console.log("delete time block :",item)
                 case 'monday':
                     const Monday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Monday[0])
-                    console.log("Monday", Monday)
-                    console.log("Monday", Monday[0])
                     setSelectedDayName(SelectedDayName === 'monday' ? null : 'monday');
                     setMondayShow(!MondayShow)
                     GetBusinessHoursTimeDetails(Monday[0])
                     break;
                 case 'tuesday':
                     const Tuesday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
-                    console.log("Tuesday", Tuesday[0])
                     setSelectedDay(Tuesday[0])
                     setSelectedDayName(SelectedDayName === 'tuesday' ? null : 'tuesday');
                     setTuesdayShow(!TuesdayShow)
@@ -572,7 +555,6 @@ console.log("delete time block :",item)
                 case 'wednesday':
                     const Wenesday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Wenesday[0])
-                    console.log("Wenesday", Wenesday[0])
                     setSelectedDayName(SelectedDayName === 'wednesday' ? null : 'wednesday');
                     setWenesdayShow(!WenesdayShow)
                     GetBusinessHoursTimeDetails(Wenesday[0])
@@ -580,7 +562,6 @@ console.log("delete time block :",item)
                 case 'thursday':
                     const Thursday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Thursday[0])
-                    console.log("Thursday", Thursday[0])
                     setSelectedDayName(SelectedDayName === 'thursday' ? null : 'thursday');
                     setThursdayShow(!ThursdayShow)
                     GetBusinessHoursTimeDetails(Thursday[0])
@@ -588,7 +569,6 @@ console.log("delete time block :",item)
                 case 'friday':
                     const Friday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Friday[0])
-                    console.log("Friday", Friday[0])
                     setSelectedDayName(SelectedDayName === 'friday' ? null : 'friday');
                     setFridayShow(!FridayShow)
                     GetBusinessHoursTimeDetails(Friday[0])
@@ -596,7 +576,6 @@ console.log("delete time block :",item)
                 case 'saturday':
                     const Saturday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Saturday[0])
-                    console.log("Saturday", Saturday[0])
                     setSelectedDayName(SelectedDayName === 'saturday' ? null : 'saturday');
                     setSaturdayShow(!SaturdayShow)
                     GetBusinessHoursTimeDetails(Saturday[0])
@@ -604,7 +583,6 @@ console.log("delete time block :",item)
                 case 'sunday':
                     const Sunday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Sunday[0])
-                    console.log("Sunday", Sunday[0])
                     setSelectedDayName(SelectedDayName === 'sunday' ? null : 'sunday');
                     setSundayShow(!SundayShow)
                     GetBusinessHoursTimeDetails(Sunday[0])
@@ -1482,12 +1460,10 @@ console.log("delete time block :",item)
                     currentValue={DestinationValue}
                     bottomSheetRef={DestinationTobottomSheetRef}
                     selectedValue={data => {
-                        console.log("data", data);
                         setDestinationTo(data);
                         setDestinationToError("")
                     }}
                     selectedDestination={data => {
-                        console.log("data1", data);
                         setDestinationValue(data)
                         setDestinationToError("")
                     }}

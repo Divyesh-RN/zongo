@@ -254,8 +254,8 @@ export default function Dialer({ navigation }) {
   };
 
   const handleDial = () => {
-    console.log(`Dialing ${phoneNumber}`);
-  };
+    Log(`Dialing ${phoneNumber}`);
+  }; 
 
   const appendNumber = (num) => {
     setPhoneNumber(phoneNumber + num);

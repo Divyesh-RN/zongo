@@ -27,7 +27,6 @@ const Incoming = () => {
     };
 
     const handleAnswer = () => {
-        console.log("global.session :", global.session)
         if (global.session !== null) {
             const options = {
                 mediaConstraints: {

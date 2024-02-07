@@ -33,17 +33,15 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
         Global.Socket = socket;
         // WebSocket event listeners
         socket.onopen = () => {
-            console.log('WebSocket connection opened');
+            Log('WebSocket connection opened');
         };
 
         socket.onmessage = (event) => {
             let data = JSON.parse(event.data);
-            console.log('Received message: App', data);
+            Log('Received message: App', data);
             setEventData(data)
             getData(USER_DATA, userData => {
                 var user_data = userData?.data
-                console.log('user_data 1', user_data?.role_uuid);
-
                 //delete user
                 if (data.type == "user_delete") {
                     if (user_data?.user_uuid == data?.data) {
@@ -82,7 +80,7 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
         };
 
         socket.onclose = (event) => {
-            console.log('WebSocket connection closed:', event.reason);
+            Log('WebSocket connection closed:', event.reason);
         };
 
         return () => {
@@ -97,10 +95,7 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
         if (apiGetPerticularRolePermission == STATUS_FULFILLED) {
             if (user_new_role_permission !== null) {
                 var updatedUserData = null;
-                console.log("EventData :", EventData)
-                console.log("EventData tope :", EventData?.type == "change_permission")
                 if (EventData?.type == "change_permission") {
-                    console.log("change_permission condition")
                     updatedUserData = {
                         ...user_data,
                         data: {
@@ -110,8 +105,6 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
                     };
                 }
                 else if (EventData?.type == "role_change") {
-                    console.log("role_change condition")
-
                     updatedUserData = {
                         ...user_data,
                         data: {
@@ -128,7 +121,6 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
                         dispatch(storeUserData(updatedUserData));
                         resetScreen("Home")
                     });
-                    console.log("updatedUserData :", updatedUserData)
                 }
 
 
@@ -157,17 +149,10 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
                                     <IconButton additionalStyle={styles.btnBack}
                                         // onPress={onPressProfile}>
                                         onPress={() => {
-                                            DisplayMessage({
-                                                title: "Test",
-                                                description: "Des",
-                                                type: 'success',
-                                                onPress: () => {
-                                                }
-                                              })
-                                            // storeData(USER_DATA, null, () => {
-                                            //     dispatch(storeUserData(null));
-                                            //     resetScreen('Login');
-                                            // });
+                                            storeData(USER_DATA, null, () => {
+                                                dispatch(storeUserData(null));
+                                                resetScreen('Login');
+                                            });
                                         }}>
                                         <Image source={{ uri: imgUri }} style={{ width: widthPixel(40), height: widthPixel(40), resizeMode: "contain" }}
                                         />

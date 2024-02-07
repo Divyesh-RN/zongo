@@ -33,31 +33,9 @@ console.log("registerData",registerData)
     JsSIP.debug.enable('JsSIP:*');
 
     var socket = new JsSIP.WebSocketInterface(data?.WebsoketUrl
-      // , {
-    //   eventHandlers: {
-    //     connected: () => {
-    //       console.log('WebSocket connected');
-    //     },
-    //     disconnected: () => {
-    //       console.log('WebSocket disconnected');
-    //     },
-    //   },
-    //   requestOptions: {
-    //     rejectUnauthorized: false,
-    //   },
-    // }
+  
     );
-    //     if (typeof TextDecoder === 'undefined') {
-    //   global.TextDecoder = class {
-    //     constructor() {
-    //       this.decoder = new TextDecoder('utf-8', { fatal: true });
-    //     }
-
-    //     decode(data) {
-    //       return this.decoder.decode(data);
-    //     }
-    //   };
-    // }
+   
 
     console.log('WebSocket connection:', socket);
     console.log("WebSocket", data?.WebsoketUrl)

@@ -13,7 +13,6 @@ const DestinationBottomSheet = ({data=[], bottomSheetRef = "", selectedValue, he
     const RenderItem = ({ item }) => (
         <TouchableOpacity onPress={() => {
             bottomSheetRef.current.close();
-            console.log("item",item)
             selectedValue(item.text)
             setSelectedNumber(item.text)
             selectedDestination(item.value)

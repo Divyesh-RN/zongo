@@ -38,7 +38,6 @@ import LoadingView from '../../../commonComponents/LoadingView';
 import { resetInboundApiStatus } from '../../../redux/reducers/inboundReducer';
 
 const InBoundNumberManage = ({ navigation, route }) => {
-  console.log("route?.params.isEdit :", route?.params.item)
   const [isEdit, setIsEdit] = useState(route?.params.isEdit ? true : false);
   const [InBoundNumberData, setInBoundNumberData] = useState(route?.params.item);
   const [InboundDescriptionEdit, setInboundDescriptionEdit] = useState(false);
@@ -93,7 +92,6 @@ const InBoundNumberManage = ({ navigation, route }) => {
   useEffect(() => {
     Log('apiGetMusicOnHoldFile :', apiGetMusicOnHoldFile);
     if (apiGetMusicOnHoldFile == STATUS_FULFILLED) {
-      // console.log('music_on_hold_file_list', music_on_hold_file_list);
       if (music_on_hold_file_list !== null) {
         setMusicOnHoldFileList(music_on_hold_file_list)
         const setMohName = music_on_hold_file_list?.find(item => (item.recording_uuid).toLocaleLowerCase() == (MusicOnHoldFileId).toLocaleLowerCase())?.recording_name || "";
@@ -116,13 +114,10 @@ const InBoundNumberManage = ({ navigation, route }) => {
   useEffect(() => {
     Log('apiGetDidRouting :', apiGetDidRouting);
     if (apiGetDidRouting == STATUS_FULFILLED) {
-      console.log('did_routing_data', did_routing_data);
       if (did_routing_data !== null) {
         setRouteValue(did_routing_data["0"]?.did_action_type)
-        console.log('setRouteValue', did_routing_data["0"]?.did_action_type)
 
         const routeValByName = ROUTE?.find(item => (item.route).toLocaleLowerCase() == (did_routing_data["0"]?.did_action_type).toLocaleLowerCase())?.value || "";
-        console.log('routeValByName', routeValByName)
         setRouteTo(routeValByName)
         setDestinationTo(did_routing_data?.route_val)
         setMusicOnHoldFileId(did_routing_data["0"]?.music_on_hold)
@@ -149,7 +144,6 @@ const InBoundNumberManage = ({ navigation, route }) => {
   useEffect(() => {
     Log('apiGetRouteToDestination :', apiGetRouteToDestination);
     if (apiGetRouteToDestination == STATUS_FULFILLED) {
-      console.log('route_by_destination_list :', route_by_destination_list);
       if (route_by_destination_list !== null) {
         setDestinationList(route_by_destination_list);
         const DestinationByRoute = route_by_destination_list?.find(item => item.text === DestinationTo)?.value || "";
@@ -616,12 +610,10 @@ const InBoundNumberManage = ({ navigation, route }) => {
           currentValue={DestinationValue}
           bottomSheetRef={DestinationTobottomSheetRef}
           selectedValue={data => {
-            console.log("data", data);
             setDestinationTo(data);
             setDestinationToError("")
           }}
           selectedDestination={data => {
-            console.log("data1", data);
             setDestinationValue(data)
             setDestinationToError("")
           }}

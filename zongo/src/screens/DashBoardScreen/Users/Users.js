@@ -290,7 +290,6 @@ const Users = ({ navigation }) => {
     let listing_per = PermissionCheck(module_name, "listing", "", "", "");
     let group_uuid = "";
     let add_per = PermissionCheck(module_name, "add", "", "", "");
-console.log("add per user",add_per)
     const GetUserList = () => {
         if (user_data !== null) {
             var dict = {};
@@ -353,20 +352,6 @@ console.log("add per user",add_per)
     }, [apiGetUserList]);
 
 
-    useEffect(() => {
-        // const ws = new WebSocket(WEBSOCKET_URL);
-        // ws.onopen = () => {
-        //     console.log("WebSocket connection opened");
-        // };
-        // ws.onclose = () => {
-        //     console.log("WebSocket connection closed");
-        // };
-        // setSocket(ws);
-        // return () => {
-        //     ws.close();
-        // };
-    }, []);
-
     const DeleteUser = (id) => {
         
         setUserUuid(id)
@@ -425,7 +410,6 @@ console.log("add per user",add_per)
         Log('apiGetRoleDp :', apiGetRoleDp);
         if (apiGetRoleDp == STATUS_FULFILLED) {
             if (role_list !== null) {
-                console.log("role_list :", role_list)
             }
         } else if (apiGetRoleDp == STATUS_REJECTED) {
             if (isError) {
@@ -444,7 +428,6 @@ console.log("add per user",add_per)
                 dict.last_name = AddLastName,
                 dict.role_uuid = AddRole?.role_uuid
             dict.main_user_uuid = user_data?.data?.main_uuid
-            console.log("CREATE USER DICT :", dict);
             dispatch(Cretae_User(dict))
         }
     }
@@ -515,12 +498,11 @@ console.log("add per user",add_per)
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
                     onPress: () => {
-                        console.log('Yes Pressed')
                         DeleteUser(item?.uuid)
                     }
                 },
@@ -535,7 +517,6 @@ console.log("add per user",add_per)
         let filteredItems = items.filter((item) => {
             return String(item.first_name).toLowerCase().match(text) || String(item.last_name).toLowerCase().match(text) || String(item.email).toLowerCase().match(text) || String(item.extension).toLowerCase().match(text)
         })
-        console.log("filteredItems :", filteredItems)
         if (!text || text === '') {
             setUserList(listDataSource)
         } else if (!Array.isArray(filteredItems) && !filteredItems.length) {

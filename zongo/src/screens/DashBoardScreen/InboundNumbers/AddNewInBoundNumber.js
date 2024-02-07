@@ -106,7 +106,6 @@ const AddNewInboundNumber = ({ navigation }) => {
             user_uuid: user_data?.data?.user_uuid,
 
         };
-        console.log("GET NUMBER LIST", dict);
         dispatch(Get_Number(dict));
     }
     const GetPaidNumberList = (area) => {
@@ -125,7 +124,6 @@ const AddNewInboundNumber = ({ navigation }) => {
             user_uuid: user_data?.data?.user_uuid,
 
         };
-        console.log("GET PAID NUMBER LIST", dict);
         dispatch(Get_Number(dict));
     }
 
@@ -133,7 +131,6 @@ const AddNewInboundNumber = ({ navigation }) => {
         Log('apiGetNumberList :', apiGetNumberList);
         if (apiGetNumberList == STATUS_FULFILLED) {
             if (number_list !== null) {
-                console.log("number_list", number_list)
                 setNumberList(number_list);
             }
         } else if (apiGetNumberList == STATUS_REJECTED) {
@@ -176,7 +173,6 @@ const AddNewInboundNumber = ({ navigation }) => {
         if (apiGetAreaCodeByState == STATUS_FULFILLED) {
             Log("area_code :", area_code)
             setAreaCode(area_code[0])
-            console.log("IsTollFreeNumber :",IsTollFreeNumber)
             if(IsTollFreeNumber == false){
                 GetPaidNumberList(area_code[0])
             }
@@ -204,7 +200,6 @@ const AddNewInboundNumber = ({ navigation }) => {
     };
 
     const toggleSelection = (number) => {
-        console.log("number: ", number);
         if (selectedNumbers.some((selected) => selected.phone_number === number.phone_number)) {
             setSelectedNumbers((prevSelected) =>
                 prevSelected.filter((selected) => selected.phone_number !== number.phone_number)
@@ -596,7 +591,6 @@ const LocalCount = (selectedNumbers) => {
 
                 {ActiveStep == 2 && (
                     <>
-                    {console.log("selectedNumbers",selectedNumbers)}
                         <View style={{ marginHorizontal: 25, marginVertical: 20 }}>
                             <Text style={{
                                 fontSize: FontSize.FS_13,

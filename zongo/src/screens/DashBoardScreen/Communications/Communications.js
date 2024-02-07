@@ -37,7 +37,6 @@ const Communications = ({ navigation }) => {
   var email_status = SideMenuModuleCheck("email", user_data);
   var contact_status = SideMenuModuleCheck("contacts", user_data);
   var sms_status = SideMenuModuleCheck("contacts", user_data);
-  console.log("d", call_status);
   return (
     <>
       <HeaderView

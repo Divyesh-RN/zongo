@@ -61,7 +61,6 @@ const ManageAudioFiles = ({ navigation, route }) => {
                 allowMultiSelection: true
             });
             const maxSize = 10 * 1024 * 1024;
-            console.log("result: ", result)
             if (result[0].size < maxSize) {
                 setSelectedAudioFile(result);
                 setIsNewFile(true)
@@ -98,8 +97,6 @@ const ManageAudioFiles = ({ navigation, route }) => {
             }
             else {
                 let body = new FormData();
-                console.log("SelectedAudioFile :", SelectedAudioFile)
-                console.log("type :", route?.params?.type)
 
                 body.append('recording_name', AudioFileName)
                 body.append('recording_type', route?.params?.type)
@@ -117,7 +114,6 @@ const ManageAudioFiles = ({ navigation, route }) => {
                     body.append('file', SelectedAudioFile[0])
                     body.append('fileName', SelectedAudioFileName)
                 }
-                console.log("body ", body)
                 dispatch(Upload_Audio_File(body));
             }
         }
@@ -149,8 +145,6 @@ const ManageAudioFiles = ({ navigation, route }) => {
                 setAudioFileNameError("  * Please Enter Recording Name")
             }
             else {
-                console.log("SelectedAudioFile[0]", SelectedAudioFile)
-                console.log("type [0]", route?.params?.type)
                 let body = new FormData();
 
                 body.append('recording_name', AudioFileName)
@@ -171,7 +165,7 @@ const ManageAudioFiles = ({ navigation, route }) => {
                         body.append('file', SelectedAudioFile[0])
                         body.append('fileName', SelectedAudioFileName)
                     }
-                } console.log("body Update Audio", body)
+                } 
                 dispatch(Update_Audio_File(body));
             }
         }
@@ -206,7 +200,7 @@ const ManageAudioFiles = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -228,7 +222,6 @@ const ManageAudioFiles = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiDeleteMohFile :', apiDeleteMohFile);
         if (apiDeleteMohFile == STATUS_FULFILLED) {
-            console.log("moh_list :", moh_list)
             if (moh_list !== null) {
                 setMohList(moh_list)
             }
@@ -248,7 +241,6 @@ const ManageAudioFiles = ({ navigation, route }) => {
             updatedList[newIndex],
             updatedList[currentIndex],
         ];
-        console.log("updatedList :", updatedList)
 
         var dict = {
             createdby: user_data?.data?.user_uuid,
@@ -261,7 +253,6 @@ const ManageAudioFiles = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiUpdateMoh :', apiUpdateMoh);
         if (apiUpdateMoh == STATUS_FULFILLED) {
-            console.log("moh_list :", moh_list)
             if (moh_list !== null) {
                 setMohList(moh_list)
             }
@@ -617,7 +608,6 @@ const ManageAudioFiles = ({ navigation, route }) => {
                                             paddingTop: 20,
                                             borderRadius: 4
                                         }}>
-                                        {console.log("AUDIO_URL :", AUDIO_URL + route.params.item.type + "/" + route?.params?.item?.recording_filename)}
                                         <AudioPlayer
                                             url={AUDIO_URL + route.params.item.type + "/" + route?.params?.item?.recording_filename}
                                         />
@@ -742,7 +732,6 @@ const ManageAudioFiles = ({ navigation, route }) => {
                                     }>
                                     <Icon name={"close"} size={24} color={white} />
                                 </TouchableOpacity>
-                                {console.log("AUDIO_URL :", AudioUrl)}
                                 <View style={{ marginTop: 40 }}>
                                     <AudioPlayer
                                         url={AudioUrl}

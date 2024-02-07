@@ -150,7 +150,6 @@ const ManageAutoAttendant = ({ navigation, route }) => {
   useEffect(() => {
     Log('apiGetAutoAttendantNextId :', apiGetAutoAttendantNextId);
     if (apiGetAutoAttendantNextId == STATUS_FULFILLED) {
-      console.log('auto_attendant_next_id :', auto_attendant_next_id);
       if (auto_attendant_next_id !== null) {
         setAutoAttendantNextId(auto_attendant_next_id);
         setAutoAttendantId(auto_attendant_next_id?.extension)
@@ -165,9 +164,8 @@ const ManageAutoAttendant = ({ navigation, route }) => {
 
 
   useEffect(() => {
-    console.log('apiAutoAttendantDetails :', apiAutoAttendantDetails);
+    Log('apiAutoAttendantDetails :', apiAutoAttendantDetails);
     if (apiAutoAttendantDetails == STATUS_FULFILLED) {
-      console.log("auto_attendant_details :", auto_attendant_details)
       if (auto_attendant_details !== null) {
         setAutoAttendantData(auto_attendant_details?.ivr_data[0])
         setAutoAttendantOptData(auto_attendant_details?.ivr_option_data)
@@ -213,13 +211,11 @@ const ManageAutoAttendant = ({ navigation, route }) => {
 
   useEffect(() => {
     // Create a mapping of ivr_menu_option_digits to background color
-    console.log("AutoAttendantOptData :", AutoAttendantOptData)
     if (AutoAttendantOptData !== null) {
       const digitColorMap = {};
       AutoAttendantOptData.forEach((option) => {
         digitColorMap[option.ivr_menu_option_digits] = 'red';
       });
-      console.log("digitColorMap", digitColorMap)
       // Set initial button styles based on the mapping
       const initialStyles = {};
       [1, 2, 3, 4, 5, 6, 7, 8, 9, '#', 0, '*'].forEach((button) => {
@@ -228,7 +224,6 @@ const ManageAutoAttendant = ({ navigation, route }) => {
           color: digitColorMap[button] ? greenPrimary : white,
         };
       });
-      console.log("initialStyles ", initialStyles)
       setButtonStyles(initialStyles);
     }
   }, [AutoAttendantOptData]);
@@ -247,7 +242,6 @@ const ManageAutoAttendant = ({ navigation, route }) => {
   useEffect(() => {
     Log('apiAudioFileList :', apiAudioFileList);
     if (apiAudioFileList == STATUS_FULFILLED) {
-      console.log('audio_file_list :', audio_file_list);
       if (audio_file_list !== null) {
         setAudioFileList(audio_file_list);
 
@@ -273,15 +267,12 @@ const ManageAutoAttendant = ({ navigation, route }) => {
   useEffect(() => {
     Log('apiGetDestinationList :', apiGetDestinationList);
     if (apiGetDestinationList == STATUS_FULFILLED) {
-      console.log('destination_list', destination_list);
       if (destination_list !== null) {
-        console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         setDestinationList(destination_list)
         //   const extensionNameViaId = destination_list?.find(item => item.value.toLowerCase() === (FailOverDesMaxWaitType + "_" + FailOverDesMaxWaitValue).toLowerCase())?.text || "";
         //   setFailOverDesMaxWait(extensionNameViaId) // set extension name
         //   const routeValByName = destination_list?.find(item => item.value.toLowerCase() === (FailOverDesMaxWaitType + "_" + FailOverDesMaxWaitValue).toLowerCase())?.optgroup || "";
         //   setFailOverDesMaxWaitTypeName(routeValByName) // set his route capital
-        //  console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         //   GetAdminVoiceMail()
 
 
@@ -305,7 +296,6 @@ const ManageAutoAttendant = ({ navigation, route }) => {
   useEffect(() => {
     Log('apiGetRouteToDestination :', apiGetRouteToDestination);
     if (apiGetRouteToDestination == STATUS_FULFILLED) {
-      console.log('route_by_destination_list :', route_by_destination_list);
       if (route_by_destination_list !== null) {
         setDestinationList(route_by_destination_list);
         // const DestinationByRoute = route_by_destination_list?.find(item => item.value === DestinationValue)?.text || "";
@@ -336,7 +326,6 @@ const ManageAutoAttendant = ({ navigation, route }) => {
       dict.ivr_menu_option_digits = activeButton
       dict.ivr_menu_option_uuid = SelectedAutoAttendantOptData[0]?.ivr_menu_option_uuid == undefined ? null : SelectedAutoAttendantOptData[0]?.ivr_menu_option_uuid
       dict.ivr_menu_uuid = AutoAttendantData?.ivr_menu_uuid
-      console.log("OPTION UPDATE : ", dict)
       dispatch(Update_Auto_Attendant_Options(dict));
     }
   }
@@ -385,7 +374,6 @@ const ManageAutoAttendant = ({ navigation, route }) => {
         dict.ivr_menu_welcome_message = MainSelectedAudioFileId,
         dict.main_admin_uuid = user_data?.data?.main_uuid
       dict.user_uuid = user_data?.data?.user_uuid
-      console.log(" UPDATE AUTO-ATTENDANT : ", dict)
       dispatch(Update_Auto_Attendant(dict));
     }
   }
@@ -431,7 +419,6 @@ const ManageAutoAttendant = ({ navigation, route }) => {
         dict.ivr_menu_welcome_message = MainSelectedAudioFileId,
         dict.main_admin_uuid = user_data?.data?.main_uuid
       dict.user_uuid = user_data?.data?.user_uuid
-      console.log(" CREATE AUTO-ATTENDANT : ", dict)
       dispatch(Create_Auto_Attendant(dict));
     }
 
@@ -557,7 +544,6 @@ const ManageAutoAttendant = ({ navigation, route }) => {
     setDestinationTypeError("")
     setActiveButton(button);
     const data = AutoAttendantOptData?.filter(item => item.ivr_menu_option_digits == String(button))
-    console.log("data", data)
     setSelectedAutoAttendantOptData(data)
     if (data?.length > 0) {
       const DestinationByRoute = ROUTE?.find(item => item.route === data[0]?.ivr_menu_option_action_type)?.value || "";
@@ -1323,13 +1309,11 @@ const ManageAutoAttendant = ({ navigation, route }) => {
           currentValue={DestinationTypeID}
           bottomSheetRef={DestinationTypebottomSheetRef}
           selectedValue={data => {
-            console.log("Destination Type", data)
             setDestinationType(data);
             setDestinationTypeError("")
 
           }}
           selectedRoute={data => {
-            console.log("Destination Type ID ", data)
             setDestinationTypeError("")
             setDestinationTypeId(data)
             RouteToDestination(data)

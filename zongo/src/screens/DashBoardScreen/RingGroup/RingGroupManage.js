@@ -152,10 +152,8 @@ const RingGroupManage = ({ navigation, route }) => {
 
 
     const GetAdminVoiceMail = () =>{
-        console.log('oute?.params?.isEdit ', route?.params?.isEdit );
 
         if (route?.params?.isEdit == false) {
-            console.log("route?.params?.isEdit ",route?.params?.isEdit)
             var dict = {};
             dict.main_admin_uuid = user_data?.data?.main_uuid;
             (dict.createdby = user_data?.data?.user_uuid),
@@ -166,18 +164,14 @@ const RingGroupManage = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetAdminVoiceMail :', apiGetAdminVoiceMail);
         if (apiGetAdminVoiceMail == STATUS_FULFILLED) {
-            console.log('admin_voice_mail_data', admin_voice_mail_data);
-            console.log('oute?.params?.isEdit ', route?.params?.isEdit );
             if (admin_voice_mail_data !== null) {
                 if(route?.params?.isEdit == false){
                     setAdminVoiceMailData(admin_voice_mail_data)
                     setFailOverDesMaxWaitValue(admin_voice_mail_data[0]?.voicemail_uuid)
                     setFailOverDesMaxWait(admin_voice_mail_data[0]?.extension)
                     const routeValByName = destination_list?.find(item => item.value.includes(admin_voice_mail_data[0]?.voicemail_uuid) );
-                    console.log("routeValByName : ",routeValByName)
                     setFailOverDesMaxWaitTypeName(routeValByName?.optgroup)
                     const  routeType = ROUTE.find(item => item.value == routeValByName?.optgroup)?.route
-                    console.log("routeType  : ",routeType)
                     setFailOverDesMaxWaitType(routeType)
 
                    
@@ -204,7 +198,6 @@ const RingGroupManage = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetNextRingGroupId :', apiGetNextRingGroupId);
         if (apiGetNextRingGroupId == STATUS_FULFILLED) {
-            // console.log('next_ring_group_id', next_ring_group_id);
             if (next_ring_group_id !== null) {
                 setRingGroupId(next_ring_group_id?.extension)
             }
@@ -276,7 +269,6 @@ const RingGroupManage = ({ navigation, route }) => {
 
                 // voicemail_id: RingGroupData[0].voicemail_id
             }
-            console.log("Create RIng Group :", dict)
             dispatch(Create_Ring_Group(dict));
         }
     }
@@ -304,7 +296,6 @@ const RingGroupManage = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetRouteToDestination :', apiGetRouteToDestination);
         if (apiGetRouteToDestination == STATUS_FULFILLED) {
-            // console.log('route_by_destination_list :', route_by_destination_list);
             if (route_by_destination_list !== null) {
                 setExtensionData(route_by_destination_list);
             }
@@ -328,15 +319,12 @@ const RingGroupManage = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetDestinationList :', apiGetDestinationList);
         if (apiGetDestinationList == STATUS_FULFILLED) {
-            console.log('destination_list', destination_list);
             if (destination_list !== null) {
-               console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
                 setDestinationList(destination_list)
                 const extensionNameViaId = destination_list?.find(item => item.value.toLowerCase() === (FailOverDesMaxWaitType + "_" + FailOverDesMaxWaitValue).toLowerCase())?.text || "";
                 setFailOverDesMaxWait(extensionNameViaId) // set extension name
                 const routeValByName = destination_list?.find(item => item.value.toLowerCase() === (FailOverDesMaxWaitType + "_" + FailOverDesMaxWaitValue).toLowerCase())?.optgroup || "";
                 setFailOverDesMaxWaitTypeName(routeValByName) // set his route capital
-               console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
                 GetAdminVoiceMail()
                
 
@@ -359,7 +347,6 @@ const RingGroupManage = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiGetMusicOnHoldFile :', apiGetMusicOnHoldFile);
         if (apiGetMusicOnHoldFile == STATUS_FULFILLED) {
-            // console.log('music_on_hold_file_list', music_on_hold_file_list);
             if (music_on_hold_file_list !== null) {
                 setMusicOnHoldFileList(music_on_hold_file_list)
             }
@@ -373,7 +360,6 @@ const RingGroupManage = ({ navigation, route }) => {
     useEffect(() => {
         if (MusicOnHoldFileId !== "" && music_on_hold_file_list !== null) {
             const data = music_on_hold_file_list?.find(item => item.recording_uuid === MusicOnHoldFileId)?.recording_name || "";
-            // console.log("data :", data)
             setMusicOnHoldFileName(data)
         }
         GetRingGroupDetails()
@@ -397,7 +383,6 @@ const RingGroupManage = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiRingGroupDetails :', apiRingGroupDetails);
         if (apiRingGroupDetails == STATUS_FULFILLED) {
-            console.log('ring_group_details', ring_group_details);
             if (ring_group_details !== null) {
                 setRingGroupData(ring_group_details)
                 storeAllRingGroupStateData(ring_group_details)
@@ -413,7 +398,6 @@ const RingGroupManage = ({ navigation, route }) => {
     }, [apiRingGroupDetails]);
 
     const storeAllRingGroupStateData = async(data) => {
-        console.log('ring_group_details', data);
         setRingGroupId(data[0]?.ring_group_extension)
         setRingGroupName(data[0]?.ring_group_name)
         setRingGroupStrategyValue(data[0]?.ring_group_strategy)
@@ -564,7 +548,6 @@ const RingGroupManage = ({ navigation, route }) => {
             ring_timeout: data,
             skill_set: SelectedExtensionRingTimeOut?.destination_skill_set,
         };
-        // console.log("UpdateExtensionRingTimeOut dict :", dict)
         await dispatch(Update_Ring_Group_Destination_List(dict));
         GetRingGroupDetails()
         setIsLoading(false)
@@ -591,7 +574,6 @@ const RingGroupManage = ({ navigation, route }) => {
             ring_group_uuid: SelectedExtensionRingTimeOut?.ring_group_uuid,
             skill_set: data,
         };
-        // console.log("UpdateExtensionSkillSet dict :", dict)
         await dispatch(Update_Ring_Group_Destination_List(dict));
         GetRingGroupDetails()
         setIsLoading(false)
@@ -614,7 +596,6 @@ const RingGroupManage = ({ navigation, route }) => {
             destination: AddSelectedExtensionId,
             destination_order: ExtensionListData?.length > 0 ? ExtensionListData.length + 1 : 1,
         };
-        // console.log("AddRingGroupExtensionList dict :", dict)
         setAddExtensionModel(!AddExtensionModel)
         await dispatch(Update_Ring_Group_Destination_List(dict));
         GetRingGroupDetails()
@@ -643,7 +624,6 @@ const RingGroupManage = ({ navigation, route }) => {
             destination: AddSelectedExternalNumber,
             destination_order: ExtensionListData?.length > 0 ? ExtensionListData.length + 1 : 1,
         };
-        // console.log("AddRingGroupExternalNumber dict :", dict)
         setAddExternalNumberModel(!AddExternalNumberModel)
         await dispatch(Update_Ring_Group_Destination_List(dict));
         GetRingGroupDetails()
@@ -711,7 +691,6 @@ const RingGroupManage = ({ navigation, route }) => {
             user_uuid: user_data?.data?.user_uuid,
             voicemail_id: RingGroupData[0].voicemail_id
         }
-        console.log("dict Update_Ring_Group :", dict)
         dispatch(Update_Ring_Group(dict));
     }
 
@@ -741,7 +720,6 @@ const RingGroupManage = ({ navigation, route }) => {
     useEffect(() => {
         Log('apiAudioFileList :', apiAudioFileList);
         if (apiAudioFileList == STATUS_FULFILLED) {
-            // console.log('audio_file_list :', audio_file_list);
             if (audio_file_list !== null) {
                 setAudioFileList(audio_file_list);
                 if (MainSelectedAudioFileId !== "") {
@@ -810,12 +788,11 @@ const RingGroupManage = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () =>{}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
                     onPress: () => {
-                        console.log('Yes Pressed')
                         DeleteExtension(item)
                     }
                 },
@@ -1579,22 +1556,17 @@ const RingGroupManage = ({ navigation, route }) => {
                     currentValue={FailOverDesMaxWaitValue}
                     bottomSheetRef={FailOverDesMaxWaitRef}
                     selectedValue={data => {
-                        console.log("setFailOverDesMaxWait",data)
                         setFailOverDesMaxWait(data)
                         setFailOverDesMaxWaitError("")
                     }}
                     selectedRoute={data => {
-                        console.log("setFailOverDesMaxWaitValue",data)
 
                         const parts = data.split('_');
                         setFailOverDesMaxWaitValue(parts[1])
                         setFailOverDesMaxWaitType(parts[0])
-                        console.log("setFailOverDesMaxWaitValue parts 1",parts[1])
-                        console.log("setFailOverDesMaxWaitType parts 0",parts[0])
 
                     }}
                     selectedRouteType={data => {
-                        console.log("setFailOverDesMaxWaitTypeName",data)
                         setFailOverDesMaxWaitTypeName(data)
                     }}
                 />

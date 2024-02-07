@@ -180,7 +180,6 @@ const ContactInformation = ({ route }) => {
     }
 
     if (Object.keys(errors).length > 0) {
-      console.log("Validation errors:", errors);
       setFirstNameError(errors.firstNameError || "");
       setLastNameError(errors.lastNameError || "");
       setEmailError(errors.emailError || "");
@@ -230,7 +229,6 @@ const ContactInformation = ({ route }) => {
       errors.stateError = '*Please enter a State';
     }
     if (Object.keys(errors).length > 0) {
-      console.log("Validation errors:", errors);
       setCompanyNameError(errors.companyNameError || "");
       setIndustryError(errors.industryError || "");
       setCompanyTypeError(errors.companyTypeError || "");
@@ -239,14 +237,11 @@ const ContactInformation = ({ route }) => {
       setStateError(errors.stateError || "");
       setValidThirdStep(true);
     } else {
-      console.log("ok company information", CompanyAddress);
-      console.log("ok company information", typeof CompanyAddress);
       setValidThirdStep(false);
     }
   };
 
   const onConfirm =() =>{
-    console.log("confirm")
   }
 
   return (
@@ -720,54 +715,43 @@ const ContactInformation = ({ route }) => {
                             debounce={200}
                             fetchDetails={true}
                             placeholder='Enter Address'
-                            getAddressText={(txt) => console.log("2", txt)}
-                            setAddressText={(txt) => console.log("1", txt)}
+                            getAddressText={(txt) => {}}
+                            setAddressText={(txt) => {}}
                             onPress={(data, details = null) => {
 
                               const addressComponents = details?.address_components || [];
                               addressComponents.forEach((add, index) => {
 
                                 if (add.types.find((element) => element == "subpremise") == "subpremise") {
-                                  console.log("Apartment subpremise :",add.long_name);
                                   setApartment(add.long_name)
                                 }
                         
                                 if (add.types.find((element) => element == "premise") == "premise") {
-                                  console.log("Apartment premise :",add.long_name);
                                   setApartment(add.long_name)
                                 }
-                                // if (add.types.find((element) => element == "route") == "route") {
-                                //   console.log("Apartment route :",add.long_name);
-                                //   setApartment(add.long_name)
-                                // }
 
                         
                                 if (add.types.find((element) => element == "postal_code") == "postal_code") {
-                                  console.log("Postal Code postal_code :",add.long_name);
                                     setPostalCode(add.long_name)
                                 }
                         
                                 if (add.types.find((element) => element == "administrative_area_level_1") == "administrative_area_level_1") {
-                                  console.log("State  administrative_area_level_1:",add.long_name);
                                   setState(add.long_name)
                                 }
                         
                                 if (add.types.find((element) => element == "administrative_area_level_2") == "administrative_area_level_2") {
-                                  console.log("City  administrative_area_level_2:",add.long_name);
                                   setCity(add.long_name)
                                 } else {
                                   if (add.types.find((element) => element == "administrative_area_level_3") == "administrative_area_level_3") {
-                                    console.log("City  administrative_area_level_3:",add.long_name);
                                     setCity(add.long_name)
                                   }
                                 }
                               })
-                              console.log("Address :", details?.formatted_address);
                               setCompanyAddress(details?.formatted_address)
                               setCompanyAddressError("")
                             }}
-                            onFail={error => console.log(error)}
-                            onNotFound={() => console.log('no results')}
+                            onFail={error => {}}
+                            onNotFound={() => {}}
                             query={{
                               key: REACT_APP_GOOGLE_API_KEY,
                               language: 'en',

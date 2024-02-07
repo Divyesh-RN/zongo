@@ -45,7 +45,6 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete, onAction }) => {
 
 
     const RouteValue = (item) => {
-        console.log("item: ", item?.did_action_type)
         if (item?.did_action_type == "ivr") {
             return "Auto Attendent";
         } else if (item?.did_action_type == "extention") {
@@ -346,7 +345,6 @@ const InBoundNumbers = ({ navigation }) => {
     useEffect(() => {
         Log('apiGetDestinationList :', apiGetDestinationList);
         if (apiGetDestinationList == STATUS_FULFILLED) {
-            console.log('destination_list', destination_list);
             if (destination_list !== null) {
                 setDestinationList(destination_list)
             }
@@ -535,12 +533,11 @@ const InBoundNumbers = ({ navigation }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
                     onPress: () => {
-                        console.log('Yes Pressed')
                         // DeleteBtn(item)
                     }
                 },
@@ -556,7 +553,6 @@ const InBoundNumbers = ({ navigation }) => {
         let filteredItems = items.filter((item) => {
             return String(item.did_number).toLowerCase().match(text) || String(item.description).toLowerCase().match(text)
         })
-        console.log("filteredItems :", filteredItems)
         if (!text || text === '') {
             setInBoundNumberList(listDataSource)
         } else if (!Array.isArray(filteredItems) && !filteredItems.length) {

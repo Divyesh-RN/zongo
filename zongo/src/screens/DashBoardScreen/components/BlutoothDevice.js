@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import BleManager from 'react-native-ble-manager';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { Log } from '../../../commonComponents/Log';
 const BleManagerModule = NativeModules.BleManager;
 const BleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
@@ -34,7 +35,6 @@ const BlutoothDevice = ({ blutoothData }) => {
     useEffect(() => {
         // start bluetooth manager
         BleManager.start({ showAlert: false }).then(() => {
-            console.log('BleManager initialized');
             handleGetConnectedDevices();
         });
     }, []);
@@ -43,7 +43,6 @@ const BlutoothDevice = ({ blutoothData }) => {
             'BleManagerStopScan',
             () => {
                 setIsScanning(false);
-                console.log('Scan is stopped');
             },
         );
     }, []);
@@ -52,7 +51,6 @@ const BlutoothDevice = ({ blutoothData }) => {
     useEffect(() => {
         // turn on bluetooth if it is not on
         // BleManager.enableBluetooth().then(() => {
-        //     console.log('Bluetooth is turned on!');
         // });
         // requestPermissions()
 
@@ -70,16 +68,13 @@ const BlutoothDevice = ({ blutoothData }) => {
 
     //         PermissionsAndroid.requestMultiple(permissions)
     //             .then(granted => {
-    //                 console.log("granted",granted)
     //                 if (
     //                     granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED &&
     //                     granted[PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT] === PermissionsAndroid.RESULTS.GRANTED &&
     //                     granted[PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN] === PermissionsAndroid.RESULTS.GRANTED
     //                 ) {
-    //                     console.log('User accepted all permissions');
     //                     // You can perform actions that require these permissions here
     //                 } else {
-    //                     console.log('One or more permissions were denied');
     //                     // Handle the scenario where permissions were denied
     //                 }
     //             })
@@ -91,17 +86,15 @@ const BlutoothDevice = ({ blutoothData }) => {
     // Android/iOS
     const handleGetConnectedDevices = () => {
         if (Platform.OS === 'android') {
-            console.log("ANDROID")
             BleManager.getBondedPeripherals([]).then(results => {
                 blutoothData(results)
             });
         }
         else {
-            console.log("IOS")
             BleManager.getConnectedPeripherals([]).then(results => {
                 blutoothData(results)
                 if (results.length === 0) {
-                    console.log('No connected bluetooth devices');
+                    Log('No connected bluetooth devices');
                 } else {
                     for (let i = 0; i < results.length; i++) {
                         let peripheral = results[i];
@@ -117,11 +110,9 @@ const BlutoothDevice = ({ blutoothData }) => {
 
     //Android Only 
     // const handleGetConnectedDevices = () => {
-    //     console.log("Handle getConnectedDevices Android Only")
     //     BleManager.getBondedPeripherals([]).then(results => {
     //         blutoothData(results)
     // if (results.length === 0) {
-    //     console.log('No connected bluetooth devices');
     // } else {
     //     for (let i = 0; i < results.length; i++) {
     //         let peripheral = results[i];
@@ -137,7 +128,6 @@ const BlutoothDevice = ({ blutoothData }) => {
     //     if (!isScanning) {
     //         BleManager.scan([], 5, true)
     //             .then(() => {
-    //                 console.log('Scanning...');
     //                 setIsScanning(true);
     //             })
     //             .catch(error => {

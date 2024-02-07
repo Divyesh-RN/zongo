@@ -86,19 +86,7 @@ const ManageUser = ({ navigation, route }) => {
     const error_message = useSelector(state => state.userModuleRedux.error_message);
     const user_data = useSelector(state => state.userRedux.user_data);
 
-    useEffect(() => {
-        // const ws = new WebSocket(WEBSOCKET_URL);
-        // ws.onopen = () => {
-        //     console.log("WebSocket connection opened");
-        // };
-        // ws.onclose = () => {
-        //     console.log("WebSocket connection closed");
-        // };
-        // setSocket(ws);
-        // return () => {
-        //     ws.close();
-        // };
-    }, []);
+   
     const GetUserDetails = () => {
         if (user_data !== null) {
             var dict = {};
@@ -206,8 +194,6 @@ const ManageUser = ({ navigation, route }) => {
                 setEmail(user_details?.user?.email)
                 setFirstName(user_details?.user?.first_name)
                 setLastName(user_details?.user?.last_name)
-                console.log("ProfileImURI 1 ", user_details?.user?.profile_image)
-                console.log("ProfileImURI 1 ", typeof user_details?.user?.profile_image)
                 if (user_details?.user?.profile_image !== null) {
                     setProfileImgURI(IMAGE_URL + user_details?.user?.profile_image)
                 }
@@ -215,14 +201,12 @@ const ManageUser = ({ navigation, route }) => {
                 calledrId.value = user_details?.user?.outbound_caller_id_uuid,
                     calledrId.label = user_details?.user?.did_number
                 if (user_details?.user?.outbound_caller_id_uuid !== null && user_details?.user?.outbound_caller_id !== null) {
-                    console.log("calledrId :", calledrId)
                     setCallerId(calledrId)
                 }
                 var extension = {};
                 extension.extension_uuid = user_details?.user?.assign_extension
                 extension.extension = user_details?.user?.extension
                 if (user_details?.user?.assign_extension !== null && user_details?.user?.extension !== null) {
-                    console.log("extension :", extension)
                     setExtension(extension)
                 }
 
@@ -231,26 +215,22 @@ const ManageUser = ({ navigation, route }) => {
                     var timezone = {};
                     timezone.time_zone_uuid = user_details?.user?.time_zone
                     timezone.timezone_name = user_details?.user?.timezone_name
-                    console.log("timezone :", timezone)
                     setTimeZone(timezone)
                 }
                 if (user_details?.user?.role_uuid !== null && user_details?.user?.role !== null) {
                     var role = {};
                     role.role_uuid = user_details?.user?.role_uuid
                     role.role_name = user_details?.user?.role
-                    console.log("role :", role)
                     setRole(role)
                 }
                 if (user_details?.user?.group_name !== null) {
                     var userGroup = {};
                     userGroup.name = user_details?.user?.group_name
-                    console.log("userGroup :", userGroup)
                     setGroup(userGroup)
                 }
                 if (user_details?.user?.language !== null) {
                     var language = {};
                     language.language = user_details?.user?.language
-                    console.log("language :", language)
                     setLanguage(language)
                 }
 
@@ -312,7 +292,6 @@ const ManageUser = ({ navigation, route }) => {
         Log('apiGetRoleDp :', apiGetRoleDp);
         if (apiGetRoleDp == STATUS_FULFILLED) {
             if (role_list !== null) {
-                console.log("role_list :", role_list)
             }
         } else if (apiGetRoleDp == STATUS_REJECTED) {
             if (isError) {
@@ -326,7 +305,6 @@ const ManageUser = ({ navigation, route }) => {
         Log('apiGetGroupList :', apiGetGroupList);
         if (apiGetGroupList == STATUS_FULFILLED) {
             if (group_list !== null) {
-                console.log("group_list :", group_list)
             }
         } else if (apiGetGroupList == STATUS_REJECTED) {
             if (isError) {
@@ -362,7 +340,6 @@ const ManageUser = ({ navigation, route }) => {
         Log('apiGetLanguageList :', apiGetLanguageList);
         if (apiGetLanguageList == STATUS_FULFILLED) {
             if (language_list !== null) {
-                console.log("language_list :", language_list)
             }
         } else if (apiGetLanguageList == STATUS_REJECTED) {
             if (isError) {
@@ -412,14 +389,12 @@ const ManageUser = ({ navigation, route }) => {
             body.append('main_user_uuid', user_data?.data?.user_uuid)
             body.append('useruuid', user_details?.user?.uuid)
             if (ProfileImg !== null) {
-                console.log("Updated Image", ProfileImg)
                 body.append('file', ProfileImg[0]);
                 body.append('fileName', ProfileImg[0]?.name)
             }
             else {
                 body.append('profile_image', user_details?.user?.profile_image)
             }
-            console.log("body Update User", body)
             dispatch(Update_User(body));
 
             // role change event send
@@ -456,7 +431,6 @@ const ManageUser = ({ navigation, route }) => {
                 allowMultiSelection: false
             });
             const maxSize = 10 * 1024 * 1024;
-            console.log("result: ", result)
             setProfileImg(result)
             setProfileImgURI(result[0]?.uri)
             // if (result[0].size < maxSize) {
@@ -493,12 +467,10 @@ const ManageUser = ({ navigation, route }) => {
         //                 includeBase64: false,
         //                 compressImageQuality: 0.7
         //             }).then(images => {
-        //                 console.log("Selected Image  " + JSON.stringify(images))
         //                 setProfileImg(images)
         //                 setProfileImgURI(images?.path)
         //             }).catch((error) => {
 
-        //                 console.log("error:", error)
         //             });
         //         }
         //     },
@@ -514,11 +486,9 @@ const ManageUser = ({ navigation, route }) => {
         //                 multipleShot: false,
         //                 compressImageQuality: 0.7
         //             }).then(images => {
-        //                 console.log("Selected Image Camera : " + JSON.stringify(images))
         //                 setProfileImg(images)
         //                 setProfileImgURI(images?.path)
         //             }).catch((error) => {
-        //                 console.log(error)
         //             });
 
         //         },
@@ -604,7 +574,6 @@ const ManageUser = ({ navigation, route }) => {
 
                             elevation: 2,
                         }}>
-                            {console.log("ProfileImURI :", ProfileImURI)}
                             <Image
                                 style={{ width: 75, height: 75, borderRadius: 100 }}
                                 source={{ uri: ProfileImURI }}

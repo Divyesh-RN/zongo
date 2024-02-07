@@ -112,7 +112,6 @@ const Availability = ({ navigation }) => {
                         id: Id
                     } : item
                 );
-                console.log("updatedItems ", updatedItems)
 
                 setTuesdayData(updatedItems);
             }

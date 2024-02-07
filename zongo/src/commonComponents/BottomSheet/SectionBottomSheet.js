@@ -7,8 +7,8 @@ import { black, bgColor01, red, greenPrimary, disableColor } from '@constants/Co
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const SectionBottomSheet = ({ data = [], bottomSheetRef = "", selectedValue, headerTitle = "", currentValue = "", selectedRoute, selectedRouteType }) => {
-console.log("currentValue :",currentValue)
     const [selectedNumber, setSelectedNumber] = useState("");
+    
     const convertToSectionListData = (data) => {
         const sectionMap = {};
 

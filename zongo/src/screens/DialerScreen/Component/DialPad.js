@@ -12,7 +12,6 @@
 
 //   const handleDial = () => {
 //     // Perform dialing action with the phone number
-//     console.log(`Dialing ${phoneNumber}`);
 //     // Actual calling functionalities might not be achievable directly in React Native.
 //   };
 
@@ -188,11 +187,12 @@ import { HEIGHT, WIDTH } from '../../../constants/ConstantKey';
 import { bgColor01, black, greenPrimary, grey, midGreen, paleGreen, white } from '../../../constants/Color';
 import { FontSize, MEDIUM, SEMIBOLD } from '../../../constants/Fonts';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
+import { Log } from '../../../commonComponents/Log';
 const CustomBottomSheet = ({ onPress = {}, bottomSheetRef = "", }) => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [showHistory, setShowHistory] = useState(false);
     const handleDial = () => {
-        console.log(`Dialing ${phoneNumber}`);
+        Log(`Dialing ${phoneNumber}`);
     };
 
     const appendNumber = (num) => {

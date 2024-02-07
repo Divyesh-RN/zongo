@@ -67,7 +67,6 @@ const DncBulkImport = ({ navigation }) => {
                 allowMultiSelection: true
             });
             const maxSize = 10 * 1024 * 1024;
-            console.log("result: ", result)
             if (result[0].size < maxSize) {
                 await setSelectedCsvFile(result);
                 setSelectedCsvFileName(result[0]?.name);
@@ -89,7 +88,6 @@ const DncBulkImport = ({ navigation }) => {
         Log('apiImportDncCsv :', apiImportDncCsv);
         if (apiImportDncCsv == STATUS_FULFILLED) {
             if (dnc_csv_file !== null) {
-                console.log("dnc_csv_file :", dnc_csv_file)
                 var dict = {
                     createdby: user_data?.data?.user_uuid,
                     filename: dnc_csv_file?.filename
@@ -108,9 +106,7 @@ const DncBulkImport = ({ navigation }) => {
         Log('apiDncCsvMappingFields :', apiDncCsvMappingFields);
         if (apiDncCsvMappingFields == STATUS_FULFILLED) {
             if (dnc_csv_file_map_fields !== null) {
-                console.log("dnc_csv_file_map_fields :", dnc_csv_file_map_fields)
                 const data = dnc_csv_file_map_fields?.csvheader.map(header => ({ label: header, value: header }));
-                console.log("finl mapp :", data)
                 setMapData(data)
             }
         } else if (apiDncCsvMappingFields == STATUS_REJECTED) {
@@ -134,13 +130,10 @@ const DncBulkImport = ({ navigation }) => {
             body.append('main_admin_uuid', user_data?.data?.main_uuid)
             body.append('user_uuid', user_data?.data?.user_uuid)
             body.append('file', result[0]);
-            console.log("CSV body ", body)
             dispatch(Import_Dnc__Csv(body));
         }
     }
     const handleImport = () => {
-        console.log("Number",Number)
-        console.log("Number",typeof Number)
         if (String(Number) == "") {
             setNumberError("* Please select number")
 
@@ -165,7 +158,6 @@ const DncBulkImport = ({ navigation }) => {
                     description: String(Description)
                 }
             }
-            console.log("Import DIct DNC", dict)
             dispatch(Insert_Dnc_Csv_Data(dict))
         }
 

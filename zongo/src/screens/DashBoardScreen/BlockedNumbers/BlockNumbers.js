@@ -64,7 +64,6 @@ const ExpandableComponent = ({ item, onClickFunction, onDelete, onEdit, onAction
 
         ]}>
             <TouchableOpacity onPressOut={() => {
-                console.log("our")
             }}
                 onPress={() => {
                     if (isSelection == false) {
@@ -323,7 +322,6 @@ const BlockNumbers = ({ navigation }) => {
     useEffect(() => {
         Log('apiGetExportBlockedNumbers :', apiGetExportBlockedNumbers);
         if (apiGetExportBlockedNumbers == STATUS_FULFILLED) {
-            console.log("export_blocked_numbers :", export_blocked_numbers)
             if (export_blocked_numbers !== null) {
 
                 saveAndDownloadCSV(export_blocked_numbers);
@@ -350,11 +348,6 @@ const BlockNumbers = ({ navigation }) => {
         const d = `${RNFS.ExternalStorageDirectoryPath}/234.csv`;
         const s = `${RNFetchBlob.fs.dirs}`;
 
-        console.log("csvData", csvData);
-        console.log("filePath :", filePath);
-        console.log("n :", m);
-        console.log("d :", d);
-
         const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
         );
@@ -363,13 +356,10 @@ const BlockNumbers = ({ navigation }) => {
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             const fs = RNFetchBlob.fs;
-            console.log("fs", fs)
             const dirs = RNFetchBlob.fs.dirs;
-            console.log("dirs", dirs)
 
             const realPath = "file:///storage/emulated/0/DCIM/zongo";
             var destPath = dirs.DCIMDir + "/zongo/";
-            console.log("destPath", destPath)
 
             RNFetchBlob.fs.isDir(destPath)
                 .then(async (isDir) => {
@@ -382,25 +372,23 @@ const BlockNumbers = ({ navigation }) => {
                                         Alert.alert("Download Successfully", destPath)
                                     })
                                     .catch((err) => {
-                                        console.log("error: ", err)
+                                        Log("error: ", err)
                                     })
                             })
-                            .catch((err) => { console.log("error create: ", err) })
+                            .catch((err) => { Log("error create: ", err) })
                     }
                     else {
-                        console.log("update");
                         let cur_path = destPath + 'BlockNumber_' + '.csv';
                         try {
                             await fs.cp(realPath, cur_path);
-                            console.log("update");
                             Alert.alert("Download Successfully", destPath);
                         } catch (err) {
-                            console.log("error: ", err, cur_path, realPath);
+                            Log("error: ", err, cur_path, realPath);
                         }
                     }
                 })
         } else {
-            console.log('Permission denied');
+            Log('Permission denied');
         }
         // try {
         //     await RNFS.downloadFile(filePath, csvData, 'utf8');
@@ -424,7 +412,6 @@ const BlockNumbers = ({ navigation }) => {
         //     RNFetchBlob.config(config)
         //         .fetch('GET', `file://${filePath}`)
         //         .then((res) => {
-        //             console.log('File downloaded:', res.path());
         //         })
         //         .catch((error) => {
         //             console.error('Error downloading file:', error);
@@ -441,10 +428,8 @@ const BlockNumbers = ({ navigation }) => {
         //     showAppsToView:true
         // })
         //     .then((res) => {
-        //         console.log("res", res);
         //     })
         //     .catch((err) => {
-        //         console.log("err", err);
         //     });
         // try {
         //   await RNFS.writeFile(filePath, csvData, 'utf8');
@@ -483,19 +468,17 @@ const BlockNumbers = ({ navigation }) => {
     };
 
     const handleDeleteBtn = (item) => {
-        console.log("itet", item);
         Alert.alert(
             item?.number,
             'Are you sure to delete this block number?',
             [
                 {
                     text: 'No',
-                    onPress: () => console.log('No Pressed'), style: 'cancel'
+                    onPress: () => {}, style: 'cancel'
                 },
                 {
                     text: 'Yes',
                     onPress: () => {
-                        console.log('Yes Pressed')
                         var dict = {
                             blocked_number_uuid: item?.blocked_number_uuid,
                             createdby: user_data?.data?.user_uuid
@@ -514,7 +497,6 @@ const BlockNumbers = ({ navigation }) => {
         let filteredItems = items.filter((item) => {
             return String(item.did_number).toLowerCase().match(text) || String(item.description).toLowerCase().match(text)
         })
-        console.log("filteredItems :", filteredItems)
         if (!text || text === '') {
             setBlockedNumbersList(listDataSource)
         } else if (!Array.isArray(filteredItems) && !filteredItems.length) {
@@ -550,11 +532,9 @@ const BlockNumbers = ({ navigation }) => {
     };
 
     const handleLongPress = (item) => {
-        console.log("item :", item)
         toggleSelection(item);
     };
     const handleRegularPress = (item) => {
-        console.log("item :", item)
         toggleSelection(item);
     };
 
@@ -639,17 +619,15 @@ const BlockNumbers = ({ navigation }) => {
                 [
                     {
                         text: 'Ok',
-                        onPress: () => console.log('No Pressed'), style: 'cancel'
+                        onPress: () =>{}, style: 'cancel'
                     },
                     {
                         text: 'Yes',
                         onPress: () => {
-                            console.log('Yes Pressed')
                             var dict = {
                                 createdby: user_data?.data?.user_uuid,
                                 selectd_blocked_number: selectedList
                             }
-                            console.log("MULTIPLE DELETE DICT", dict)
                             dispatch(Delete_Multiple_Blocked_Numbers(dict))
                         }
                     },
@@ -664,7 +642,7 @@ const BlockNumbers = ({ navigation }) => {
                 [
                     {
                         text: 'Ok',
-                        onPress: () => console.log('No Pressed'), style: 'cancel'
+                        onPress: () => {}, style: 'cancel'
                     },
                 ],
                 { cancelable: true },
@@ -680,7 +658,6 @@ const BlockNumbers = ({ navigation }) => {
                 createdby: user_data?.data?.user_uuid,
                 selectd_blocked_number: selectedList
             }
-            console.log("SELECTED EXPORT DICT", dict)
             dispatch(Get_Export_Blocked_Numbers(dict))
         } else {
             const All = BlockedNumbersList.map(item => item.blocked_number_uuid);
@@ -688,7 +665,6 @@ const BlockNumbers = ({ navigation }) => {
                 createdby: user_data?.data?.user_uuid,
                 selectd_blocked_number: All
             }
-            console.log("ALL EXPORT DICT", dict)
             dispatch(Get_Export_Blocked_Numbers(dict))
 
         }

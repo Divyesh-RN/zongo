@@ -60,7 +60,6 @@ const BulkImport = ({ navigation }) => {
                 allowMultiSelection: true
             });
             const maxSize = 10 * 1024 * 1024;
-            console.log("result: ", result)
             if (result[0].size < maxSize) {
                 await setSelectedCsvFile(result);
                 setSelectedCsvFileName(result[0]?.name);
@@ -82,7 +81,6 @@ const BulkImport = ({ navigation }) => {
         Log('apiBlockNumbersCsv :', apiBlockNumbersCsv);
         if (apiBlockNumbersCsv == STATUS_FULFILLED) {
             if (blocked_numbers_file !== null) {
-                console.log("blocked_numbers_file :", blocked_numbers_file)
                 var dict = {
                     createdby: user_data?.data?.user_uuid,
                     filename: blocked_numbers_file?.filename
@@ -101,9 +99,7 @@ const BulkImport = ({ navigation }) => {
         Log('apiGetNumbersMapFields :', apiGetNumbersMapFields);
         if (apiGetNumbersMapFields == STATUS_FULFILLED) {
             if (map_blocked_numbers !== null) {
-                console.log("map_blocked_numbers :", map_blocked_numbers)
                 const data = map_blocked_numbers?.csvheader.map(header => ({ label: header, value: header }));
-                console.log("finl mapp :", data)
                 setMapData(data)
             }
         } else if (apiGetNumbersMapFields == STATUS_REJECTED) {
@@ -127,13 +123,10 @@ const BulkImport = ({ navigation }) => {
             body.append('main_admin_uuid', user_data?.data?.main_uuid)
             body.append('user_uuid', user_data?.data?.user_uuid)
             body.append('file', result[0]);
-            console.log("CSV body ", body)
             dispatch(Import_Numbers_Csv(body));
         }
     }
     const handleImport = () => {
-        console.log("Number",Number)
-        console.log("Number",typeof Number)
         if (String(Number) == "") {
             setNumberError("* Please select number")
 
@@ -153,7 +146,6 @@ const BulkImport = ({ navigation }) => {
                     description: String(Description)
                 }
             }
-            console.log("Import DIct", dict)
             dispatch(Import_Numbers_Csv_Data(dict))
         }
 

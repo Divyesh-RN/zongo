@@ -56,7 +56,6 @@ const DashBoard = ({ navigation }) => {
         if (user_extension_data !== null) {
           Log("GET USER EXTENSION DATA", user_extension_data.data[0])
           DeviceInfo.getIpAddress().then((ip) => {
-            console.log("IpAddress", ip)
             setDisplayName(user_data?.data?.first_name)
             setPrivateIdentity(user_extension_data.data[0]?.extension)
             setPublicIdentity(`sip:${user_extension_data?.data[0]?.extension}@${user_extension_data?.data[0]?.domain_name}`)
@@ -114,7 +113,7 @@ const DashBoard = ({ navigation }) => {
 
       PermissionsAndroid.requestMultiple(permissions)
         .then(granted => {
-          console.log("granted", granted)
+          Log("granted", granted)
           if (
             granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED &&
             granted[PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT] === PermissionsAndroid.RESULTS.GRANTED &&
@@ -123,9 +122,9 @@ const DashBoard = ({ navigation }) => {
             granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED
 
           ) {
-            console.log('User accepted all  permissions');
+            Log('User accepted all  permissions');
           } else {
-            console.log('One or more permissions were denied');
+            Log('One or more permissions were denied');
             // requestPermissions()
           }
         })

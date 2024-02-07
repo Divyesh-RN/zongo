@@ -78,7 +78,6 @@ function HomeTabs() {
   const userRole = user_data?.data?.role;
   const permission = user_data?.data?.role_permission
   const tab = user_data?.data?.tab_per
-console.log("user_-data",user_data)
   if (user_data !== null) {
     DialerStatus = tab?.find(tab => tab.tab_name === "Web Phone" && tab.status === "enable");
     CommunicationsStatus = tab?.find(tab => tab.tab_name === "Commumication" && tab.status === "enable");
@@ -233,7 +232,6 @@ function CustomDrawerContent({ navigation }) {
 
   const user_data = useSelector(state => state.userRedux.user_data);
   const { activeArray } = useAppContext();
-  console.log("activeArray :", activeArray)
   return (
     <View style={{ marginHorizontal: 20, paddingVertical: 20 }}>
       <FlatList
