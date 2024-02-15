@@ -16,6 +16,7 @@ import blockNumberReducer from '../reducers/blockNumberReducer';
 import dncListReducer from '../reducers/DncListReducer';
 import callCampaignReducer from '../reducers/callCampaignReducer';
 import userModuleReducer from '../reducers/userModuleReducer';
+import InternalChatReducer from '../reducers/internalChatReducer';
 
 const persistConfig = {
 	key: 'root',
@@ -28,15 +29,16 @@ let rootReducer = combineReducers({
 	contactRedux: contactReducer,
 	callRedux: callsReducer,
 	ringGroupRedux: ringGroupReducer,
-	audioRedux:audioReducer,
-	generalRedux:generalReducer,
-	inboundRedux:inboundReducer,
+	audioRedux: audioReducer,
+	generalRedux: generalReducer,
+	inboundRedux: inboundReducer,
 	AutoAttendantRedux: autoAttendantReducer,
 	TimeBasedRoutingRedux: timeBasedRoutingReducer,
 	blockNumberRedux: blockNumberReducer,
 	dncListRedux: dncListReducer,
 	callCampaignRedux: callCampaignReducer,
-	userModuleRedux:userModuleReducer
+	userModuleRedux: userModuleReducer,
+	internalChatRedux: InternalChatReducer
 })
 
 
@@ -47,5 +49,7 @@ export default configureStore({
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
 			serializableCheck: false,
-		})
+			immutableCheck: false,
+		}),
+	devTools: process.env.NODE_ENV !== 'production'
 })

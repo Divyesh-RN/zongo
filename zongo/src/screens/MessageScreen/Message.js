@@ -1,5 +1,5 @@
 import { Text, Image, TouchableOpacity, StyleSheet, View, FlatList, Alert } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderView from '../../commonComponents/HeaderView';
 import { pixelSizeHorizontal } from '../../commonComponents/ResponsiveScreen';
 import HeaderBackView from '../../commonComponents/HeaderBackView';
@@ -15,6 +15,7 @@ import { resetApiStatus } from '../../redux/reducers/messageReducer';
 import { STATUS_FULFILLED, STATUS_REJECTED } from '../../constants/ConstantKey';
 import { Sms_Chat_Contact_List } from '../../redux/api/Api';
 import global from '../../constants/Global';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Message = ({ navigation }) => {
 
@@ -51,8 +52,9 @@ const Message = ({ navigation }) => {
     }
   }, [apiSmsChatContactList]);
 
-  useEffect(() => {
-    var dict = {};
+  useFocusEffect(
+    useCallback(() => {
+      var dict = {};
     dict.from_number = "+17869210666",
       dict.main_uuid = user_data?.data?.main_uuid,
       dict.user_type = "admin",
@@ -61,14 +63,8 @@ const Message = ({ navigation }) => {
       dict.createdby = user_data?.data?.user_uuid
 
     dispatch(Sms_Chat_Contact_List(dict))
-  }, [])
-
-
-  const openBottomSheet = () => {
-    if (bottomSheetRef.current) {
-      bottomSheetRef.current.open();
-    }
-  };
+    }, [])
+  );
 
   return (
     <>

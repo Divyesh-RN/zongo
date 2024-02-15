@@ -57,6 +57,10 @@ import Crm from '../screens/DashBoardScreen/Crm/Crm';
 import Calendar from '../screens/DashBoardScreen/Calender/Calendar';
 import { AppProvider, useAppContext } from '../commonComponents/Context/AppContext';
 import { COMMUNICATIONS } from '../constants/DATA/DrawerData';
+import InternalChat from '../screens/DashBoardScreen/InternalChat/InternalChat';
+import UserChatLog from '../screens/DashBoardScreen/InternalChat/UserChatLog';
+import GroupChatLog from '../screens/DashBoardScreen/InternalChat/GroupChatLog';
+import GroupInfo from '../screens/DashBoardScreen/InternalChat/GroupInfo';
 
 const { createBottomTabNavigator } = require('@react-navigation/bottom-tabs');
 const { createNativeStackNavigator } = require('@react-navigation/native-stack');
@@ -78,7 +82,7 @@ function HomeTabs() {
   const userRole = user_data?.data?.role;
   const permission = user_data?.data?.role_permission
   const tab = user_data?.data?.tab_per
-  if (user_data !== null) {
+  if (user_data !== null && userRole !== "admin" ) {
     DialerStatus = tab?.find(tab => tab.tab_name === "Web Phone" && tab.status === "enable");
     CommunicationsStatus = tab?.find(tab => tab.tab_name === "Commumication" && tab.status === "enable");
     EmailStatus = permission?.find(permission => permission.slug === "email" && permission.status === "enable");
@@ -222,6 +226,10 @@ function AppStacks() {
       <Stack.Screen name="Error" component={Error} />
       <Stack.Screen name="Crm" component={Crm} />
       <Stack.Screen name="Calendar" component={Calendar} />
+      <Stack.Screen name="InternalChat" component={InternalChat} />
+      <Stack.Screen name="UserChatLog" component={UserChatLog} />
+      <Stack.Screen name="GroupChatLog" component={GroupChatLog} />
+      <Stack.Screen name="GroupInfo" component={GroupInfo} />
     </Stack.Navigator>
   );
 }

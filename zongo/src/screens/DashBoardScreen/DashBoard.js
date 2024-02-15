@@ -19,6 +19,7 @@ import DeviceInfo from 'react-native-device-info';
 import { useAppContext } from '../../commonComponents/Context/AppContext';
 import { CALENDAR, COMMUNICATIONS, CRM } from '../../constants/DATA/DrawerData';
 import Global from '../../constants/Global';
+import FloatingBtn from '../../commonComponents/FloatingBtn';
 // import WebSocket from 'ws';
 
 
@@ -37,6 +38,7 @@ const DashBoard = ({ navigation }) => {
   const [WebsoketUrl, setWebsoketUrl] = useState('wss://zongopbx.com:7443');
 
   const bottomSheetRef = useRef(null);
+  
   const user_data = useSelector(state => state.userRedux.user_data);
   const user_extension_data = useSelector(state => state.userRedux.user_extension_data);
   const apiGetUserExtension = useSelector(state => state.userRedux.apiGetUserExtension);
@@ -44,9 +46,17 @@ const DashBoard = ({ navigation }) => {
   const isError = useSelector(state => state.userRedux.isError);
   const error_message = useSelector(state => state.userRedux.error_message);
   const tab = user_data?.data?.tab_per
-  const CommunicationsStatus = tab?.find(tab => tab.tab_name === "Commumication" && tab.status === "enable");
-  const CrmStatus = tab?.find(tab => tab.tab_name === "Contact Management" && tab.status === "enable");
-  const CalandarStatus = tab?.find(tab => tab.tab_name === "Calendar" && tab.status === "enable");
+  var CommunicationsStatus = true;
+  var CrmStatus = true;
+  var CalandarStatus = true;
+ 
+  if (user_data?.data?.role !== "admin") {
+    CommunicationsStatus = tab?.find(tab => tab.tab_name === "Commumication" && tab.status === "enable");
+    CrmStatus = tab?.find(tab => tab.tab_name === "Contact Management" && tab.status === "enable");
+    CalandarStatus = tab?.find(tab => tab.tab_name === "Calendar" && tab.status === "enable");
+  }
+
+
 
   useFocusEffect(
     useCallback(() => {
@@ -93,9 +103,6 @@ const DashBoard = ({ navigation }) => {
       }
     }, [])
   );
-
-
-  
 
   const Loading = val => {
     setIsLoading(val);
@@ -221,6 +228,9 @@ const DashBoard = ({ navigation }) => {
         {RegisterData !== null ?
           <RegisterAccount toggleLoading={Loading} registerData={RegisterData} />
           : null}
+          {/* <FloatingBtn iconName={"message-text"} onPress={() =>{
+            navigate("InternalChat")
+          }}/> */}
       </HeaderView>
       {isLoading && <LoadingView />}
 

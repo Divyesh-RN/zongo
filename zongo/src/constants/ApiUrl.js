@@ -2,6 +2,8 @@ export const BASE_URL = 'https://zongopbx.com/v1/'
 
 export const AUDIO_URL = "https://zongopbx.com/uploads/recording/"
 export const IMAGE_URL = "https://zongopbx.com/uploads/profiles/"
+export const COMMAN_IMAGE_URL = "https://zongopbx.com/uploads/comman/"
+export const INTERNAL_CHAT_IMAGE_URL = "https://zongopbx.com/uploads/internal_chat/xTce64tEYZ/"
 export const WEBSOCKET_URL = "ws://zongopbx.com/"
 //AUTH APIS
 export const  LOGIN = "login"
@@ -134,3 +136,16 @@ export const GET_STATES = "numbers/states"
 export const GET_AREA_CODE_BY_STATE = "numbers/get-area-code"
 export const GET_PLAN_ALL_LIST = "plan/plan-all-list"
 export const GET_PERTICULAR_ROLE_PERMISSION = "permission/get-particular-role-permission"
+
+// INTERNAL CHAT 
+export const GET_USER_LIST_CHAT = "internal-chat/get-user-list"
+export const GET_GROUP_LIST_CHAT = "internal-chat/get-group-list"
+export const GET_INTERNAL_CHAT_LOG_USER = "internal-chat/get-internal-chat-log"
+export const GET_GROUP_USER_DETAILS = "internal-chat/get-group-user-details"
+export const UPDATE_GROUP = "internal-chat/update-group"
+export const UPDATE_GROUP_NAME = "internal-chat/update-group-name"
+export const DELETE_GROUP_MEMBER = "internal-chat/delete-group-member"
+export const CREATE_GROUP = "internal-chat/create-group"
+export const SEND_MESSAGE = "internal-chat/send-message"
+export const SEND_CHAT_FILE = "internal-chat/send-chat-file"
+export const GET_MESSAGE_NOTIFICATION = "internal-chat/get-message-notification"

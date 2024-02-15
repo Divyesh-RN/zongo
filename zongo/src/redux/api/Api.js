@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiManager from "../../commonComponents/ApiManager";
-import { BASE_URL, BLOCKED_NUMBERS_LIST, CHECK_ASSIGN_MODULE, CHECK_USER_EMAIL, COPY_TIME_SLOT, COPY_USER_TIME_SLOT, CREATE_AUTO_ATTENDANT, CREATE_BLOCKED_NUMBERS, CREATE_DNC_LIST, CREATE_EXTENSION, CREATE_RING_GROUP, CREATE_TIME_SLOT, CREATE_USER, DELETE_AUTO_ATTENDANT, DELETE_BLOCKED_NUMBERS, DELETE_DNC_LIST, DELETE_MOH_FILE, DELETE_MULTIPLE_BLOCKED_NUMBERS, DELETE_MULTIPLE_DNC_LIST, DELETE_RECORDING_FILE, DELETE_RING_GROUP, DELETE_RING_GROUP_DESTINATION_LIST, DELETE_TIME_BASED_ROUTING, DELETE_TIME_SLOT, DELETE_TIME_SLOT_EVENT, DELETE_USER_TIME_SLOT, EXTENSION_UPDATE_TIME_SLOT, GET_ADMIN_VOICE_MAIL, GET_AREA_CODE_BY_STATE, GET_AREA_CODE_LIST, GET_AUTO_ATTENDANT_DETAILS, GET_AUTO_ATTENDANT_LIST, GET_AUTO_ATTENDANT_NEXT_ID, GET_BLOCKED_NUMBERS_SETTING, GET_BUSINESS_HOURS_TIME_DETAILS, GET_CALL_CAMPAIGN_LIST, GET_CONTACT_LIST, GET_DESTINATION_LIST, GET_DID_ROUTING, GET_DNC_LIST, GET_DNC_MAPPING_FIELDS, GET_EXPORT_BLOCKED_NUMBERS, GET_EXTENSION_DETAILS, GET_EXTENSION_LIST_DROPDOWN, GET_INBOUND_NUMBERS_LIST, GET_LANGUAGE_LIST, GET_LOCAL_EXTENSION, GET_MUSIC_ON_HOLD_FILE, GET_NEXT_EXTENSION, GET_NEXT_RING_GROUP_ID, GET_NUMBER, GET_NUMBERS_MAP_FIELDS, GET_NUMBER_LIST_DROPDOWN, GET_PERTICULAR_ROLE_PERMISSION, GET_PLAN_ALL_LIST, GET_PREFIX, GET_RECORDING_FILE, GET_RECORDING_LIST, GET_RING_GROUP_DETAILS, GET_RING_GROUP_LIST, GET_ROLE_LIST_DP, GET_ROUTE_TO_DESTINATION, GET_SMS_CHAT, GET_STATES, GET_TIMEZONE_LIST, GET_TIME_BASED_ROUTING_DETAILS, GET_TIME_BASED_ROUTING_LIST, GET_TIME_SLOT_DETAILS_EVENTS, GET_TIME_SLOT_EVENTS_PERTICULAR, GET_USER_AVAILABILITY_DETAILS, GET_USER_AVAILABILITY_TIME_DETAILS, GET_USER_DETAILS, GET_USER_EXTENSION, GET_USER_LIST, GROUP_LIST, IMPORT_DNC_CSV, IMPORT_NUMBERS_CSV, INSERT_DNC_CSV_DATA, INSERT_NUMBER_CSV_DATA, LOGIN, SEND_SMS, SMS_CONTACT_LIST, UPDATE_AUTO_ATTENDANT, UPDATE_AUTO_ATTENDANT_OPTIONS, UPDATE_BLOCKED_NUMBERS, UPDATE_BLOCKED_NUMBERS_SETTING, UPDATE_EXTENSION, UPDATE_INBOUND_NUMBERS_LIST, UPDATE_INBOUND_NUMBERS_ROUTE, UPDATE_MOH_FILE, UPDATE_RECORDING_FILE, UPDATE_RING_GROUP, UPDATE_RING_GROUP_DESTINATION_LIST, UPDATE_TIME_CONDITION, UPDATE_TIME_SLOT, UPDATE_TIME_SLOT_WEEKLY, UPDATE_USER, UPDATE_USER_GROUP, UPLOAD_RECORDING_FILE, USER_CREATE_TIME_SLOT, USER_DELETE } from "../../constants/ApiUrl";
+import { BASE_URL, BLOCKED_NUMBERS_LIST, CHECK_ASSIGN_MODULE, CHECK_USER_EMAIL, COPY_TIME_SLOT, COPY_USER_TIME_SLOT, CREATE_AUTO_ATTENDANT, CREATE_BLOCKED_NUMBERS, CREATE_DNC_LIST, CREATE_EXTENSION, CREATE_GROUP, CREATE_RING_GROUP, CREATE_TIME_SLOT, CREATE_USER, DELETE_AUTO_ATTENDANT, DELETE_BLOCKED_NUMBERS, DELETE_DNC_LIST, DELETE_GROUP_MEMBER, DELETE_MOH_FILE, DELETE_MULTIPLE_BLOCKED_NUMBERS, DELETE_MULTIPLE_DNC_LIST, DELETE_RECORDING_FILE, DELETE_RING_GROUP, DELETE_RING_GROUP_DESTINATION_LIST, DELETE_TIME_BASED_ROUTING, DELETE_TIME_SLOT, DELETE_TIME_SLOT_EVENT, DELETE_USER_TIME_SLOT, EXTENSION_UPDATE_TIME_SLOT, GET_ADMIN_VOICE_MAIL, GET_AREA_CODE_BY_STATE, GET_AREA_CODE_LIST, GET_AUTO_ATTENDANT_DETAILS, GET_AUTO_ATTENDANT_LIST, GET_AUTO_ATTENDANT_NEXT_ID, GET_BLOCKED_NUMBERS_SETTING, GET_BUSINESS_HOURS_TIME_DETAILS, GET_CALL_CAMPAIGN_LIST, GET_CONTACT_LIST, GET_DESTINATION_LIST, GET_DID_ROUTING, GET_DNC_LIST, GET_DNC_MAPPING_FIELDS, GET_EXPORT_BLOCKED_NUMBERS, GET_EXTENSION_DETAILS, GET_EXTENSION_LIST_DROPDOWN, GET_GROUP_LIST_CHAT, GET_GROUP_USER_DETAILS, GET_INBOUND_NUMBERS_LIST, GET_INTERNAL_CHAT_LOG_USER, GET_LANGUAGE_LIST, GET_LOCAL_EXTENSION, GET_MESSAGE_NOTIFICATION, GET_MUSIC_ON_HOLD_FILE, GET_NEXT_EXTENSION, GET_NEXT_RING_GROUP_ID, GET_NUMBER, GET_NUMBERS_MAP_FIELDS, GET_NUMBER_LIST_DROPDOWN, GET_PERTICULAR_ROLE_PERMISSION, GET_PLAN_ALL_LIST, GET_PREFIX, GET_RECORDING_FILE, GET_RECORDING_LIST, GET_RING_GROUP_DETAILS, GET_RING_GROUP_LIST, GET_ROLE_LIST_DP, GET_ROUTE_TO_DESTINATION, GET_SMS_CHAT, GET_STATES, GET_TIMEZONE_LIST, GET_TIME_BASED_ROUTING_DETAILS, GET_TIME_BASED_ROUTING_LIST, GET_TIME_SLOT_DETAILS_EVENTS, GET_TIME_SLOT_EVENTS_PERTICULAR, GET_USER_AVAILABILITY_DETAILS, GET_USER_AVAILABILITY_TIME_DETAILS, GET_USER_DETAILS, GET_USER_EXTENSION, GET_USER_LIST, GET_USER_LIST_CHAT, GROUP_LIST, IMPORT_DNC_CSV, IMPORT_NUMBERS_CSV, INSERT_DNC_CSV_DATA, INSERT_NUMBER_CSV_DATA, LOGIN, SEND_CHAT_FILE, SEND_MESSAGE, SEND_SMS, SMS_CONTACT_LIST, UPDATE_AUTO_ATTENDANT, UPDATE_AUTO_ATTENDANT_OPTIONS, UPDATE_BLOCKED_NUMBERS, UPDATE_BLOCKED_NUMBERS_SETTING, UPDATE_EXTENSION, UPDATE_GROUP, UPDATE_GROUP_NAME, UPDATE_INBOUND_NUMBERS_LIST, UPDATE_INBOUND_NUMBERS_ROUTE, UPDATE_MOH_FILE, UPDATE_RECORDING_FILE, UPDATE_RING_GROUP, UPDATE_RING_GROUP_DESTINATION_LIST, UPDATE_TIME_CONDITION, UPDATE_TIME_SLOT, UPDATE_TIME_SLOT_WEEKLY, UPDATE_USER, UPDATE_USER_GROUP, UPLOAD_RECORDING_FILE, USER_CREATE_TIME_SLOT, USER_DELETE } from "../../constants/ApiUrl";
 import { Log } from "../../commonComponents/Log";
 
 
@@ -1586,6 +1586,174 @@ export const Get_Perticular_Role_Permission = createAsyncThunk("Get_Perticular_R
 
     } catch (error) {
         Log(" === Get_Perticular_Role_Permission Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_User_List_Chat = createAsyncThunk("Get_User_List_Chat", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(GET_USER_LIST_CHAT, body)
+
+        Log(" ==== Get_User_List_Chat Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_User_List_Chat Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Group_List_Chat = createAsyncThunk("Get_Group_List_Chat", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(GET_GROUP_LIST_CHAT, body)
+
+        Log(" ==== Get_Group_List_Chat Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Group_List_Chat Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Internal_Chat_Log_User = createAsyncThunk("Get_Internal_Chat_Log_User", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(GET_INTERNAL_CHAT_LOG_USER, body)
+
+        Log(" ==== Get_Internal_Chat_Log_User Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Internal_Chat_Log_User Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Group_User_Details = createAsyncThunk("Get_Group_User_Details", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(GET_GROUP_USER_DETAILS, body)
+
+        Log(" ==== Get_Group_User_Details Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Group_User_Details Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Update_Group = createAsyncThunk("Update_Group", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(UPDATE_GROUP, body)
+
+        Log(" ==== Update_Group Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Update_Group Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Update_Group_Name = createAsyncThunk("Update_Group_Name", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(UPDATE_GROUP_NAME, body)
+
+        Log(" ==== Update_Group_Name Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Update_Group_Name Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Delete_Group_Member = createAsyncThunk("Delete_Group_Member", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(DELETE_GROUP_MEMBER, body)
+
+        Log(" ==== Delete_Group_Member Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Delete_Group_Member Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Create_Group = createAsyncThunk("Create_Group", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(CREATE_GROUP, body)
+
+        Log(" ==== Create_Group Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Create_Group Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Send_Message = createAsyncThunk("Send_Message", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(SEND_MESSAGE, body)
+
+        Log(" ==== Send_Message Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Send_Message Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Send_Chat_File = createAsyncThunk("Send_Chat_File", async (body, { rejectWithValue }) => {
+    try {
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+        };
+        const response = await ApiManager.post(SEND_CHAT_FILE, body, { headers })
+
+        Log(" ==== Send_Chat_File Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Send_Chat_File Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Message_Notification = createAsyncThunk("Get_Message_Notification", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(GET_MESSAGE_NOTIFICATION, body)
+
+        Log(" ==== Get_Message_Notification Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Message_Notification Error ", error);
 
         return rejectWithValue(error)
     }
