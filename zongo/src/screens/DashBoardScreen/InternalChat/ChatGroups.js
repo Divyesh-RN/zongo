@@ -54,7 +54,6 @@ const ChatGroups = () => {
         Log('apiGetGroupListChat :', apiGetGroupListChat);
         if (apiGetGroupListChat == STATUS_FULFILLED) {
             if (group_list_chat !== null) {
-                // console.log("group_list_chat :", group_list_chat)
                 setGroupList(group_list_chat)
             }
         } else if (apiGetGroupListChat == STATUS_REJECTED) {
@@ -140,7 +139,6 @@ const ChatGroups = () => {
                     label: `${user.first_name} ${user.last_name}`
                 };
             });
-            console.log("formattedSelectedUsers user", formattedSelectedUsers)
     
             var dict = {
                 assign_user_data: formattedSelectedUsers,

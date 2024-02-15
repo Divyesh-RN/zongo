@@ -45,7 +45,6 @@ const ChatUsers = () => {
         Log('apiGetUserListChat :', apiGetUserListChat);
         if (apiGetUserListChat == STATUS_FULFILLED) {
             if (user_list_chat !== null) {
-                // console.log("user_list_chat :", user_list_chat)
                 setUserList(user_list_chat)
             }
         } else if (apiGetUserListChat == STATUS_REJECTED) {

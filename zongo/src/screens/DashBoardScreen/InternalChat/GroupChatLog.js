@@ -106,7 +106,6 @@ const GroupChatLog = ({ route }) => {
         Log('apiGetInternalChatLogUser :', apiGetInternalChatLogUser);
         if (apiGetInternalChatLogUser == STATUS_FULFILLED) {
             if (perticular_user_chat_log !== null) {
-                console.log("perticular_user_chat_log :", perticular_user_chat_log)
                 setChatData(perticular_user_chat_log)
             }
         } else if (apiGetInternalChatLogUser == STATUS_REJECTED) {
@@ -154,7 +153,6 @@ const GroupChatLog = ({ route }) => {
             setSelectedImageFile(null)
             setSelectedDocFile(null)
             Log("Message send done2", make_call_user_log_api)
-            console.log("step file")
             if (make_call_user_log_api == true) {
                GetGroupChatLog()
             }
@@ -188,11 +186,9 @@ const GroupChatLog = ({ route }) => {
             for (let i = 0; i < SelectedAudioFile.length; i++) {
                 formData.append("file", SelectedAudioFile[i]);
             }
-            console.log("Form Data for Image file ", formData)
 
             dispatch(Send_Chat_File(formData))
             if (Global.Socket && Global.Socket.readyState === WebSocket.OPEN) {
-                console.log("step 0")
                 const fileData = {
                     type: "file",
                     file_type: "",
@@ -223,11 +219,8 @@ const GroupChatLog = ({ route }) => {
             for (let i = 0; i < SelectedDocFile.length; i++) {
                 formData.append("file", SelectedDocFile[i]);
             }
-            console.log("Form Data for Image file ", formData)
-
             dispatch(Send_Chat_File(formData))
             if (Global.Socket && Global.Socket.readyState === WebSocket.OPEN) {
-                console.log("step 0")
                 const fileData = {
                     type: "file",
                     file_type: "",
@@ -259,11 +252,9 @@ const GroupChatLog = ({ route }) => {
             for (let i = 0; i < SelectedImageFile.length; i++) {
                 formData.append("file", SelectedImageFile[i]);
             }
-            console.log("Form Data for Image file ", formData)
 
             dispatch(Send_Chat_File(formData))
             if (Global.Socket && Global.Socket.readyState === WebSocket.OPEN) {
-                console.log("step 0")
                 const fileData = {
                     type: "file",
                     file_type: "",
@@ -289,10 +280,8 @@ const GroupChatLog = ({ route }) => {
                     main_uuid: user_data?.data?.main_uuid,
                     createdby: user_data?.data?.main_uuid,
                 };
-                console.log("SEND DICT 2 USER", dict)
                 dispatch(Send_Message(dict))
                 if (Global.Socket && Global.Socket.readyState === WebSocket.OPEN) {
-                    console.log("step 0")
                     let datad = {
                         type: "message",
                         data: dict,
@@ -452,7 +441,6 @@ const GroupChatLog = ({ route }) => {
                                     }
                                     {fileNames?.map((fileName, index) => {
                                         const fileExtension = fileName.split('.').pop();
-                                        console.log("fileExtension :", fileExtension)
                                         return (
                                             <View >
 

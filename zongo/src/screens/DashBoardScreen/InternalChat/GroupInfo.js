@@ -85,7 +85,6 @@ const GroupInfo = ({ route }) => {
         Log('apiGetGroupUserDetails :', apiGetGroupUserDetails);
         if (apiGetGroupUserDetails == STATUS_FULFILLED) {
             if (group_user_details !== null) {
-                console.log("group_user_details :", group_user_details?.groupUserData.length)
                 setGroupDetails(group_user_details)
                 setGroupName(group_user_details?.groupData?.name)
                 const selectedUserUUIDs = group_user_details?.groupUserData.map(member => member.user_uuid);
@@ -102,7 +101,6 @@ const GroupInfo = ({ route }) => {
         Log('apiGetUserListChat :', apiGetUserListChat);
         if (apiGetUserListChat == STATUS_FULFILLED) {
             if (user_list_chat !== null) {
-                // console.log("user_list_chat :", user_list_chat)
                 setUserList(user_list_chat)
 
             }
@@ -251,7 +249,6 @@ const GroupInfo = ({ route }) => {
                 label: `${user.first_name} ${user.last_name}`
             };
         });
-        console.log("formattedSelectedUsers user", formattedSelectedUsers)
 
         var dict = {
             assign_user_data: formattedSelectedUsers,
