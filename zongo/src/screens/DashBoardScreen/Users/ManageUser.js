@@ -23,6 +23,7 @@ import { IMAGE_URL, WEBSOCKET_URL } from '../../../constants/ApiUrl';
 import DocumentPicker from 'react-native-document-picker';
 import { navigate } from '../../../navigation/RootNavigation';
 import Global from '../../../constants/Global';
+import { ZoomOutEasyUp } from 'react-native-reanimated';
 
 const ManageUser = ({ navigation, route }) => {
 
@@ -431,6 +432,7 @@ const ManageUser = ({ navigation, route }) => {
                 allowMultiSelection: false
             });
             const maxSize = 10 * 1024 * 1024;
+            console.log("result: ", result)
             setProfileImg(result)
             setProfileImgURI(result[0]?.uri)
             // if (result[0].size < maxSize) {

@@ -1,22 +1,24 @@
 import { View, Text, SafeAreaView, StyleSheet, StatusBar, ScrollView, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { greenPrimary, midGreen, offWhite, red, transparent, white } from '../constants/Color'
+import { greenPrimary, grey, midGreen, offWhite, red, transparent, white } from '../constants/Color'
 import { heightPixel, pixelSizeHorizontal, widthPixel } from './ResponsiveScreen'
 import IconButton from './IconButton'
 import { BackImg, ic_user } from '../constants/Images'
-import { BOLD, FontSize, SEMIBOLD } from '../constants/Fonts'
+import { BOLD, FontSize, MEDIUM, SEMIBOLD } from '../constants/Fonts'
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 import { useDispatch, useSelector } from 'react-redux'
 import MenuDrawer from 'react-native-side-drawer'
-import { resetScreen } from '../navigation/RootNavigation'
+import { navigate, resetScreen } from '../navigation/RootNavigation'
 import { STATUS_FULFILLED, STATUS_REJECTED, USER_DATA } from '../constants/ConstantKey'
 import { getData, storeData } from './AsyncManager'
 import { WEBSOCKET_URL } from '../constants/ApiUrl'
-import { Get_Perticular_Role_Permission } from '../redux/api/Api'
+import { Get_Message_Notification, Get_Perticular_Role_Permission } from '../redux/api/Api'
 import { Log } from './Log'
 import { resetAuthApiStatus, storeUserData } from '../redux/reducers/userReducer'
 import Global from '../constants/Global'
 import { DisplayMessage } from './AlertManager'
+import { makeCallUserLogApi } from '../redux/reducers/internalChatReducer'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 
 const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile = {}, onPressSearch = {}, containerStyle = {}, imgUri = "", isRegister = false, ...props }) => {
@@ -25,6 +27,9 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
     const user_data = useSelector(state => state.userRedux.user_data);
     const user_register_status = useSelector(state => state.userRedux.user_register_status);
     const apiGetPerticularRolePermission = useSelector(state => state.userRedux.apiGetPerticularRolePermission);
+    const apiGetMessageNotification = useSelector(state => state.internalChatRedux.apiGetMessageNotification);
+    const message_notification = useSelector(state => state.internalChatRedux.message_notification);
+
     const user_new_role_permission = useSelector(state => state.userRedux.user_new_role_permission);
     const dispatch = useDispatch()
 
@@ -38,7 +43,7 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
 
         socket.onmessage = (event) => {
             let data = JSON.parse(event.data);
-            Log('Received message: App', data);
+            Log('Received message:s App', data);
             setEventData(data)
             getData(USER_DATA, userData => {
                 var user_data = userData?.data
@@ -72,7 +77,12 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
                     dispatch(Get_Perticular_Role_Permission(role_data))
 
                 }
-
+                // get user meesage
+                if (data?.type == "message" || data?.type == "file") {
+                    console.log("step 1")
+                    dispatch(makeCallUserLogApi(true));
+                    // dispatch(callUserChatLog(true));
+                }
             });
 
 
@@ -84,6 +94,7 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
         };
 
         return () => {
+            console.log("close")
             socket.close();
             dispatch(resetAuthApiStatus());
 
@@ -131,6 +142,27 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
             }
         }
     }, [apiGetPerticularRolePermission]);
+
+    useEffect(() => {
+        let dict = {
+            main_uuid: user_data?.data?.main_uuid,
+            createdby: user_data?.data?.user_uuid,
+        };
+        dispatch(Get_Message_Notification(dict))
+    }, []);
+
+    useEffect(() => {
+        Log('apiGetMessageNotification :',
+            apiGetMessageNotification);
+        if (apiGetMessageNotification == STATUS_FULFILLED) {
+            Log("123", message_notification)
+
+        } else if (apiGetMessageNotification == STATUS_REJECTED) {
+            if (isError) {
+                Alert.alert('Alert', error_message);
+            }
+        }
+    }, [apiGetMessageNotification]);
     return (
         <>
 
@@ -162,10 +194,21 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
                                     </IconButton>}
                                 <Text style={[styles.textTitle, { marginHorizontal: !isProfilePic ? pixelSizeHorizontal(25) : 0 }]}>{user_data?.data?.first_name + ' ' + user_data?.data?.last_name}</Text>
                             </View>
-                            <IconButton additionalStyle={styles.btnBack}
+                            {/* <IconButton additionalStyle={styles.btnBack}
                                 onPress={onPressSearch}>
                                 <Icon name="magnify" size={34} color={white} />
-                            </IconButton>
+                            </IconButton> */}
+                            <TouchableOpacity style={styles.button} onPress={() => {
+                                navigate("InternalChat")
+                            }}>
+                                <Icon name={"message-text"} size={26} color={white} />
+                               {message_notification > 0  && <View style={{
+                                    width: 15, height: 15, borderRadius: 30, backgroundColor: red,alignItems:"center",justifyContent:"center",position:"absolute",top:7,right:7
+                                }}>
+                                    <Text style={{fontSize:FontSize.FS_09,color:white,fontFamily:MEDIUM}}>{message_notification}</Text>
+                                </View>
+                                }
+                            </TouchableOpacity>
                         </View>
                     }
 
@@ -201,9 +244,26 @@ const styles = StyleSheet.create({
     },
     mainView: {
         flex: 1,
-        //  marginTop: pixelSizeHorizontal(-25),
-        //  borderRadius: widthPixel(25)
-    }
+    },
+    button: {
+        marginHorizontal: 20,
+        // position: 'absolute',
+        // bottom: 20,
+        // right: 20,
+        // backgroundColor: grey, // adjust this to your desired color
+        // borderRadius: 10,
+        width: 50,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        // elevation: 3, // for shadow on Android
+        // zIndex: 999, // to ensure the button is above other components
+    },
+    icon: {
+        width: 30,
+        height: 30,
+        resizeMode: 'contain',
+    },
 })
 
 

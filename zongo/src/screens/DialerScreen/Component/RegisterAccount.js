@@ -30,7 +30,7 @@ console.log("registerData",registerData)
   const registerAccount = data => {
 
 
-    JsSIP.debug.enable('JsSIP:*');
+    // JsSIP.debug.enable('JsSIP:*');
 
     var socket = new JsSIP.WebSocketInterface(data?.WebsoketUrl
   

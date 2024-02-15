@@ -52,9 +52,9 @@ import { storeData } from '../../commonComponents/AsyncManager';
 const WIDTH = Dimensions.get('window').width;
 
 const Login = () => {
-  // const [Email, setEmail] = useState('ipnfullfullstack@gmail.com');
-  const [Email, setEmail] = useState('fatesing@mailinator.com');
-  const [Password, setPassword] = useState('Test@123');
+  const [Email, setEmail] = useState('ipnfullfullstack@gmail.com');
+  // const [Email, setEmail] = useState('fatesing@mailinator.com');
+  const [Password, setPassword] = useState('123456');
 
   const dispatch = useDispatch();
 
