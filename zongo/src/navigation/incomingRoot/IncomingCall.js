@@ -1,12 +1,20 @@
 // IncomingCall.js
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { BOLD, FontSize, MEDIUM, SEMIBOLD } from '../../constants/Fonts';
 import { black, greenPrimary, grey, white } from '../../constants/Color';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { mediaDevices } from 'react-native-webrtc';
 
 const IncomingCall = ({ callerName,callerNumber, onDismiss, onAnswer }) => {
+
+  useEffect(() =>{
+    mediaDevices.getUserMedia({ video: false, audio: true }).then((stream) => { })
+    .catch((error) => {
+      console.error("Error accessing the microphone: " + error);
+    });
+  },[])
 
  
   return (

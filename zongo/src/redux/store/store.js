@@ -17,6 +17,7 @@ import dncListReducer from '../reducers/DncListReducer';
 import callCampaignReducer from '../reducers/callCampaignReducer';
 import userModuleReducer from '../reducers/userModuleReducer';
 import InternalChatReducer from '../reducers/internalChatReducer';
+import  eventsReducer  from '../reducers/EventsReducer';
 
 const persistConfig = {
 	key: 'root',
@@ -38,7 +39,8 @@ let rootReducer = combineReducers({
 	dncListRedux: dncListReducer,
 	callCampaignRedux: callCampaignReducer,
 	userModuleRedux: userModuleReducer,
-	internalChatRedux: InternalChatReducer
+	internalChatRedux: InternalChatReducer,
+	eventsRedux: eventsReducer
 })
 
 

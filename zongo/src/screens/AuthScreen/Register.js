@@ -17,7 +17,7 @@ import {
   darkGrey,
   disableColor,
   greenPrimary,
-  grey, grey01, grey02, light_grey, midGreen, paleGreen, paleGreen01, transparent, white, yellow
+  grey, grey01, grey02, light_grey, midGreen, paleGreen, transparent, white, yellow
 } from '../../constants/Color';
 import { ic_call_bg, ic_call_bg_sm, ic_ellipse_big, ic_ellipse_small } from '../../constants/Images';
 import Translate from '../../translation/Translate';
@@ -172,17 +172,17 @@ const Register = () => {
         <SafeAreaView style={styles.safeAreaView}>
 
           <View style={styles.ellipsesContainer}>
-            <Image source={ic_ellipse_big} style={styles.ellipseBig} />
+            <Image tintColor={greenPrimary} source={ic_ellipse_big} style={styles.ellipseBig} />
           </View>
           <View style={styles.ellipsesContainer}>
-            <Image source={ic_ellipse_small} style={styles.ellipseSmall} />
+            <Image tintColor={greenPrimary} source={ic_ellipse_small} style={styles.ellipseSmall} />
           </View>
           <View style={{ alignItems: 'center', marginTop: Platform.OS == 'android' ? WIDTH / 1.8 : '45%', }}>
             <Text style={styles.welcomeTextLogin}>
               {"Sign up your account"}
             </Text>
             {/* {plan_list !== null && */}
-              <ImageBackground resizeMode='contain' source={ic_call_bg_sm} style={{ flex: 1, }} borderRadius={8}>
+              <ImageBackground tintColor={paleGreen} resizeMode='contain' source={ic_call_bg_sm} style={{ flex: 1, }} borderRadius={8}>
                 <View style={{ borderWidth: 1, borderColor: greenPrimary, width: WIDTH - 40, borderRadius: 8, paddingBottom: 14, marginTop: 14 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", borderRadius: 8, borderWidth: 1, borderColor: black, marginHorizontal: 8, marginVertical: 10, justifyContent: "center", padding: 3 }}>
                     <TouchableOpacity onPress={() => { setIndex(0) }} style={{ backgroundColor: Index == 0 ? black : white, paddingVertical: 6, borderRadius: 8, width: "49%", alignItems: "center" }}>

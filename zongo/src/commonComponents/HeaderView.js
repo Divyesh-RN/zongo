@@ -1,6 +1,6 @@
-import { View, Text, SafeAreaView, StyleSheet, StatusBar, ScrollView, Image } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, StatusBar, ScrollView, Image, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { greenPrimary, grey, midGreen, offWhite, red, transparent, white } from '../constants/Color'
+import { black, greenPrimary, grey, midGreen, offWhite, red, transparent, white } from '../constants/Color'
 import { heightPixel, pixelSizeHorizontal, widthPixel } from './ResponsiveScreen'
 import IconButton from './IconButton'
 import { BackImg, ic_user } from '../constants/Images'
@@ -11,7 +11,7 @@ import MenuDrawer from 'react-native-side-drawer'
 import { navigate, resetScreen } from '../navigation/RootNavigation'
 import { STATUS_FULFILLED, STATUS_REJECTED, USER_DATA } from '../constants/ConstantKey'
 import { getData, storeData } from './AsyncManager'
-import { WEBSOCKET_URL } from '../constants/ApiUrl'
+import { IMAGE_URL, WEBSOCKET_URL } from '../constants/ApiUrl'
 import { Get_Message_Notification, Get_Perticular_Role_Permission } from '../redux/api/Api'
 import { Log } from './Log'
 import { resetAuthApiStatus, storeUserData } from '../redux/reducers/userReducer'
@@ -25,14 +25,17 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
 
     const [EventData, setEventData] = useState(null);
     const user_data = useSelector(state => state.userRedux.user_data);
+    const user_details = useSelector(state => state.userModuleRedux.user_details);
     const user_register_status = useSelector(state => state.userRedux.user_register_status);
     const apiGetPerticularRolePermission = useSelector(state => state.userRedux.apiGetPerticularRolePermission);
     const apiGetMessageNotification = useSelector(state => state.internalChatRedux.apiGetMessageNotification);
     const message_notification = useSelector(state => state.internalChatRedux.message_notification);
-
+    const isError = useSelector(state => state.internalChatRedux.isError);
+    const error_message = useSelector(state => state.internalChatRedux.error_message);
     const user_new_role_permission = useSelector(state => state.userRedux.user_new_role_permission);
-    const dispatch = useDispatch()
+    const user_extension_data = useSelector(state => state.userRedux.user_extension_data);
 
+    const dispatch = useDispatch()
     useEffect(() => {
         const socket = new WebSocket(WEBSOCKET_URL);
         Global.Socket = socket;
@@ -95,7 +98,7 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
 
         return () => {
             console.log("close")
-            socket.close();
+            // socket.close();
             dispatch(resetAuthApiStatus());
 
         };
@@ -148,14 +151,14 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
             main_uuid: user_data?.data?.main_uuid,
             createdby: user_data?.data?.user_uuid,
         };
-        dispatch(Get_Message_Notification(dict))
+        // dispatch(Get_Message_Notification(dict))
     }, []);
 
     useEffect(() => {
-        Log('apiGetMessageNotification :',
-            apiGetMessageNotification);
+        // Log('apiGetMessageNotification :',
+        //     apiGetMessageNotification);
         if (apiGetMessageNotification == STATUS_FULFILLED) {
-            Log("123", message_notification)
+            // Log("123", message_notification)
 
         } else if (apiGetMessageNotification == STATUS_REJECTED) {
             if (isError) {
@@ -168,7 +171,7 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
 
             <StatusBar translucent={true} barStyle={'light-content'} backgroundColor={transparent} />
             <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1 }} bounces={false} keyboardShouldPersistTaps='handled'>
-                <SafeAreaView style={{ justifyContent: "flex-end", paddingTop: pixelSizeHorizontal(50), paddingBottom: pixelSizeHorizontal(10), backgroundColor: greenPrimary }}>
+                <SafeAreaView style={{ justifyContent: "flex-end", paddingTop: pixelSizeHorizontal(50), paddingBottom: pixelSizeHorizontal(10), backgroundColor: greenPrimary,}}>
 
                     {title &&
                         <View style={{
@@ -179,33 +182,31 @@ const HeaderView = ({ title = "", isProfilePic = true, children, onPressProfile 
                             <View style={{ flexDirection: "row", alignItems: "center" }}>
                                 {isProfilePic &&
                                     <IconButton additionalStyle={styles.btnBack}
-                                        // onPress={onPressProfile}>
                                         onPress={() => {
-                                            storeData(USER_DATA, null, () => {
-                                                dispatch(storeUserData(null));
-                                                resetScreen('Login');
-                                            });
+                                            navigate("Account")
                                         }}>
-                                        <Image source={{ uri: imgUri }} style={{ width: widthPixel(40), height: widthPixel(40), resizeMode: "contain" }}
+                                        <Image source={{ uri: IMAGE_URL + user_details?.user?.profile_image }} style={{ width: widthPixel(44), height: widthPixel(44), resizeMode: "cover",borderRadius:10 }}
                                         />
-                                        <View style={{ backgroundColor: user_register_status ? "#72ff21" : red, width: 15, height: 15, borderRadius: 20, position: "absolute", bottom: 10, right: 10 }}>
+                                        <View style={{ backgroundColor: user_register_status ? "#72ff21" : red, width: 13, height: 13, borderRadius: 20, position: "absolute", bottom: 6, right: 6 }}>
 
                                         </View>
                                     </IconButton>}
+                                    <View>
                                 <Text style={[styles.textTitle, { marginHorizontal: !isProfilePic ? pixelSizeHorizontal(25) : 0 }]}>{user_data?.data?.first_name + ' ' + user_data?.data?.last_name}</Text>
+                                <View style={{ flexDirection: "row", alignItems: "center",marginTop:2 }}>
+                                <Icon name={user_register_status ? "check-circle" : "close-circle"} size={14} color={white} />
+                                <Text style={[styles.textSubTitle, { marginHorizontal: 4}]}>{ user_register_status ? "Available" + ` (${user_extension_data.data[0]?.extension})` : "Unavailable"}</Text>
+                                </View>
+                                </View>
                             </View>
-                            {/* <IconButton additionalStyle={styles.btnBack}
-                                onPress={onPressSearch}>
-                                <Icon name="magnify" size={34} color={white} />
-                            </IconButton> */}
                             <TouchableOpacity style={styles.button} onPress={() => {
                                 navigate("InternalChat")
                             }}>
                                 <Icon name={"message-text"} size={26} color={white} />
-                               {message_notification > 0  && <View style={{
-                                    width: 15, height: 15, borderRadius: 30, backgroundColor: red,alignItems:"center",justifyContent:"center",position:"absolute",top:7,right:7
+                                {message_notification > 0 && <View style={{
+                                    width: 15, height: 15, borderRadius: 30, backgroundColor: red, alignItems: "center", justifyContent: "center", position: "absolute", top: 7, right: 7
                                 }}>
-                                    <Text style={{fontSize:FontSize.FS_09,color:white,fontFamily:MEDIUM}}>{message_notification}</Text>
+                                    <Text style={{ fontSize: FontSize.FS_09, color: white, fontFamily: MEDIUM }}>{message_notification}</Text>
                                 </View>
                                 }
                             </TouchableOpacity>
@@ -237,6 +238,11 @@ const styles = StyleSheet.create({
     textTitle: {
         fontSize: FontSize.FS_18,
         fontFamily: SEMIBOLD,
+        color: white,
+    },
+    textSubTitle: {
+        fontSize: FontSize.FS_10,
+        fontFamily: MEDIUM,
         color: white,
     },
     btnBack: {

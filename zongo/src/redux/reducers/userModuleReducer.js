@@ -165,7 +165,7 @@ export const userModuleReducer = createSlice({
         state.error_message = '';
       });
       builder.addCase(Get_User_Details.fulfilled, (state, action) => {
-        Log('Get_User_Details fulfilled : ', JSON.stringify(action));
+        // Log('Get_User_Details fulfilled : ', JSON.stringify(action));
         state.apiGetUserDetails = STATUS_FULFILLED;
         state.isLoader = false;
         state.user_details = action.payload?.data;
@@ -187,7 +187,7 @@ export const userModuleReducer = createSlice({
         state.error_message = '';
       });
       builder.addCase(Get_Time_Zone_List.fulfilled, (state, action) => {
-        Log('Get_Time_Zone_List fulfilled : ', JSON.stringify(action));
+        // Log('Get_Time_Zone_List fulfilled : ', JSON.stringify(action));
         state.apiGetTimeZoneList = STATUS_FULFILLED;
         state.isLoader = false;
         state.time_zone_list = action.payload?.data?.data;

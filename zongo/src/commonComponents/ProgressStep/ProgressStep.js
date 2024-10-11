@@ -37,7 +37,7 @@ class ProgressStep extends Component {
 
         const btnTextStyle = {
             marginHorizontal:-34,
-            backgroundColor: midGreen,
+            backgroundColor: greenPrimary,
             width:  140,
             textAlign: 'center',
             paddingVertical: 10,

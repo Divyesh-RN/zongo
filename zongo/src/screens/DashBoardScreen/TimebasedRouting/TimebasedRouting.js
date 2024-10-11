@@ -1,8 +1,6 @@
 
 import { StyleSheet, TouchableOpacity, Text, View, Modal, LayoutAnimation, Alert } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
-import HeaderView from '@commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
+import { useCallback, useEffect, useState } from 'react';
 import HeaderBackView from '@commonComponents/HeaderBackView';
 import { black, white } from '@constants/Color';
 import { FontSize, SEMIBOLD } from '@constants/Fonts';
@@ -303,7 +301,7 @@ const TimebasedRouting = ({ navigation }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => {}, style: 'cancel'
+                    onPress: () => { }, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -317,148 +315,136 @@ const TimebasedRouting = ({ navigation }) => {
     }
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title="Business Hours"
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
+            <HeaderBackView
+                title="Business Hours"
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+            {isPermission == true ?
+                <>
+                    {
+                        TimeBasedRoutingList !== null &&
+                        <>
+                            {TimeBasedRoutingList.map((item, key) => (
+                                <ExpandableComponent
+                                    key={item.time_condition_uuid}
+                                    onClickFunction={() => {
+                                        updateLayout(key);
+                                    }}
+                                    item={item}
+                                    onDelete={() => {
+                                        handleDeleteBtn(item)
+                                    }}
+                                />
+                            ))}
+                        </>
+                    }
+                    {add_per === "yes" &&
+                        <TouchableOpacity onPress={() => {
+                            setNewTimebaseRoutingModel(!NewTimebaseRoutingModel);
                         }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
-                </View>
-                {isPermission == true ?
-                    <>
-                        {
-                            TimeBasedRoutingList !== null &&
-                            <>
-                                {TimeBasedRoutingList.map((item, key) => (
-                                    <ExpandableComponent
-                                        key={item.time_condition_uuid}
-                                        onClickFunction={() => {
-                                            updateLayout(key);
-                                        }}
-                                        item={item}
-                                        onDelete={() => {
-                                            handleDeleteBtn(item)
-                                        }}
-                                    />
-                                ))}
-                            </>
-                        }
-                        {add_per === "yes" &&
-                            <TouchableOpacity onPress={() => {
-                                setNewTimebaseRoutingModel(!NewTimebaseRoutingModel);
-                            }}
-                                style={{
-                                    backgroundColor: midGreen,
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    paddingVertical: 20,
-                                    justifyContent: "center",
-                                    position: "absolute",
-                                    bottom: 0,
-                                    width: "100%",
-                                }}>
-                                <Icon name="plus" size={25} color={white} />
-                                <Text style={{
-                                    fontSize: FontSize.FS_13,
-                                    color: white,
-                                    fontFamily: SEMIBOLD,
-                                    lineHeight: 24,
-                                    marginLeft: 10
-                                }}>{"Add New Time Based Routing"}</Text>
-                            </TouchableOpacity>
-                        }
-                    </>
-                    :
-                    <DoNotAccess />
-                }
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={NewTimebaseRoutingModel}
-                    onRequestClose={() => {
-                        setNewTimebaseRoutingModel(!NewTimebaseRoutingModel);
-                    }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
-                                onPress={() => setNewTimebaseRoutingModel(!NewTimebaseRoutingModel)}>
-                                <Icon name={"close"} size={24} color={black} />
-                            </TouchableOpacity>
+                            style={{
+                                backgroundColor: midGreen,
+                                flexDirection: "row",
+                                alignItems: "center",
+                                paddingVertical: 20,
+                                justifyContent: "center",
+                                position: "absolute",
+                                bottom: 0,
+                                width: "100%",
+                            }}>
+                            <Icon name="plus" size={25} color={white} />
                             <Text style={{
                                 fontSize: FontSize.FS_13,
-                                color: black,
+                                color: white,
                                 fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Name"}</Text>
-                            <TextInput
-                                value={RouteName}
-                                placeholder='Enter Name'
-                                placeholderTextColor={grey}
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: grey,
-                                    height: 44,
-                                    borderRadius: 6,
-                                    paddingHorizontal: 14,
-                                    marginVertical: 10,
-                                    fontFamily: MEDIUM,
-                                    fontSize: FontSize.FS_12,
-                                    color: black
+                                lineHeight: 24,
+                                marginLeft: 10
+                            }}>{"Add New Time Based Routing"}</Text>
+                        </TouchableOpacity>
+                    }
+                </>
+                :
+                <DoNotAccess />
+            }
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={NewTimebaseRoutingModel}
+                onRequestClose={() => {
+                    setNewTimebaseRoutingModel(!NewTimebaseRoutingModel);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
+                            onPress={() => setNewTimebaseRoutingModel(!NewTimebaseRoutingModel)}>
+                            <Icon name={"close"} size={24} color={black} />
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Name"}</Text>
+                        <TextInput
+                            value={RouteName}
+                            placeholder='Enter Name'
+                            placeholderTextColor={grey}
+                            style={{
+                                borderWidth: 1,
+                                borderColor: grey,
+                                height: 44,
+                                borderRadius: 6,
+                                paddingHorizontal: 14,
+                                marginVertical: 10,
+                                fontFamily: MEDIUM,
+                                fontSize: FontSize.FS_12,
+                                color: black
 
-                                }}
-                                onChangeText={(txt) => {
-                                    if (txt.length > 0) {
-                                        setRouteNameError("")
-                                    }
-                                    setRouteName(txt)
-                                }}
-                            />
-                            {RouteNameError !== "" && <Text style={{
-                                fontSize: FontSize.FS_10,
-                                color: red,
-                                fontFamily: REGULAR,
-                                marginLeft: 5,
-                                marginBottom: 10
-                            }}>{RouteNameError}</Text>
-                            }
-                            <TouchableOpacity onPress={() => {
-                                handleAdd()
                             }}
-                                style={{
-                                    backgroundColor: greenPrimary,
-                                    alignItems: "center",
-                                    paddingVertical: 6,
-                                    marginTop: 20,
-                                    justifyContent: "center",
-                                    borderRadius: 4,
-                                    width: "100%"
-                                }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: white,
-                                    fontFamily: SEMIBOLD,
-                                    lineHeight: 24,
-                                    marginLeft: 10
-                                }}>{"Create Time Based Routing"}</Text>
-                            </TouchableOpacity>
-                        </View>
+                            onChangeText={(txt) => {
+                                if (txt.length > 0) {
+                                    setRouteNameError("")
+                                }
+                                setRouteName(txt)
+                            }}
+                        />
+                        {RouteNameError !== "" && <Text style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: REGULAR,
+                            marginLeft: 5,
+                            marginBottom: 10
+                        }}>{RouteNameError}</Text>
+                        }
+                        <TouchableOpacity onPress={() => {
+                            handleAdd()
+                        }}
+                            style={{
+                                backgroundColor: greenPrimary,
+                                alignItems: "center",
+                                paddingVertical: 6,
+                                marginTop: 20,
+                                justifyContent: "center",
+                                borderRadius: 4,
+                                width: "100%"
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: white,
+                                fontFamily: SEMIBOLD,
+                                lineHeight: 24,
+                                marginLeft: 10
+                            }}>{"Create Time Based Routing"}</Text>
+                        </TouchableOpacity>
                     </View>
-                </Modal>
-            </HeaderView>
+                </View>
+            </Modal>
             {isLoading && <LoadingView />}
         </>
     );

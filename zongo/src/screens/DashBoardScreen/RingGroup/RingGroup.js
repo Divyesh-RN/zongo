@@ -1,8 +1,6 @@
 
 import { Alert, StyleSheet, TouchableOpacity, Text, View, LayoutAnimation } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
-import HeaderView from '@commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
+import { useCallback, useEffect, useState } from 'react';
 import HeaderBackView from '@commonComponents/HeaderBackView';
 import { black, white } from '@constants/Color';
 import { FontSize, SEMIBOLD } from '@constants/Fonts';
@@ -368,16 +366,7 @@ const RingGroup = ({ navigation }) => {
 
         <>
 
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
+           
                     <HeaderBackView
                         title="Ring Group"
                         isBack={true}
@@ -388,7 +377,6 @@ const RingGroup = ({ navigation }) => {
                             navigation.toggleDrawer();
                         }}
                     />
-                </View>
                 {isPermission == true ?
                     <>
                         {
@@ -438,8 +426,6 @@ const RingGroup = ({ navigation }) => {
                     :
                     <DoNotAccess />
                 }
-            </HeaderView>
-
             {isLoading && <LoadingView />}
         </>
     );

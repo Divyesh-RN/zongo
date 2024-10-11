@@ -6,7 +6,7 @@ import HeaderView from '../../commonComponents/HeaderView';
 import { pixelSizeHorizontal } from '../../commonComponents/ResponsiveScreen';
 import HeaderBackView from '../../commonComponents/HeaderBackView';
 import { useFocusEffect } from '@react-navigation/native';
-import { bgColor01, black, greenPrimary, grey, light_grey, midGreen, paleGreen, red, white } from '../../constants/Color';
+import { bgColor01, black, disableColor, greenPrimary, grey, grey01, light_grey, midGreen, paleGreen, red, white } from '../../constants/Color';
 import { FCM_TOKEN, HEIGHT, STATUS_FULFILLED, STATUS_REJECTED, WIDTH } from '../../constants/ConstantKey';
 import { FontSize, MEDIUM, SEMIBOLD, REGULAR } from '../../constants/Fonts';
 import { useDispatch, useSelector } from 'react-redux';
@@ -255,10 +255,13 @@ export default function Dialer({ navigation }) {
 
   const handleDial = () => {
     Log(`Dialing ${phoneNumber}`);
-  }; 
+    navigate("CallScreen", { number: phoneNumber, from: "DIALER" })
+  };
 
   const appendNumber = (num) => {
-    setPhoneNumber(phoneNumber + num);
+    if (phoneNumber?.length <= 9) {
+      setPhoneNumber(phoneNumber + num);
+    }
   };
 
   const removeLastNumber = () => {
@@ -282,14 +285,6 @@ export default function Dialer({ navigation }) {
         containerStyle={{
           paddingHorizontal: pixelSizeHorizontal(20),
         }}>
-        <HeaderBackView
-          title="Dialer"
-          isBack={false}
-          isMenu={false}
-          onPressMenu={() => {
-            navigation.toggleDrawer();
-          }}
-        />
         <View style={{ position: "absolute", bottom: 10, left: 0, right: 0 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", backgroundColor: bgColor01, flex: 1 }}>
             <TouchableOpacity onPress={() => {
@@ -301,7 +296,7 @@ export default function Dialer({ navigation }) {
                 color: black,
                 fontSize: FontSize.FS_14,
               }}>Keypad</Text>
-              {Index == 0 && <View style={{ width: Platform.OS == "android" ? 64 : 54, height: 2, backgroundColor: black, borderRadius: 10, marginTop: 2 }}></View>}
+              {Index == 0 && <View style={{ width: Platform.OS == "android" ? 56 : 54, height: 2, backgroundColor: black, borderRadius: 10, marginTop: 2 }}></View>}
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
               setIndex(1)
@@ -312,7 +307,7 @@ export default function Dialer({ navigation }) {
                 color: black,
                 fontSize: FontSize.FS_14,
               }}>Recent</Text>
-              {Index == 1 && <View style={{ width: Platform.OS == "android" ? 61 : 51, height: 2, backgroundColor: black, borderRadius: 10, marginTop: 2 }}></View>}
+              {Index == 1 && <View style={{ width: Platform.OS == "android" ? 54 : 51, height: 2, backgroundColor: black, borderRadius: 10, marginTop: 2 }}></View>}
 
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
@@ -324,7 +319,7 @@ export default function Dialer({ navigation }) {
                 color: black,
                 fontSize: FontSize.FS_14,
               }}>Contacts</Text>
-              {Index == 2 && <View style={{ width: Platform.OS == "android" ? 76 : 66, height: 2, backgroundColor: black, borderRadius: 10, marginTop: 2 }}></View>}
+              {Index == 2 && <View style={{ width: Platform.OS == "android" ? 68 : 66, height: 2, backgroundColor: black, borderRadius: 10, marginTop: 2 }}></View>}
 
             </TouchableOpacity>
           </View>
@@ -414,62 +409,22 @@ export default function Dialer({ navigation }) {
         }
         {Index == 1 &&
           <View style={{ marginVertical: 10, }}>
-              <View style={{ flexDirection: "row", alignItems: "center", marginVertical:10 }}>
-                <Icon name="arrow-bottom-left" size={22} color={black} />
-                <View style={{ flex: 1, marginLeft: 14 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
-                    <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: MEDIUM, }}>{"Incoming call"} </Text>
-                    <Text style={{ fontSize: FontSize.FS_11, color: black, fontFamily: REGULAR, }}>{"Jul 21 11:16 AM"} </Text>
-                  </View>
-                  <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
-                </View>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center", marginVertical:10 }}>
-                <Icon name="arrow-top-right" size={22} color={black} />
-                <View style={{ flex: 1, marginLeft: 14 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
-                    <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: MEDIUM, }}>{"Outgoing call"} </Text>
-                    <Text style={{ fontSize: FontSize.FS_11, color: black, fontFamily: REGULAR, }}>{"Jul 21 11:16 AM"} </Text>
-                  </View>
-                  <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
-                </View>
-            </View>
             <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
-              <Icon name="arrow-u-right-top" size={22} color={red} />
+              <Icon name="arrow-bottom-left" size={22} color={black} />
               <View style={{ flex: 1, marginLeft: 14 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
-                  <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: REGULAR, }}>{"Missed call"} </Text>
-                  <Text style={{ fontSize: FontSize.FS_11, color: red, fontFamily: REGULAR, marginTop: 2 }}>{"Jul 21 11:16 AM"} </Text>
+                  <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: MEDIUM, }}>{"Incoming call"} </Text>
+                  <Text style={{ fontSize: FontSize.FS_11, color: black, fontFamily: REGULAR, }}>{"Jul 21 11:16 AM"} </Text>
                 </View>
                 <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
               </View>
             </View>
-            <View style={{ flexDirection: "row", alignItems: "center", marginVertical:10 }}>
-                <Icon name="arrow-bottom-left" size={22} color={black} />
-                <View style={{ flex: 1, marginLeft: 14 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
-                    <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: MEDIUM, }}>{"Incoming call"} </Text>
-                    <Text style={{ fontSize: FontSize.FS_11, color: black, fontFamily: REGULAR, }}>{"Jul 21 11:16 AM"} </Text>
-                  </View>
-                  <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
-                </View>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center", marginVertical:10 }}>
-                <Icon name="arrow-bottom-left" size={22} color={black} />
-                <View style={{ flex: 1, marginLeft: 14 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
-                    <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: MEDIUM, }}>{"Incoming call"} </Text>
-                    <Text style={{ fontSize: FontSize.FS_11, color: black, fontFamily: REGULAR, }}>{"Jul 21 11:16 AM"} </Text>
-                  </View>
-                  <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
-                </View>
-            </View>
             <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
-              <Icon name="arrow-u-right-top" size={22} color={red} />
+              <Icon name="arrow-top-right" size={22} color={black} />
               <View style={{ flex: 1, marginLeft: 14 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
-                  <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: REGULAR, }}>{"Missed call"} </Text>
-                  <Text style={{ fontSize: FontSize.FS_11, color: red, fontFamily: REGULAR, marginTop: 2 }}>{"Jul 21 11:16 AM"} </Text>
+                  <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: MEDIUM, }}>{"Outgoing call"} </Text>
+                  <Text style={{ fontSize: FontSize.FS_11, color: black, fontFamily: REGULAR, }}>{"Jul 21 11:16 AM"} </Text>
                 </View>
                 <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
               </View>
@@ -484,7 +439,47 @@ export default function Dialer({ navigation }) {
                 <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
               </View>
             </View>
-           
+            <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
+              <Icon name="arrow-bottom-left" size={22} color={black} />
+              <View style={{ flex: 1, marginLeft: 14 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
+                  <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: MEDIUM, }}>{"Incoming call"} </Text>
+                  <Text style={{ fontSize: FontSize.FS_11, color: black, fontFamily: REGULAR, }}>{"Jul 21 11:16 AM"} </Text>
+                </View>
+                <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
+              <Icon name="arrow-bottom-left" size={22} color={black} />
+              <View style={{ flex: 1, marginLeft: 14 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
+                  <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: MEDIUM, }}>{"Incoming call"} </Text>
+                  <Text style={{ fontSize: FontSize.FS_11, color: black, fontFamily: REGULAR, }}>{"Jul 21 11:16 AM"} </Text>
+                </View>
+                <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
+              <Icon name="arrow-u-right-top" size={22} color={red} />
+              <View style={{ flex: 1, marginLeft: 14 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
+                  <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: REGULAR, }}>{"Missed call"} </Text>
+                  <Text style={{ fontSize: FontSize.FS_11, color: red, fontFamily: REGULAR, marginTop: 2 }}>{"Jul 21 11:16 AM"} </Text>
+                </View>
+                <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
+              <Icon name="arrow-u-right-top" size={22} color={red} />
+              <View style={{ flex: 1, marginLeft: 14 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
+                  <Text style={{ fontSize: FontSize.FS_13, color: black, fontFamily: REGULAR, }}>{"Missed call"} </Text>
+                  <Text style={{ fontSize: FontSize.FS_11, color: red, fontFamily: REGULAR, marginTop: 2 }}>{"Jul 21 11:16 AM"} </Text>
+                </View>
+                <Text style={{ fontSize: FontSize.FS_12, color: black, fontFamily: REGULAR, }}>{"98764278987"} </Text>
+              </View>
+            </View>
+
           </View>
         }
       </HeaderView>
@@ -533,7 +528,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 0.5,
     borderColor: midGreen,
-    
+
   },
   dialerButtonText: {
     color: midGreen,
@@ -545,7 +540,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    borderWidth: 0.4,
+    borderColor: grey01
   },
   displayText: {
     height: 50,
@@ -567,7 +564,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     marginTop: 20,
-    backgroundColor: "green",
   },
   expandableView: {
     // backgroundColor: white,

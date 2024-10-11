@@ -282,7 +282,7 @@ const AudioFiles = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => {}, style: 'cancel'
+                    onPress: () => { }, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -297,76 +297,64 @@ const AudioFiles = ({ navigation, route }) => {
     }
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title="Audio Files"
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
+            <HeaderBackView
+                title="Audio Files"
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+            {isPermission == true ?
+                <>
+                    {
+                        AudioFileList !== null &&
+                        <>
+                            {AudioFileList.map((item, key) => (
+                                <ExpandableComponent
+                                    key={item.recording_uuid}
+                                    onClickFunction={() => {
+                                        updateLayout(key);
+                                    }}
+                                    onDelete={() => {
+                                        handleDeleteBtn(item)
+                                    }}
+                                    route={route}
+                                    item={item}
+                                />
+                            ))}
+                        </>
+                    }
+                    {add_per === "yes" &&
+                        <TouchableOpacity onPress={() => {
+                            navigate("ManageAudioFiles", { isEdit: false, type: route?.params?.type })
                         }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
-                </View>
-                {isPermission == true ?
-                    <>
-                        {
-                            AudioFileList !== null &&
-                            <>
-                                {AudioFileList.map((item, key) => (
-                                    <ExpandableComponent
-                                        key={item.recording_uuid}
-                                        onClickFunction={() => {
-                                            updateLayout(key);
-                                        }}
-                                        onDelete={() => {
-                                            handleDeleteBtn(item)
-                                        }}
-                                        route={route}
-                                        item={item}
-                                    />
-                                ))}
-                            </>
-                        }
-                        {add_per === "yes" &&
-                            <TouchableOpacity onPress={() => {
-                                navigate("ManageAudioFiles", { isEdit: false, type: route?.params?.type })
-                            }}
-                                style={{
-                                    backgroundColor: midGreen,
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    paddingVertical: 20,
-                                    justifyContent: "center",
-                                    position: "absolute",
-                                    bottom: 0,
-                                    width: "100%",
-                                }}>
-                                <Icon name="plus" size={25} color={white} />
-                                <Text style={{
-                                    fontSize: FontSize.FS_13,
-                                    color: white,
-                                    fontFamily: SEMIBOLD,
-                                    lineHeight: 24,
-                                    marginLeft: 10
-                                }}>{"Upload New File"}</Text>
-                            </TouchableOpacity>
-                        }
-                    </>
-                    :
-                    <DoNotAccess />
-                }
-            </HeaderView>
+                            style={{
+                                backgroundColor: midGreen,
+                                flexDirection: "row",
+                                alignItems: "center",
+                                paddingVertical: 20,
+                                justifyContent: "center",
+                                position: "absolute",
+                                bottom: 0,
+                                width: "100%",
+                            }}>
+                            <Icon name="plus" size={25} color={white} />
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: white,
+                                fontFamily: SEMIBOLD,
+                                lineHeight: 24,
+                                marginLeft: 10
+                            }}>{"Upload New File"}</Text>
+                        </TouchableOpacity>
+                    }
+                </>
+                :
+                <DoNotAccess />
+            }
             {isLoading && <LoadingView />}
         </>
     );

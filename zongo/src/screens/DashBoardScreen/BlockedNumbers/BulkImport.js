@@ -1,9 +1,7 @@
 
 
 import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
-import HeaderView from '@commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
+import { useCallback, useEffect, useState } from 'react';
 import HeaderBackView from '@commonComponents/HeaderBackView';
 import { goBack } from '@navigation/RootNavigation';
 import { black, greenPrimary, grey, white, red, light_grey } from '../../../constants/Color';
@@ -184,202 +182,195 @@ const BulkImport = ({ navigation }) => {
     };
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title="Import BLocked Numbers"
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
+
+            <HeaderBackView
+                title="Import BLocked Numbers"
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+            <View style={{ marginHorizontal: 20 }}>
+
+                <Text
+                    style={{
+                        fontSize: FontSize.FS_12,
+                        color: black,
+                        fontFamily: SEMIBOLD,
+                        marginTop: 20,
+                        marginBottom: 10,
+                        textAlign: "center"
+                    }}>
+                    {'Choose CSV File'}
+                </Text>
+                <View
+                    style={{
+                        backgroundColor: light_grey,
+                        borderRadius: 4,
+                        marginTop: 10,
+                        paddingHorizontal: 14,
+                        paddingVertical: 30
+                    }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            BulkUploadCsv();
                         }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
-                    <Text
-                        style={{
-                            fontSize: FontSize.FS_12,
-                            color: black,
-                            fontFamily: SEMIBOLD,
-                            marginTop: 20,
-                            marginBottom: 10,
-                            textAlign: "center"
-                        }}>
-                        {'Choose CSV File'}
-                    </Text>
-                    <View
-                        style={{
-                            backgroundColor: light_grey,
-                            borderRadius: 4,
-                            marginTop: 10,
-                            paddingHorizontal: 14,
-                            paddingVertical: 30
-                        }}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                BulkUploadCsv();
-                            }}
-                            style={{ alignItems: 'center', }}>
-                            <Icon name="cloud-upload-outline" size={22} color={grey} />
+                        style={{ alignItems: 'center', }}>
+                        <Icon name="cloud-upload-outline" size={22} color={grey} />
+                        <Text
+                            style={{
+                                fontSize: FontSize.FS_12,
+                                color: grey,
+                                fontFamily: SEMIBOLD,
+                            }}>
+                            {'Upload CSV'}
+                        </Text>
+                    </TouchableOpacity>
+                    {SelectedCsvFile !== null &&
+                        <View style={{ marginVertical: 24 }}>
                             <Text
                                 style={{
                                     fontSize: FontSize.FS_12,
                                     color: grey,
                                     fontFamily: SEMIBOLD,
+                                    textAlign: 'center',
+
                                 }}>
-                                {'Upload CSV'}
+                                {SelectedCsvFile[0]?.uri}
                             </Text>
-                        </TouchableOpacity>
-                        {SelectedCsvFile !== null &&
-                            <View style={{ marginVertical: 24 }}>
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: grey,
-                                        fontFamily: SEMIBOLD,
-                                        textAlign: 'center',
 
-                                    }}>
-                                    {SelectedCsvFile[0]?.uri}
-                                </Text>
-
-                            </View>
-                        }
-                    </View>
+                        </View>
+                    }
+                </View>
+                <Text
+                    style={{
+                        fontSize: FontSize.FS_12,
+                        color: grey,
+                        fontFamily: SEMIBOLD,
+                        marginVertical: 10,
+                        textAlign: "center"
+                    }}>
+                    {'* The csv must have Number and Description.'}
+                </Text>
+                {MapData?.length > 0 && <View>
                     <Text
                         style={{
-                            fontSize: FontSize.FS_12,
-                            color: grey,
+                            fontSize: FontSize.FS_14,
+                            color: black,
                             fontFamily: SEMIBOLD,
                             marginVertical: 10,
-                            textAlign: "center"
                         }}>
-                        {'* The csv must have Number and Description.'}
+                        {'Map Fields and Import Blocked Numbers'}
                     </Text>
-                    {MapData?.length > 0 && <View>
+                    <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
                         <Text
                             style={{
                                 fontSize: FontSize.FS_14,
                                 color: black,
                                 fontFamily: SEMIBOLD,
                                 marginVertical: 10,
+                                flex: 0.4
                             }}>
-                            {'Map Fields and Import Blocked Numbers'}
+                            {'Number'}
                         </Text>
-                        <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-                            <Text
-                                style={{
-                                    fontSize: FontSize.FS_14,
-                                    color: black,
-                                    fontFamily: SEMIBOLD,
-                                    marginVertical: 10,
-                                    flex: 0.4
-                                }}>
-                                {'Number'}
-                            </Text>
-                            <Dropdown
-                                style={styles.dropdown}
-                                placeholderStyle={styles.placeholderStyle}
-                                selectedTextStyle={styles.selectedTextStyle}
-                                iconStyle={styles.iconStyle}
-                                data={MapData}
-                                maxHeight={300}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Select Number"
-                                value={MapData}
-                                onChange={item => {
-                                    setNumber(item?._index);
-                                    setNumberError("")
-                                }}
-                                renderItem={renderNumber}
-                            />
-                        </View>
-                        {NumberError !== "" && <Text
-                                    style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: red,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 8
+                        <Dropdown
+                            style={styles.dropdown}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            iconStyle={styles.iconStyle}
+                            data={MapData}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Select Number"
+                            value={MapData}
+                            onChange={item => {
+                                setNumber(item?._index);
+                                setNumberError("")
+                            }}
+                            renderItem={renderNumber}
+                        />
+                    </View>
+                    {NumberError !== "" && <Text
+                        style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: MEDIUM,
+                            marginTop: 8
 
-                                    }}>
-                                    {NumberError}
-                                </Text>
-                                }
-                        <View style={{ flexDirection: "row", alignItems: "center", flex: 1, }}>
-                            <Text
-                                style={{
-                                    fontSize: FontSize.FS_14,
-                                    color: black,
-                                    fontFamily: SEMIBOLD,
-                                    marginVertical: 10,
-                                    flex: 0.4
-                                }}>
-                                {'Description'}
-                            </Text>
-                            <Dropdown
-                                style={styles.dropdown}
-
-                                placeholderStyle={styles.placeholderStyle}
-                                selectedTextStyle={styles.selectedTextStyle}
-                                iconStyle={styles.iconStyle}
-                                data={MapData}
-                                maxHeight={300}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Select Description"
-                                value={MapData}
-                                onChange={item => {
-                                    setDescription(item._index);
-                                    setDescriptionError("")
-                                }}
-                                renderItem={renderDescription}
-                            />
-                        </View>
-                        {DescriptionError !== "" && <Text
-                                    style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: red,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 8
-
-                                    }}>
-                                    {DescriptionError}
-                                </Text>
-                                }
-                        <TouchableOpacity onPress={() => {
-                            handleImport()
-                        }}
+                        }}>
+                        {NumberError}
+                    </Text>
+                    }
+                    <View style={{ flexDirection: "row", alignItems: "center", flex: 1, }}>
+                        <Text
                             style={{
-                                backgroundColor: greenPrimary,
-                                alignItems: "center",
-                                paddingVertical: 10,
-                                marginVertical: 40,
-                                justifyContent: "center",
-                                borderRadius: 4,
-                                width: "100%"
-                            }}>
-                            <Text style={{
                                 fontSize: FontSize.FS_14,
-                                color: white,
+                                color: black,
                                 fontFamily: SEMIBOLD,
-                                lineHeight: 24,
-                                marginLeft: 10
-                            }}>{"SAVE"}</Text>
-                        </TouchableOpacity>
-                    </View>}
+                                marginVertical: 10,
+                                flex: 0.4
+                            }}>
+                            {'Description'}
+                        </Text>
+                        <Dropdown
+                            style={styles.dropdown}
 
-                </View>
-            </HeaderView>
-            {isLoading && <LoadingView />}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            iconStyle={styles.iconStyle}
+                            data={MapData}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Select Description"
+                            value={MapData}
+                            onChange={item => {
+                                setDescription(item._index);
+                                setDescriptionError("")
+                            }}
+                            renderItem={renderDescription}
+                        />
+                    </View>
+                    {DescriptionError !== "" && <Text
+                        style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: MEDIUM,
+                            marginTop: 8
+
+                        }}>
+                        {DescriptionError}
+                    </Text>
+                    }
+                    <TouchableOpacity onPress={() => {
+                        handleImport()
+                    }}
+                        style={{
+                            backgroundColor: greenPrimary,
+                            alignItems: "center",
+                            paddingVertical: 10,
+                            marginVertical: 40,
+                            justifyContent: "center",
+                            borderRadius: 4,
+                            width: "100%"
+                        }}>
+                        <Text style={{
+                            fontSize: FontSize.FS_14,
+                            color: white,
+                            fontFamily: SEMIBOLD,
+                            lineHeight: 24,
+                            marginLeft: 10
+                        }}>{"SAVE"}</Text>
+                    </TouchableOpacity>
+                </View>}
+
+            </View>
+            { isLoading && <LoadingView />
+}
         </>
     );
 };

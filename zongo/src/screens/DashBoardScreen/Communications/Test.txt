@@ -1,0 +1,389 @@
+
+ {selectIndexPricing === 'Competitor' && (
+              <View style={{}}>
+                {competitorList && competitorList.length > 0 ? (
+                  <FlatList
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    data={competitorList}
+                    renderItem={({ item, index }) => {
+                      return (
+                        <View style={styles.maincard}>
+                          <View style={{}}>
+                            <View style={styles.mainItem}>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().BusinessUser} height={20} width={20} />
+                                <View style={style.flex1}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    Competitor Name
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      ,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.competitor_name || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().Type} height={20} width={20} />
+                                <View style={{ flex: 1 }}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    Billing Rate
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.bill_rate || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                            {VerticalSaperator}
+                            <View style={styles.mainItem}>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().BusinessUser} height={20} width={20} />
+                                <View style={style.flex1}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    NOD Rate
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      ,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.nod_rate || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().Type} height={20} width={20} />
+                                <View style={{ flex: 1 }}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    Wholesale Rate
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.wholesale_rate || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                            {VerticalSaperator}
+                            <View style={styles.mainItem}>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().Amount} height={20} width={20} />
+                                <View style={style.flex1}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    Retail Rate
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      ,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.retail_rate || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().Amount} height={20} width={20} />
+                                <View style={style.flex1}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    Other Competitor
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      ,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.other_competitor || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                            <TouchableOpacity
+                              onPress={() => {
+                                setShowDelCnfModal(true);
+                                serSelectedDeleteItem(item);
+                              }}
+                              style={{ alignSelf: 'flex-end' }}
+                            >
+                              <SvgXml xml={IconSvgXml().Delete} height={20} width={20} />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      );
+                    }}
+                    keyExtractor={(item, index) => index + '_1'}
+                  />
+                ) : (
+                  NoDataFound('No self found')
+                )}
+              </View>
+            )}
+{selectIndexPricing === 'Self' && (
+              <View>
+                {SelfList && SelfList.length > 0 ? (
+                  <FlatList
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    data={SelfList}
+                    renderItem={({ item, index }) => {
+                      return (
+                        <View style={styles.maincard}>
+                          <View style={{}}>
+                            <View style={styles.mainItem}>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().BusinessUser} height={20} width={20} />
+                                <View style={style.flex1}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    Item
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      ,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.item || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().Type} height={20} width={20} />
+                                <View style={{ flex: 1 }}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    Billing Rate
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.bill_rate || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                            {VerticalSaperator}
+                            <View style={styles.mainItem}>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().BusinessUser} height={20} width={20} />
+                                <View style={style.flex1}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    NOD Rate
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      ,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.nod_rate || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().Type} height={20} width={20} />
+                                <View style={{ flex: 1 }}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    Wholesale Rate
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.wholesale_rate || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                            {VerticalSaperator}
+                            <View style={styles.mainItem}>
+                              <View
+                                style={[
+                                  styles.directionRow,
+                                  styles.aligneContentCenter,
+                                  style.flex1,
+                                ]}
+                              >
+                                <SvgXml xml={IconSvgXml().Amount} height={20} width={20} />
+                                <View style={style.flex1}>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Bold,
+                                      style.marginLeft10,
+                                    ]}
+                                  >
+                                    Retail Rate
+                                  </Text>
+                                  <Text
+                                    style={[
+                                      textStyle(APP_COLORS.black).title2Medium,
+                                      style.marginLeft10,
+                                      ,
+                                      style.marginTop5,
+                                    ]}
+                                  >
+                                    {item.retail_rate || '-'}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                            <TouchableOpacity onPress={() =>{
+                             setShowDelCnfModal(true)
+                             serSelectedDeleteItem(item)
+                            }} style={{alignSelf:"flex-end"}}>
+                            <SvgXml xml={IconSvgXml().Delete} height={20} width={20} />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      );
+                    }}
+                    keyExtractor={(item, index) => index + '_1'}
+                  />
+                ) : (
+                  NoDataFound('No self found')
+                )}
+              </View>
+            )}

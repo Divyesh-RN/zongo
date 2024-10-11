@@ -1,29 +1,34 @@
 
-import { StyleSheet, View, Text, TouchableOpacity, Alert, Image, Platform } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import HeaderView from '@commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
+import { StyleSheet, View, Text, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderBackView from '@commonComponents/HeaderBackView';
 import { goBack } from '@navigation/RootNavigation';
-import { black, disableColor, greenPrimary, grey, grey01, light_grey, paleGreen, red, white } from '../../../constants/Color';
+import { black, disableColor, greenPrimary, grey, grey01, paleGreen, red, white } from '../../../constants/Color';
 import { FontSize, MEDIUM, SEMIBOLD } from '../../../constants/Fonts';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
-import { Get_Extension_List_Dropdown, Get_Language_List, Get_Number_List_Dropdown, Get_Role_List_Dp, Get_Time_Based_Routing_Details, Get_Time_Zone_List, Get_User_Details, Group_List, Update_User, Update_User_group } from '../../../redux/api/Api';
+import {
+    Get_Extension_List_Dropdown,
+    Get_Language_List,
+    Get_Number_List_Dropdown,
+    Get_Role_List_Dp,
+    Get_Time_Zone_List,
+    Get_User_Details,
+    Group_List,
+    Update_User,
+    Update_User_group,
+} from '../../../redux/api/Api';
 import { STATUS_FULFILLED, STATUS_REJECTED } from '../../../constants/ConstantKey';
 import { Log } from '../../../commonComponents/Log';
-import { resetTimeBasedRoutingApiStatus } from '../../../redux/reducers/timeBasedRoutingReducer';
 import LoadingView from '../../../commonComponents/LoadingView';
 import { useFocusEffect } from '@react-navigation/native';
 import { resetUserModuleApiStatus } from '../../../redux/reducers/userModuleReducer';
 import BottomSheet from '../../../commonComponents/BottomSheet/BottomSheet';
 import { TextInput } from 'react-native-gesture-handler';
-import ImagePicker from 'react-native-image-crop-picker';
-import { IMAGE_URL, WEBSOCKET_URL } from '../../../constants/ApiUrl';
+import { IMAGE_URL } from '../../../constants/ApiUrl';
 import DocumentPicker from 'react-native-document-picker';
 import { navigate } from '../../../navigation/RootNavigation';
 import Global from '../../../constants/Global';
-import { ZoomOutEasyUp } from 'react-native-reanimated';
 
 const ManageUser = ({ navigation, route }) => {
 
@@ -87,7 +92,7 @@ const ManageUser = ({ navigation, route }) => {
     const error_message = useSelector(state => state.userModuleRedux.error_message);
     const user_data = useSelector(state => state.userRedux.user_data);
 
-   
+
     const GetUserDetails = () => {
         if (user_data !== null) {
             var dict = {};
@@ -288,7 +293,7 @@ const ManageUser = ({ navigation, route }) => {
         }
     }, [apiGetTimeZoneList]);
 
-    // role list 
+    // role list
     useEffect(() => {
         Log('apiGetRoleDp :', apiGetRoleDp);
         if (apiGetRoleDp == STATUS_FULFILLED) {
@@ -542,644 +547,636 @@ const ManageUser = ({ navigation, route }) => {
 
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title={TitleHeader}
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
-                        }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
-                    {/* main view start*/}
-                    <View >
-                        <View style={{
-                            padding: 2, borderRadius: 100, borderWidth: 1, borderColor: greenPrimary, backgroundColor: paleGreen,
-                            alignSelf: "center", marginTop: 14, marginBottom: 8, shadowColor: "#000",
-                            shadowOffset: {
-                                width: 0,
-                                height: 1,
-                            },
-                            shadowOpacity: 0.20,
-                            shadowRadius: 1.41,
+            <HeaderBackView
+                title={TitleHeader}
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+            <ScrollView style={{ paddingHorizontal: 20 }}>
 
-                            elevation: 2,
-                        }}>
-                            <Image
-                                style={{ width: 75, height: 75, borderRadius: 100 }}
-                                source={{ uri: ProfileImURI }}
-                            />
-                            <TouchableOpacity onPress={() => { handleProfile() }}
-                                style={{
-                                    backgroundColor: paleGreen,
-                                    padding: 4, borderRadius: 100, position: "absolute", bottom: -4, right: -2, shadowColor: greenPrimary,
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 1,
-                                    },
-                                    shadowOpacity: 0.20,
-                                    shadowRadius: 1.41,
+                {/* main view start*/}
+                <View >
+                    <View style={{
+                        padding: 2, borderRadius: 100, borderWidth: 1, borderColor: greenPrimary, backgroundColor: paleGreen,
+                        alignSelf: "center", marginTop: 14, marginBottom: 8, shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 1,
+                        },
+                        shadowOpacity: 0.20,
+                        shadowRadius: 1.41,
 
-                                    elevation: 2,
-                                }}>
-                                <Icon name={"camera"} size={20} color={greenPrimary} />
-
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{
-                            paddingVertical: 12,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <View>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>{"Email ID"}</Text>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_11,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 4
-                                    }}>{Email}</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={{
-                            paddingVertical: 12,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <View>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>{"First Name"}</Text>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_11,
-                                        color: grey,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 4
-                                    }}>{FirstName}</Text>
-                                </View>
-                                {FirstNameEdit == false &&
-                                    <TouchableOpacity onPress={() => {
-                                        setFirstNameEdit(!FirstNameEdit)
-                                    }}>
-                                        <Icon name={"pencil"} size={18} color={black} />
-                                    </TouchableOpacity>
-                                }
-                            </View>
-                            {FirstNameEdit == true &&
-                                <View style={{
-                                    marginTop: 14,
-                                    flexDirection: "row", alignItems: "center"
-                                }}>
-                                    <TextInput
-                                        value={FirstName}
-                                        placeholder='First Name'
-                                        placeholderTextColor={grey01}
-                                        style={{
-                                            borderWidth: 1,
-                                            borderColor: grey01,
-                                            height: 40,
-                                            borderRadius: 6,
-                                            paddingHorizontal: 14,
-                                            flex: 1
-                                        }}
-                                        onChangeText={(txt) => {
-                                            setFirstName(txt)
-                                        }}
-                                    />
-                                    <TouchableOpacity onPress={() => {
-                                        setFirstNameEdit(false)
-                                    }}
-                                        style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
-                                        <Icon name="check" size={22} color={white} />
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                            {FirstNameError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>
-                                {FirstNameError}
-                            </Text>
-                            }
-                        </View>
-                        <View style={{
-                            paddingVertical: 12,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <View>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>{"Last Name"}</Text>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_11,
-                                        color: grey,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 4
-                                    }}>{LastName}</Text>
-                                </View>
-                                {LastNameEdit == false &&
-                                    <TouchableOpacity onPress={() => {
-                                        setLastNameEdit(!LastNameEdit)
-                                    }}>
-                                        <Icon name={"pencil"} size={18} color={black} />
-                                    </TouchableOpacity>
-                                }
-                            </View>
-                            {LastNameEdit == true &&
-                                <View style={{
-                                    marginTop: 14,
-                                    flexDirection: "row", alignItems: "center"
-                                }}>
-                                    <TextInput
-                                        value={LastName}
-                                        placeholder='First Name'
-                                        placeholderTextColor={grey01}
-                                        style={{
-                                            borderWidth: 1,
-                                            borderColor: grey01,
-                                            height: 40,
-                                            borderRadius: 6,
-                                            paddingHorizontal: 14,
-                                            flex: 1
-                                        }}
-                                        onChangeText={(txt) => {
-                                            setLastName(txt)
-                                        }}
-                                    />
-                                    <TouchableOpacity onPress={() => {
-                                        setLastNameEdit(false)
-                                    }}
-                                        style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
-                                        <Icon name="check" size={22} color={white} />
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                            {LastNameError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>
-                                {LastNameError}
-                            </Text>
-                            }
-                        </View>
-                        <TouchableOpacity onPress={() => {
-                            openExtensionBottomSheet()
-                        }}
+                        elevation: 2,
+                    }}>
+                        <Image
+                            style={{ width: 75, height: 75, borderRadius: 100 }}
+                            source={{ uri: ProfileImURI }}
+                        />
+                        <TouchableOpacity onPress={() => { handleProfile() }}
                             style={{
+                                backgroundColor: paleGreen,
+                                padding: 4, borderRadius: 100, position: "absolute", bottom: -4, right: -2, shadowColor: greenPrimary,
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 1,
+                                },
+                                shadowOpacity: 0.20,
+                                shadowRadius: 1.41,
 
-                                paddingVertical: 12,
-                                paddingHorizontal: 20,
-                                borderBottomWidth: 1,
-                                borderBottomColor: disableColor,
-                                marginHorizontal: -20,
+                                elevation: 2,
                             }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                }}>{"Extension"}</Text>
-                                <Icon name="chevron-down" size={22} color={black} />
-                            </View>
-                            <Text style={{
-                                fontSize: FontSize.FS_11,
-                                color: grey,
-                                fontFamily: MEDIUM,
-                            }}>{Extension == null ? "Select Extension" : Extension?.extension}</Text>
-                            {ExtensionError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>
-                                {ExtensionError}
-                            </Text>
-                            }
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            openCallerIdBottomSheet()
-                        }}
-                            style={{
-                                paddingVertical: 12,
-                                paddingHorizontal: 20,
-                                marginHorizontal: -20,
-                            }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                }}>{"Outbound Caller ID"}</Text>
-                                <Icon name="chevron-down" size={22} color={black} />
-                            </View>
-                            <Text style={{
-                                fontSize: FontSize.FS_11,
-                                color: grey,
-                                fontFamily: MEDIUM,
-                            }}>{CallerId == null ? "Select Outbound Caller ID" : CallerId?.label}</Text>
-                        </TouchableOpacity>
-                        <Text style={[styles.sectionTItle, { paddingVertical: 0 }]}>{""}</Text>
-                        <View style={{
-                            paddingVertical: 12,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <View>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>{"Job Title"}</Text>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_11,
-                                        color: grey,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 4
-                                    }}>{JobTitle}</Text>
-                                </View>
-                                {JobTitleEdit == false &&
-                                    <TouchableOpacity onPress={() => {
-                                        setJobTitleEdit(!JobTitleEdit)
-                                    }}>
-                                        <Icon name={"pencil"} size={18} color={black} />
-                                    </TouchableOpacity>
-                                }
-                            </View>
-                            {JobTitleEdit == true &&
-                                <View style={{
-                                    marginTop: 14,
-                                    flexDirection: "row", alignItems: "center"
-                                }}>
-                                    <TextInput
-                                        value={JobTitle}
-                                        placeholder='Job Title'
-                                        placeholderTextColor={grey01}
-                                        style={{
-                                            borderWidth: 1,
-                                            borderColor: grey01,
-                                            height: 40,
-                                            borderRadius: 6,
-                                            paddingHorizontal: 14,
-                                            flex: 1
-                                        }}
-                                        onChangeText={(txt) => {
-                                            setJobTitle(txt)
-                                        }}
-                                    />
-                                    <TouchableOpacity onPress={() => {
-                                        setJobTitleEdit(false)
-                                    }}
-                                        style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
-                                        <Icon name="check" size={22} color={white} />
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                            {JobTitleError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>
-                                {JobTitleError}
-                            </Text>
-                            }
-                        </View>
-                        <TouchableOpacity onPress={() => {
-                            openTimeZoneBottomSheet()
-                        }}
-                            style={{
+                            <Icon name={"camera"} size={20} color={greenPrimary} />
 
-                                paddingVertical: 12,
-                                paddingHorizontal: 20,
-                                borderBottomWidth: 1,
-                                borderBottomColor: disableColor,
-                                marginHorizontal: -20,
-                            }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                }}>{"Time Zone"}</Text>
-                                <Icon name="chevron-down" size={22} color={black} />
-                            </View>
-                            <Text style={{
-                                fontSize: FontSize.FS_11,
-                                color: grey,
-                                fontFamily: MEDIUM,
-                            }}>{TimeZone == null ? "Select Time Zone" : TimeZone?.timezone_name}</Text>
-                            {TimeZoneError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>
-                                {TimeZoneError}
-                            </Text>
-                            }
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            openRoleBottomSheet()
-                        }}
-                            style={{
-
-                                paddingVertical: 12,
-                                paddingHorizontal: 20,
-                                borderBottomWidth: 1,
-                                borderBottomColor: disableColor,
-                                marginHorizontal: -20,
-                            }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                }}>{"Role"}</Text>
-                                <Icon name="chevron-down" size={22} color={black} />
-                            </View>
-                            <Text style={{
-                                fontSize: FontSize.FS_11,
-                                color: grey,
-                                fontFamily: MEDIUM,
-                            }}>{Role == null ? "Select Role" : Role?.role_name}</Text>
-                            {RoleError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>
-                                {RoleError}
-                            </Text>
-                            }
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            openGroupBottomSheet()
-                        }}
-                            style={{
-
-                                paddingVertical: 12,
-                                paddingHorizontal: 20,
-                                borderBottomWidth: 1,
-                                borderBottomColor: disableColor,
-                                marginHorizontal: -20,
-                            }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                }}>{"User Group"}</Text>
-                                <Icon name="chevron-down" size={22} color={black} />
-                            </View>
-                            <Text style={{
-                                fontSize: FontSize.FS_11,
-                                color: grey,
-                                fontFamily: MEDIUM,
-                            }}>{Group == null ? "Select User Group" : Group?.name}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            openLanguageBottomSheet()
-                        }}
-                            style={{
-
-                                paddingVertical: 12,
-                                paddingHorizontal: 20,
-                                borderBottomWidth: 1,
-                                borderBottomColor: disableColor,
-                                marginHorizontal: -20,
-                            }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                }}>{"Language"}</Text>
-                                <Icon name="chevron-down" size={22} color={black} />
-                            </View>
-                            <Text style={{
-                                fontSize: FontSize.FS_11,
-                                color: grey,
-                                fontFamily: MEDIUM,
-                            }}>{Language == null ? "Select Language" : Language?.language}</Text>
-                            {LanguageError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>
-                                {LanguageError}
-                            </Text>
-                            }
-                        </TouchableOpacity>
-                        <View style={{
-                            paddingVertical: 12,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <View>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>{"Date Created"}</Text>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_11,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 4
-                                    }}>{user_details?.user?.created_at}</Text>
-                                </View>
-                            </View>
-                        </View>
-
-
-
-                        <Text style={styles.sectionTItle}>{"Avaliability & E911"}</Text>
-                        <TouchableOpacity onPress={() => {
-                            navigate("UserAvaliability", { user_uuid: route?.params?.item?.uuid })
-                        }}
-                            style={styles.sectionSubTitle}>
-                            <Text style={styles.black13Medium}>{"Avaliability"}</Text>
-                            <Icon name={"chevron-right"} size={22} color={black} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            navigate("UserE911", { data: user_details })
-                        }}
-                            style={styles.sectionSubTitle}>
-                            <Text style={styles.black13Medium}>{"E911"}</Text>
-                            <Icon name={"chevron-right"} size={22} color={black} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            handleUpdateUser()
-                        }}
-                            style={{
-                                backgroundColor: greenPrimary,
-                                alignItems: "center",
-                                paddingVertical: 10,
-                                marginVertical: 20,
-                                justifyContent: "center",
-                                borderRadius: 4,
-                                width: "100%"
-                            }}>
-                            <Text style={{
-                                fontSize: FontSize.FS_14,
-                                color: white,
-                                fontFamily: SEMIBOLD,
-                                lineHeight: 24,
-                                marginLeft: 10
-                            }}>{"Update"}</Text>
                         </TouchableOpacity>
                     </View>
+                    <View style={{
+                        paddingVertical: 12,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <View>
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>{"Email ID"}</Text>
+                                <Text style={{
+                                    fontSize: FontSize.FS_11,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                    marginTop: 4
+                                }}>{Email}</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={{
+                        paddingVertical: 12,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <View>
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>{"First Name"}</Text>
+                                <Text style={{
+                                    fontSize: FontSize.FS_11,
+                                    color: grey,
+                                    fontFamily: MEDIUM,
+                                    marginTop: 4
+                                }}>{FirstName}</Text>
+                            </View>
 
-                    {/* main view end*/}
-                    <BottomSheet
-                        headerTitle={"Select Extension"}
-                        Data={extension_list}
-                        titleValue={"extension"}
-                        bottomSheetRef={ExtensionbottomSheetRef}
-                        selectedValue={(data) => {
-                            setExtension(data)
-                            setExtensionError("")
-                        }} />
-                    <BottomSheet
-                        headerTitle={"Select Outbound Caller ID"}
-                        Data={number_list}
-                        titleValue={"label"}
-                        bottomSheetRef={CallerIdbottomSheetRef}
-                        selectedValue={(data) => {
-                            setCallerId(data)
-                            setCallerIdError("")
-                        }} />
-                    <BottomSheet
-                        headerTitle={"Select Time Zone"}
-                        Data={time_zone_list}
-                        titleValue={"timezone_name"}
-                        bottomSheetRef={TimeZonebottomSheetRef}
-                        selectedValue={(data) => {
-                            setTimeZone(data)
-                            setTimeZoneError("")
-                        }} />
-                    <BottomSheet
-                        headerTitle={"Select Role"}
-                        Data={role_list}
-                        titleValue={"role_name"}
-                        bottomSheetRef={RolebottomSheetRef}
-                        selectedValue={(data) => {
-                            setRole(data)
-                            setRoleError("")
-                        }} />
-                    <BottomSheet
-                        headerTitle={"Select User Group"}
-                        Data={group_list}
-                        titleValue={"name"}
-                        bottomSheetRef={GroupbottomSheetRef}
-                        selectedValue={(data) => {
-                            setGroup(data)
-                            UpdateUserGroup(data?.uuid)
-                            setGroupError("")
-                        }} />
-                    <BottomSheet
-                        headerTitle={"Select Language"}
-                        Data={language_list}
-                        titleValue={"language"}
-                        bottomSheetRef={LanguagebottomSheetRef}
-                        selectedValue={(data) => {
-                            setLanguage(data)
-                            setLanguageError("")
-                        }} />
+                            {FirstNameEdit == false &&
+                                <TouchableOpacity onPress={() => {
+                                    setFirstNameEdit(!FirstNameEdit)
+                                }}>
+                                    <Icon name={"pencil"} size={18} color={black} />
+                                </TouchableOpacity>
+                            }
+                        </View>
+                        {FirstNameEdit == true &&
+                            <View style={{
+                                marginTop: 14,
+                                flexDirection: "row", alignItems: "center"
+                            }}>
+                                <TextInput
+                                    value={FirstName}
+                                    placeholder='First Name'
+                                    placeholderTextColor={grey01}
+                                    style={{
+                                        borderWidth: 1,
+                                        borderColor: grey01,
+                                        height: 40,
+                                        borderRadius: 6,
+                                        paddingHorizontal: 14,
+                                        flex: 1
+                                    }}
+                                    onChangeText={(txt) => {
+                                        setFirstName(txt)
+                                    }}
+                                />
+                                <TouchableOpacity onPress={() => {
+                                    setFirstNameEdit(false)
+                                }}
+                                    style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
+                                    <Icon name="check" size={22} color={white} />
+                                </TouchableOpacity>
+                            </View>
+                        }
+                        {FirstNameError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>
+                            {FirstNameError}
+                        </Text>
+                        }
+                    </View>
+                    <View style={{
+                        paddingVertical: 12,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <View>
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>{"Last Name"}</Text>
+                                <Text style={{
+                                    fontSize: FontSize.FS_11,
+                                    color: grey,
+                                    fontFamily: MEDIUM,
+                                    marginTop: 4
+                                }}>{LastName}</Text>
+                            </View>
+                            {LastNameEdit == false &&
+                                <TouchableOpacity onPress={() => {
+                                    setLastNameEdit(!LastNameEdit)
+                                }}>
+                                    <Icon name={"pencil"} size={18} color={black} />
+                                </TouchableOpacity>
+                            }
+                        </View>
+                        {LastNameEdit == true &&
+                            <View style={{
+                                marginTop: 14,
+                                flexDirection: "row", alignItems: "center"
+                            }}>
+                                <TextInput
+                                    value={LastName}
+                                    placeholder='First Name'
+                                    placeholderTextColor={grey01}
+                                    style={{
+                                        borderWidth: 1,
+                                        borderColor: grey01,
+                                        height: 40,
+                                        borderRadius: 6,
+                                        paddingHorizontal: 14,
+                                        flex: 1
+                                    }}
+                                    onChangeText={(txt) => {
+                                        setLastName(txt)
+                                    }}
+                                />
+                                <TouchableOpacity onPress={() => {
+                                    setLastNameEdit(false)
+                                }}
+                                    style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
+                                    <Icon name="check" size={22} color={white} />
+                                </TouchableOpacity>
+                            </View>
+                        }
+                        {LastNameError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>
+                            {LastNameError}
+                        </Text>
+                        }
+                    </View>
+                    <TouchableOpacity onPress={() => {
+                        openExtensionBottomSheet()
+                    }}
+                        style={{
+
+                            paddingVertical: 12,
+                            paddingHorizontal: 20,
+                            borderBottomWidth: 1,
+                            borderBottomColor: disableColor,
+                            marginHorizontal: -20,
+                        }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                            }}>{"Extension"}</Text>
+                            <Icon name="chevron-down" size={22} color={black} />
+                        </View>
+                        <Text style={{
+                            fontSize: FontSize.FS_11,
+                            color: grey,
+                            fontFamily: MEDIUM,
+                        }}>{Extension == null ? "Select Extension" : Extension?.extension}</Text>
+                        {ExtensionError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>
+                            {ExtensionError}
+                        </Text>
+                        }
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        openCallerIdBottomSheet()
+                    }}
+                        style={{
+                            paddingVertical: 12,
+                            paddingHorizontal: 20,
+                            marginHorizontal: -20,
+                        }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                            }}>{"Outbound Caller ID"}</Text>
+                            <Icon name="chevron-down" size={22} color={black} />
+                        </View>
+                        <Text style={{
+                            fontSize: FontSize.FS_11,
+                            color: grey,
+                            fontFamily: MEDIUM,
+                        }}>{CallerId == null ? "Select Outbound Caller ID" : CallerId?.label}</Text>
+                    </TouchableOpacity>
+                    <Text style={[styles.sectionTItle, { paddingVertical: 0 }]}>{""}</Text>
+                    <View style={{
+                        paddingVertical: 12,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <View>
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>{"Job Title"}</Text>
+                                <Text style={{
+                                    fontSize: FontSize.FS_11,
+                                    color: grey,
+                                    fontFamily: MEDIUM,
+                                    marginTop: 4
+                                }}>{JobTitle}</Text>
+                            </View>
+                            {JobTitleEdit == false &&
+                                <TouchableOpacity onPress={() => {
+                                    setJobTitleEdit(!JobTitleEdit)
+                                }}>
+                                    <Icon name={"pencil"} size={18} color={black} />
+                                </TouchableOpacity>
+                            }
+                        </View>
+                        {JobTitleEdit == true &&
+                            <View style={{
+                                marginTop: 14,
+                                flexDirection: "row", alignItems: "center"
+                            }}>
+                                <TextInput
+                                    value={JobTitle}
+                                    placeholder='Job Title'
+                                    placeholderTextColor={grey01}
+                                    style={{
+                                        borderWidth: 1,
+                                        borderColor: grey01,
+                                        height: 40,
+                                        borderRadius: 6,
+                                        paddingHorizontal: 14,
+                                        flex: 1
+                                    }}
+                                    onChangeText={(txt) => {
+                                        setJobTitle(txt)
+                                    }}
+                                />
+                                <TouchableOpacity onPress={() => {
+                                    setJobTitleEdit(false)
+                                }}
+                                    style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
+                                    <Icon name="check" size={22} color={white} />
+                                </TouchableOpacity>
+                            </View>
+                        }
+                        {JobTitleError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>
+                            {JobTitleError}
+                        </Text>
+                        }
+                    </View>
+                    <TouchableOpacity onPress={() => {
+                        openTimeZoneBottomSheet()
+                    }}
+                        style={{
+
+                            paddingVertical: 12,
+                            paddingHorizontal: 20,
+                            borderBottomWidth: 1,
+                            borderBottomColor: disableColor,
+                            marginHorizontal: -20,
+                        }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                            }}>{"Time Zone"}</Text>
+                            <Icon name="chevron-down" size={22} color={black} />
+                        </View>
+                        <Text style={{
+                            fontSize: FontSize.FS_11,
+                            color: grey,
+                            fontFamily: MEDIUM,
+                        }}>{TimeZone == null ? "Select Time Zone" : TimeZone?.timezone_name}</Text>
+                        {TimeZoneError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>
+                            {TimeZoneError}
+                        </Text>
+                        }
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        openRoleBottomSheet()
+                    }}
+                        style={{
+
+                            paddingVertical: 12,
+                            paddingHorizontal: 20,
+                            borderBottomWidth: 1,
+                            borderBottomColor: disableColor,
+                            marginHorizontal: -20,
+                        }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                            }}>{"Role"}</Text>
+                            <Icon name="chevron-down" size={22} color={black} />
+                        </View>
+                        <Text style={{
+                            fontSize: FontSize.FS_11,
+                            color: grey,
+                            fontFamily: MEDIUM,
+                        }}>{Role == null ? "Select Role" : Role?.role_name}</Text>
+                        {RoleError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>
+                            {RoleError}
+                        </Text>
+                        }
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        openGroupBottomSheet()
+                    }}
+                        style={{
+
+                            paddingVertical: 12,
+                            paddingHorizontal: 20,
+                            borderBottomWidth: 1,
+                            borderBottomColor: disableColor,
+                            marginHorizontal: -20,
+                        }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                            }}>{"User Group"}</Text>
+                            <Icon name="chevron-down" size={22} color={black} />
+                        </View>
+                        <Text style={{
+                            fontSize: FontSize.FS_11,
+                            color: grey,
+                            fontFamily: MEDIUM,
+                        }}>{Group == null ? "Select User Group" : Group?.name}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        openLanguageBottomSheet()
+                    }}
+                        style={{
+
+                            paddingVertical: 12,
+                            paddingHorizontal: 20,
+                            borderBottomWidth: 1,
+                            borderBottomColor: disableColor,
+                            marginHorizontal: -20,
+                        }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                            }}>{"Language"}</Text>
+                            <Icon name="chevron-down" size={22} color={black} />
+                        </View>
+                        <Text style={{
+                            fontSize: FontSize.FS_11,
+                            color: grey,
+                            fontFamily: MEDIUM,
+                        }}>{Language == null ? "Select Language" : Language?.language}</Text>
+                        {LanguageError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>
+                            {LanguageError}
+                        </Text>
+                        }
+                    </TouchableOpacity>
+                    <View style={{
+                        paddingVertical: 12,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <View>
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>{"Date Created"}</Text>
+                                <Text style={{
+                                    fontSize: FontSize.FS_11,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                    marginTop: 4
+                                }}>{user_details?.user?.created_at}</Text>
+                            </View>
+                        </View>
+                    </View>
+
+
+
+                    <Text style={styles.sectionTItle}>{"Avaliability & E911"}</Text>
+                    <TouchableOpacity onPress={() => {
+                        navigate("UserAvaliability", { user_uuid: route?.params?.item?.uuid })
+                    }}
+                        style={styles.sectionSubTitle}>
+                        <Text style={styles.black13Medium}>{"Avaliability"}</Text>
+                        <Icon name={"chevron-right"} size={22} color={black} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        navigate("UserE911", { data: user_details })
+                    }}
+                        style={styles.sectionSubTitle}>
+                        <Text style={styles.black13Medium}>{"E911"}</Text>
+                        <Icon name={"chevron-right"} size={22} color={black} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        handleUpdateUser()
+                    }}
+                        style={{
+                            backgroundColor: greenPrimary,
+                            alignItems: "center",
+                            paddingVertical: 10,
+                            marginVertical: 20,
+                            justifyContent: "center",
+                            borderRadius: 4,
+                            width: "100%"
+                        }}>
+                        <Text style={{
+                            fontSize: FontSize.FS_14,
+                            color: white,
+                            fontFamily: SEMIBOLD,
+                            lineHeight: 24,
+                            marginLeft: 10
+                        }}>{"Update"}</Text>
+                    </TouchableOpacity>
                 </View>
-            </HeaderView>
+
+                {/* main view end*/}
+                <BottomSheet
+                    headerTitle={"Select Extension"}
+                    Data={extension_list}
+                    titleValue={"extension"}
+                    bottomSheetRef={ExtensionbottomSheetRef}
+                    selectedValue={(data) => {
+                        setExtension(data)
+                        setExtensionError("")
+                    }} />
+                <BottomSheet
+                    headerTitle={"Select Outbound Caller ID"}
+                    Data={number_list}
+                    titleValue={"label"}
+                    bottomSheetRef={CallerIdbottomSheetRef}
+                    selectedValue={(data) => {
+                        setCallerId(data)
+                        setCallerIdError("")
+                    }} />
+                <BottomSheet
+                    headerTitle={"Select Time Zone"}
+                    Data={time_zone_list}
+                    titleValue={"timezone_name"}
+                    bottomSheetRef={TimeZonebottomSheetRef}
+                    selectedValue={(data) => {
+                        setTimeZone(data)
+                        setTimeZoneError("")
+                    }} />
+                <BottomSheet
+                    headerTitle={"Select Role"}
+                    Data={role_list}
+                    titleValue={"role_name"}
+                    bottomSheetRef={RolebottomSheetRef}
+                    selectedValue={(data) => {
+                        setRole(data)
+                        setRoleError("")
+                    }} />
+                <BottomSheet
+                    headerTitle={"Select User Group"}
+                    Data={group_list}
+                    titleValue={"name"}
+                    bottomSheetRef={GroupbottomSheetRef}
+                    selectedValue={(data) => {
+                        setGroup(data)
+                        UpdateUserGroup(data?.uuid)
+                        setGroupError("")
+                    }} />
+                <BottomSheet
+                    headerTitle={"Select Language"}
+                    Data={language_list}
+                    titleValue={"language"}
+                    bottomSheetRef={LanguagebottomSheetRef}
+                    selectedValue={(data) => {
+                        setLanguage(data)
+                        setLanguageError("")
+                    }} />
+            </ScrollView>
             {isLoading && <LoadingView />}
         </>
     );

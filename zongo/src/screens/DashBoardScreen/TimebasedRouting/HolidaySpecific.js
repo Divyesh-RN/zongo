@@ -1,8 +1,6 @@
 
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, Modal, ScrollView, Alert } from 'react-native';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import HeaderView from '@commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
 import HeaderBackView from '@commonComponents/HeaderBackView';
 import { goBack } from '@navigation/RootNavigation';
 import { black05 } from '@constants/Color';
@@ -230,7 +228,7 @@ const HolidaySpecific = ({ navigation, route }) => {
             dict.time_condition_date = selectedDate
         dict.time_condition_uuid = route?.params?.item[0]?.time_condition_uuid,
             dict.to_time = to,
-        dispatch(Create_Time_Slot(dict))
+            dispatch(Create_Time_Slot(dict))
     }
 
     //Create Time Slot
@@ -442,7 +440,7 @@ const HolidaySpecific = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => {}, style: 'cancel'
+                    onPress: () => { }, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -476,496 +474,483 @@ const HolidaySpecific = ({ navigation, route }) => {
 
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title={"Holiday & Specific"}
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
-                        }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
+            <HeaderBackView
+                title={"Holiday & Specific"}
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+            <ScrollView horizontal>
+                <Calendar
+                    headerStyle={{
+                        marginBottom: 20
+                    }}
 
-                    <ScrollView horizontal style={{ marginHorizontal: -20 }}>
-                        <Calendar
-                            headerStyle={{
-                                marginBottom: 20
-                            }}
+                    minDate={moment().format('YYYY-MM-DD')}
+                    theme={theme}
+                    style={{
+                        shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 1,
+                        },
+                        shadowOpacity: 0.20,
+                        shadowRadius: 1.41,
 
-                            minDate={moment().format('YYYY-MM-DD')}
-                            theme={theme}
-                            style={{
-                                shadowColor: "#000",
-                                shadowOffset: {
-                                    width: 0,
-                                    height: 1,
-                                },
-                                shadowOpacity: 0.20,
-                                shadowRadius: 1.41,
+                        elevation: 2,
+                        marginBottom: 100,
+                        backgroundColor: white,
+                        paddingHorizontal: 40,
+                    }}
+                    onDayPress={handleDayPress}
+                    // onMonthChange={(newMonth) =>{
+                    //     setCurrentMonth(newMonth)}}
+                    markedDates={{
+                        [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' },
+                        [moment().format('YYYY-MM-DD')]: { selected: true, marked: true, selectedDotColor: 'red' },
+                    }}
+                    // renderArrow={_renderArrow}
+                    dayComponent={({ date, state }) => {
+                        let dayEvents = [];
 
-                                elevation: 2,
-                                marginBottom: 100,
-                                backgroundColor: white,
-                                paddingHorizontal: 40,
-                            }}
-                            onDayPress={handleDayPress}
-                            // onMonthChange={(newMonth) =>{
-                            //     setCurrentMonth(newMonth)}}
-                            markedDates={{
-                                [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'orange' },
-                                [moment().format('YYYY-MM-DD')]: { selected: true, marked: true, selectedDotColor: 'red' },
-                            }}
-                            // renderArrow={_renderArrow}
-                            dayComponent={({ date, state }) => {
-                                let dayEvents = [];
+                        if (Array.isArray(EventList)) {
+                            dayEvents = EventList.filter((event) => {
+                                const start = event?.start;
+                                return start?.includes(date.dateString, 0);
+                            });
+                        }
+                        return (
+                            <TouchableOpacity key={Math.random()}
+                                activeOpacity={state === 'disabled' ? 0.9 : 0.1}
+                                onPress={() => {
+                                    if (state === 'disabled') {
 
-                                if (Array.isArray(EventList)) {
-                                    dayEvents = EventList.filter((event) => {
-                                        const start = event?.start;
-                                        return start?.includes(date.dateString, 0);
-                                    });
-                                }
-                                return (
-                                    <TouchableOpacity key={Math.random()}
-                                        activeOpacity={state === 'disabled' ? 0.9 : 0.1}
-                                        onPress={() => {
-                                            if (state === 'disabled') {
+                                    }
+                                    else {
+                                        handleDayPress(date)
+                                    }
+                                }}
+                                style={{
+                                    width: 100,
+                                    height: 130,
+                                    backgroundColor: state === 'disabled' ? "#f1f1f1" : white,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    borderWidth: 1,
+                                    borderColor: state === 'disabled' ? "#dddddd" : "#dddddd",
+                                    // opacity: state === 'disabled' ? 0.2 : 1,
+                                }}>
+                                <Text style={{
+                                    textAlign: 'center',
+                                    color: date.dateString == moment().format('YYYY-MM-DD') ? white : state === 'disabled' ? grey01 : black,
+                                    fontFamily: SEMIBOLD,
+                                    fontSize: FontSize.FS_13,
+                                    backgroundColor: date.dateString == moment().format('YYYY-MM-DD') ? greenPrimary : transparent,
+                                    padding: date.dateString == moment().format('YYYY-MM-DD') ? 6 : 0,
+                                    borderRadius: date.dateString == moment().format('YYYY-MM-DD') ? 100 : 0,
+                                }}>{date.day}</Text>
 
-                                            }
-                                            else {
-                                                handleDayPress(date)
-                                            }
-                                        }}
-                                        style={{
-                                            width: 100,
-                                            height: 130,
-                                            backgroundColor: state === 'disabled' ? "#f1f1f1" : white,
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            borderWidth: 1,
-                                            borderColor: state === 'disabled' ? "#dddddd" : "#dddddd",
-                                            // opacity: state === 'disabled' ? 0.2 : 1,
-                                        }}>
-                                        <Text style={{
-                                            textAlign: 'center',
-                                            color: date.dateString == moment().format('YYYY-MM-DD') ? white : state === 'disabled' ? grey01 : black,
-                                            fontFamily: SEMIBOLD,
-                                            fontSize: FontSize.FS_13,
-                                            backgroundColor: date.dateString == moment().format('YYYY-MM-DD') ? greenPrimary : transparent,
-                                            padding: date.dateString == moment().format('YYYY-MM-DD') ? 6 : 0,
-                                            borderRadius: date.dateString == moment().format('YYYY-MM-DD') ? 100 : 0,
-                                        }}>{date.day}</Text>
-
-                                        {dayEvents?.length > 0 ? (
-                                            dayEvents?.slice(0, 2).map((event, index) => (
-                                                <>
-                                                    {state !== 'disabled' &&
-                                                        <TouchableOpacity
-                                                            onPress={() => {
-                                                                key = Math.random()
-                                                                EditDayEvents(event)
-                                                            }}
-                                                            style={{
-                                                                flexDirection: "row",
-                                                                alignItems: "center",
-                                                                marginTop: 4,
-                                                                backgroundColor: greenPrimary,
-                                                                padding: 4,
-                                                                borderRadius: 4
-                                                            }}>
-                                                            <Text style={{ fontFamily: SEMIBOLD, fontSize: FontSize.FS_09, color: white }}>{"  " + event?.title}</Text>
-                                                        </TouchableOpacity>
-                                                    }
-                                                </>
-                                            ))
-                                        ) : (
-                                            null
-                                        )}
-                                        {dayEvents?.length > 2 && state !== 'disabled' &&
-                                            <>
-                                                <TouchableOpacity style={{ paddingVertical: 4, marginTop: 4 }}
+                                {dayEvents?.length > 0 ? (
+                                    dayEvents?.slice(0, 2).map((event, index) => (
+                                        <>
+                                            {state !== 'disabled' &&
+                                                <TouchableOpacity
                                                     onPress={() => {
-                                                        setSelectedDate(date?.dateString);
-                                                        setMoreEventModel(!MoreEventModel);
+                                                        key = Math.random()
+                                                        EditDayEvents(event)
                                                     }}
-                                                >
-                                                    <Text
-                                                        style={{
-                                                            fontFamily: SEMIBOLD,
-                                                            fontSize: FontSize.FS_09,
-                                                            color: greenPrimary,
-                                                        }}
-                                                    >
-                                                        {'+' + (dayEvents?.length - 2) + ' More'}
-                                                    </Text>
+                                                    style={{
+                                                        flexDirection: "row",
+                                                        alignItems: "center",
+                                                        marginTop: 4,
+                                                        backgroundColor: greenPrimary,
+                                                        padding: 4,
+                                                        borderRadius: 4
+                                                    }}>
+                                                    <Text style={{ fontFamily: SEMIBOLD, fontSize: FontSize.FS_09, color: white }}>{"  " + event?.title}</Text>
                                                 </TouchableOpacity>
-                                                <Modal
-                                                    animationType="slide"
-                                                    transparent={true}
-                                                    visible={MoreEventModel}
-                                                    onRequestClose={() => {
-                                                        setMoreEventModel(!MoreEventModel);
-                                                    }}
-                                                >
-                                                    <View style={styles.centeredView}>
-                                                        <View style={styles.modalView}>
-                                                            <View style={{ marginBottom: 50 }}>
-                                                                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
-                                                                    <Text style={{
-                                                                        fontSize: FontSize.FS_13,
-                                                                        color: black,
-                                                                        fontFamily: SEMIBOLD,
-                                                                        textAlign: "center",
-                                                                        flex: 1
-                                                                    }}>{moment(selectedDate).format('DD-MM-YYYY')}</Text>
-                                                                    <TouchableOpacity style={{ justifyContent: "flex-end", alignSelf: "flex-end", alignItems: "flex-end" }}
-                                                                        onPress={() => { setMoreEventModel(!MoreEventModel) }}>
+                                            }
+                                        </>
+                                    ))
+                                ) : (
+                                    null
+                                )}
+                                {dayEvents?.length > 2 && state !== 'disabled' &&
+                                    <>
+                                        <TouchableOpacity style={{ paddingVertical: 4, marginTop: 4 }}
+                                            onPress={() => {
+                                                setSelectedDate(date?.dateString);
+                                                setMoreEventModel(!MoreEventModel);
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    fontFamily: SEMIBOLD,
+                                                    fontSize: FontSize.FS_09,
+                                                    color: greenPrimary,
+                                                }}
+                                            >
+                                                {'+' + (dayEvents?.length - 2) + ' More'}
+                                            </Text>
+                                        </TouchableOpacity>
+                                        <Modal
+                                            animationType="slide"
+                                            transparent={true}
+                                            visible={MoreEventModel}
+                                            onRequestClose={() => {
+                                                setMoreEventModel(!MoreEventModel);
+                                            }}
+                                        >
+                                            <View style={styles.centeredView}>
+                                                <View style={styles.modalView}>
+                                                    <View style={{ marginBottom: 50 }}>
+                                                        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+                                                            <Text style={{
+                                                                fontSize: FontSize.FS_13,
+                                                                color: black,
+                                                                fontFamily: SEMIBOLD,
+                                                                textAlign: "center",
+                                                                flex: 1
+                                                            }}>{moment(selectedDate).format('DD-MM-YYYY')}</Text>
+                                                            <TouchableOpacity style={{ justifyContent: "flex-end", alignSelf: "flex-end", alignItems: "flex-end" }}
+                                                                onPress={() => { setMoreEventModel(!MoreEventModel) }}>
 
-                                                                        <Icon name={"close"} size={30} color={black} />
-                                                                    </TouchableOpacity>
-                                                                </View>
-
-                                                                {dayEvents.map((event, index) => (
-                                                                    <>
-                                                                        <TouchableOpacity onPress={() => {
-                                                                            EditDayEvents(event)
-                                                                        }}
-                                                                            style={{
-                                                                                flexDirection: "row",
-                                                                                alignItems: "center",
-                                                                                marginTop: 4,
-                                                                                backgroundColor: white,
-                                                                                paddingVertical: 6,
-                                                                                paddingHorizontal: 14,
-                                                                                borderRadius: 4,
-                                                                                borderWidth: 1,
-                                                                                borderColor: black
-                                                                            }}>
-                                                                            <View style={{ width: 10, height: 10, backgroundColor: greenPrimary, borderRadius: 10, marginRight: 10 }}></View>
-                                                                            <Text style={{ fontFamily: SEMIBOLD, fontSize: FontSize.FS_14, color: black, }}>{moment(event.start).format("h:mm A")}</Text>
-                                                                            <Text style={{ fontFamily: SEMIBOLD, fontSize: FontSize.FS_14, color: black, }}>{" - "}</Text>
-                                                                            <Text style={{ fontFamily: SEMIBOLD, fontSize: FontSize.FS_14, color: black, }}>{moment(event.end).format("h:mm A")}</Text>
-                                                                            <Text style={{ fontFamily: SEMIBOLD, fontSize: FontSize.FS_14, color: black, marginLeft: 20 }}>{"  " + event?.title}</Text>
-                                                                        </TouchableOpacity>
-
-                                                                    </>
-                                                                ))}
-
-                                                            </View>
+                                                                <Icon name={"close"} size={30} color={black} />
+                                                            </TouchableOpacity>
                                                         </View>
+
+                                                        {dayEvents.map((event, index) => (
+                                                            <>
+                                                                <TouchableOpacity onPress={() => {
+                                                                    EditDayEvents(event)
+                                                                }}
+                                                                    style={{
+                                                                        flexDirection: "row",
+                                                                        alignItems: "center",
+                                                                        marginTop: 4,
+                                                                        backgroundColor: white,
+                                                                        paddingVertical: 6,
+                                                                        paddingHorizontal: 14,
+                                                                        borderRadius: 4,
+                                                                        borderWidth: 1,
+                                                                        borderColor: black
+                                                                    }}>
+                                                                    <View style={{ width: 10, height: 10, backgroundColor: greenPrimary, borderRadius: 10, marginRight: 10 }}></View>
+                                                                    <Text style={{ fontFamily: SEMIBOLD, fontSize: FontSize.FS_14, color: black, }}>{moment(event.start).format("h:mm A")}</Text>
+                                                                    <Text style={{ fontFamily: SEMIBOLD, fontSize: FontSize.FS_14, color: black, }}>{" - "}</Text>
+                                                                    <Text style={{ fontFamily: SEMIBOLD, fontSize: FontSize.FS_14, color: black, }}>{moment(event.end).format("h:mm A")}</Text>
+                                                                    <Text style={{ fontFamily: SEMIBOLD, fontSize: FontSize.FS_14, color: black, marginLeft: 20 }}>{"  " + event?.title}</Text>
+                                                                </TouchableOpacity>
+
+                                                            </>
+                                                        ))}
+
                                                     </View>
-                                                </Modal>
-                                            </>
-                                        }
-                                    </TouchableOpacity>
-                                );
+                                                </View>
+                                            </View>
+                                        </Modal>
+                                    </>
+                                }
+                            </TouchableOpacity>
+                        );
+                    }}
+                />
+            </ScrollView>
+
+
+            <RouteDestinationBottomSheet
+                data={ROUTE}
+                headerTitle={'Select Route Type'}
+                currentValue={RouteValue}
+                bottomSheetRef={RouteTobottomSheetRef}
+                selectedValue={data => {
+                    setRouteTo(data);
+                    setRouteToError("")
+                }}
+                selectedRoute={data => {
+                    setRouteValue(data)
+                    setDestinationTo("")
+                }}
+            />
+
+            <DestinationBottomSheet
+                data={DestinationList}
+                headerTitle={'Select Destination'}
+                currentValue={DestinationValue}
+                bottomSheetRef={DestinationTobottomSheetRef}
+                selectedValue={data => {
+                    setDestinationTo(data);
+                    setDestinationToError("")
+                }}
+                selectedDestination={data => {
+                    setDestinationValue(data)
+                    setDestinationToError("")
+                }}
+            />
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={EventModel}
+                onRequestClose={() => {
+                    setEventModel(!EventModel);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: black,
+                                fontFamily: SEMIBOLD,
+                                textAlign: "center",
+                                flex: 1
+                            }}>{moment(selectedDate).format('DD-MM-YYYY')}</Text>
+                            <TouchableOpacity style={{ justifyContent: "flex-end", alignSelf: "flex-end", alignItems: "flex-end" }}
+                                onPress={() => handleCancelEvent()}>
+
+                                <Icon name={"close"} size={30} color={black} />
+                            </TouchableOpacity>
+                        </View>
+
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Event Name"}</Text>
+                        <TextInput
+                            value={eventName}
+                            placeholder='Enter Event Name'
+                            placeholderTextColor={black}
+                            style={{
+                                borderWidth: 1,
+                                borderColor: black,
+                                height: 40,
+                                borderRadius: 4,
+                                paddingHorizontal: 14,
+                                marginVertical: 10,
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+
+                            }}
+                            onChangeText={(txt) => {
+                                setEventName(txt)
+                                setEventNameError("")
                             }}
                         />
-                    </ScrollView>
+                        {eventNameError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                            }}>
+                            {eventNameError}
+                        </Text>
+                        }
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"From Times"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            showTimePickerFrom()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{From == "" ? "Select Time" : moment(From, 'HH:mm').format("h:mm A")}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
 
-                </View>
+                        </TouchableOpacity>
+                        {FromError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                            }}>
+                            {FromError}
+                        </Text>
+                        }
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"To Time"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            showTimePickerTo()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{To == "" ? "Select Time" : moment(To, 'HH:mm').format("h:mm A")}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
 
-                <RouteDestinationBottomSheet
-                    data={ROUTE}
-                    headerTitle={'Select Route Type'}
-                    currentValue={RouteValue}
-                    bottomSheetRef={RouteTobottomSheetRef}
-                    selectedValue={data => {
-                        setRouteTo(data);
-                        setRouteToError("")
-                    }}
-                    selectedRoute={data => {
-                        setRouteValue(data)
-                        setDestinationTo("")
-                    }}
-                />
+                        </TouchableOpacity>
+                        {ToError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                            }}>
+                            {ToError}
+                        </Text>
+                        }
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Route Type"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openRouteToBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{RouteTo == "" ? "Select Route Type" : RouteTo}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
 
-                <DestinationBottomSheet
-                    data={DestinationList}
-                    headerTitle={'Select Destination'}
-                    currentValue={DestinationValue}
-                    bottomSheetRef={DestinationTobottomSheetRef}
-                    selectedValue={data => {
-                        setDestinationTo(data);
-                        setDestinationToError("")
-                    }}
-                    selectedDestination={data => {
-                        setDestinationValue(data)
-                        setDestinationToError("")
-                    }}
-                />
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={EventModel}
-                    onRequestClose={() => {
-                        setEventModel(!EventModel);
-                    }}
-                >
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+                        </TouchableOpacity>
+                        {RouteToError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                            }}>
+                            {RouteToError}
+                        </Text>}
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Route To"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openDestinationToBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{DestinationTo == "" ? "Select Route" : DestinationTo}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
+
+                        </TouchableOpacity>
+                        {DestinationToError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                            }}>
+                            {DestinationToError}
+                        </Text>
+                        }
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                            <TouchableOpacity onPress={() => {
+                                if (IsFromEdit == true) {
+                                    handleDeleteEvent()
+                                }
+                                else {
+                                    handleCancelEvent()
+                                }
+                            }}
+                                style={{ backgroundColor: IsFromEdit == true ? red : grey, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18, marginBottom: 20 }}>
                                 <Text style={{
-                                    fontSize: FontSize.FS_13,
-                                    color: black,
+                                    fontSize: FontSize.FS_12,
+                                    color: IsFromEdit == true ? white : white,
                                     fontFamily: SEMIBOLD,
-                                    textAlign: "center",
-                                    flex: 1
-                                }}>{moment(selectedDate).format('DD-MM-YYYY')}</Text>
-                                <TouchableOpacity style={{ justifyContent: "flex-end", alignSelf: "flex-end", alignItems: "flex-end" }}
-                                    onPress={() => handleCancelEvent()}>
-
-                                    <Icon name={"close"} size={30} color={black} />
-                                </TouchableOpacity>
-                            </View>
-
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Event Name"}</Text>
-                            <TextInput
-                                value={eventName}
-                                placeholder='Enter Event Name'
-                                placeholderTextColor={black}
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    height: 40,
-                                    borderRadius: 4,
-                                    paddingHorizontal: 14,
-                                    marginVertical: 10,
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-
-                                }}
-                                onChangeText={(txt) => {
-                                    setEventName(txt)
-                                    setEventNameError("")
-                                }}
-                            />
-                            {eventNameError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                }}>
-                                {eventNameError}
-                            </Text>
-                            }
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"From Times"}</Text>
+                                }}>{IsFromEdit == true ? "Delete Event" : "Close"}</Text>
+                            </TouchableOpacity>
                             <TouchableOpacity onPress={() => {
-                                showTimePickerFrom()
+                                if (IsFromEdit == true) {
+                                    handleUpdateEvent()
+                                }
+                                else {
+                                    handleSaveEvent()
+                                }
                             }}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 12,
-                                    marginVertical: 10,
-                                    borderRadius: 4,
-                                }}>
+                                style={{ backgroundColor: greenPrimary, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18, marginBottom: 20 }}>
                                 <Text style={{
                                     fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>{From == "" ? "Select Time" : moment(From, 'HH:mm').format("h:mm A")}</Text>
-                                <Icon name={"chevron-down"} size={22} color={grey} />
-
+                                    color: white,
+                                    fontFamily: SEMIBOLD,
+                                }}>{IsFromEdit == true ? "Update" : "Save"}</Text>
                             </TouchableOpacity>
-                            {FromError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                }}>
-                                {FromError}
-                            </Text>
-                            }
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"To Time"}</Text>
-                            <TouchableOpacity onPress={() => {
-                                showTimePickerTo()
-                            }}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 12,
-                                    marginVertical: 10,
-                                    borderRadius: 4,
-                                }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>{To == "" ? "Select Time" : moment(To, 'HH:mm').format("h:mm A")}</Text>
-                                <Icon name={"chevron-down"} size={22} color={grey} />
-
-                            </TouchableOpacity>
-                            {ToError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                }}>
-                                {ToError}
-                            </Text>
-                            }
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Route Type"}</Text>
-                            <TouchableOpacity onPress={() => {
-                                openRouteToBottomSheet()
-                            }}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 12,
-                                    marginVertical: 10,
-                                    borderRadius: 4,
-                                }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>{RouteTo == "" ? "Select Route Type" : RouteTo}</Text>
-                                <Icon name={"chevron-down"} size={22} color={grey} />
-
-                            </TouchableOpacity>
-                            {RouteToError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                }}>
-                                {RouteToError}
-                            </Text>}
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Route To"}</Text>
-                            <TouchableOpacity onPress={() => {
-                                openDestinationToBottomSheet()
-                            }}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 12,
-                                    marginVertical: 10,
-                                    borderRadius: 4,
-                                }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>{DestinationTo == "" ? "Select Route" : DestinationTo}</Text>
-                                <Icon name={"chevron-down"} size={22} color={grey} />
-
-                            </TouchableOpacity>
-                            {DestinationToError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                }}>
-                                {DestinationToError}
-                            </Text>
-                            }
-                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                <TouchableOpacity onPress={() => {
-                                    if (IsFromEdit == true) {
-                                        handleDeleteEvent()
-                                    }
-                                    else {
-                                        handleCancelEvent()
-                                    }
-                                }}
-                                    style={{ backgroundColor: IsFromEdit == true ? red : grey, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18, marginBottom: 20 }}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: IsFromEdit == true ? white : white,
-                                        fontFamily: SEMIBOLD,
-                                    }}>{IsFromEdit == true ? "Delete Event" : "Close"}</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {
-                                    if (IsFromEdit == true) {
-                                        handleUpdateEvent()
-                                    }
-                                    else {
-                                        handleSaveEvent()
-                                    }
-                                }}
-                                    style={{ backgroundColor: greenPrimary, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18, marginBottom: 20 }}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: white,
-                                        fontFamily: SEMIBOLD,
-                                    }}>{IsFromEdit == true ? "Update" : "Save"}</Text>
-                                </TouchableOpacity>
-                            </View>
                         </View>
                     </View>
-                </Modal>
+                </View>
+            </Modal>
 
-                <DateTimePickerModal
-                    isVisible={IsFromTimePickerShow}
-                    mode="time"
-                    onConfirm={handleConfirmFrom}
-                    onCancel={hideTimePickerFrom}
-                />
-                <DateTimePickerModal
-                    isVisible={IsToTimePickerShow}
-                    mode="time"
-                    onConfirm={handleConfirmTo}
-                    onCancel={hideTimePickerTo}
-                />
-            </HeaderView>
+            <DateTimePickerModal
+                isVisible={IsFromTimePickerShow}
+                mode="time"
+                onConfirm={handleConfirmFrom}
+                onCancel={hideTimePickerFrom}
+            />
+            <DateTimePickerModal
+                isVisible={IsToTimePickerShow}
+                mode="time"
+                onConfirm={handleConfirmTo}
+                onCancel={hideTimePickerTo}
+            />
             {isLoading && <LoadingView />}
         </>
     );

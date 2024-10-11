@@ -13,7 +13,7 @@ import Account from '@screens/AccountScreen/Account';
 import ForgetPassword from '../screens/AuthScreen/ForgetPassword';
 import Communications from '../screens/DashBoardScreen/Communications/Communications';
 import ChatScreen from '../screens/MessageScreen/ChatScreen';
-import { black, midGreen } from '../constants/Color';
+import { black, darkGrey, grey, midGreen, paleGreen } from '../constants/Color';
 import { MEDIUM, SEMIBOLD } from '../constants/Fonts';
 import Contacts from '../screens/DashBoardScreen/Communications/Contacts';
 import CallScreen from '../screens/DashBoardScreen/Communications/CallScreen';
@@ -61,6 +61,20 @@ import InternalChat from '../screens/DashBoardScreen/InternalChat/InternalChat';
 import UserChatLog from '../screens/DashBoardScreen/InternalChat/UserChatLog';
 import GroupChatLog from '../screens/DashBoardScreen/InternalChat/GroupChatLog';
 import GroupInfo from '../screens/DashBoardScreen/InternalChat/GroupInfo';
+import UserOnBoarding from '../screens/AuthScreen/UserOnboarding';
+import Profile from '../screens/DashBoardScreen/ProfileScreen/Profile';
+import ChangePassword from '../screens/DashBoardScreen/ProfileScreen/ChangePassword';
+import CompanyProfile from '../screens/DashBoardScreen/ProfileScreen/CompanyProfile';
+import UserProfile from '../screens/DashBoardScreen/ProfileScreen/UserProfile';
+import E911User from '../screens/DashBoardScreen/ProfileScreen/E911User';
+import CompanySignatature from '../screens/DashBoardScreen/ProfileScreen/CompanySignatature';
+import MessageModule from '../screens/MessageScreen/MessageModule';
+import MessageLog from '../screens/MessageScreen/MessageLog';
+import SmsTemplate from '../screens/MessageScreen/SmsTemplate';
+import SmsTemplateManage from '../screens/MessageScreen/SmsTemplateManage';
+import CalendarScreen from '../screens/DashBoardScreen/Calender/Calendar';
+import Events from '../screens/DashBoardScreen/Calender/Events/Event';
+import SetAvailability from '../screens/DashBoardScreen/Calender/Availability/SetAvailability';
 
 const { createBottomTabNavigator } = require('@react-navigation/bottom-tabs');
 const { createNativeStackNavigator } = require('@react-navigation/native-stack');
@@ -82,7 +96,7 @@ function HomeTabs() {
   const userRole = user_data?.data?.role;
   const permission = user_data?.data?.role_permission
   const tab = user_data?.data?.tab_per
-  if (user_data !== null && userRole !== "admin" ) {
+  if (user_data !== null && userRole !== "admin") {
     DialerStatus = tab?.find(tab => tab.tab_name === "Web Phone" && tab.status === "enable");
     CommunicationsStatus = tab?.find(tab => tab.tab_name === "Commumication" && tab.status === "enable");
     EmailStatus = permission?.find(permission => permission.slug === "email" && permission.status === "enable");
@@ -127,7 +141,7 @@ function HomeTabs() {
           tabBarActiveTintColor: white,
           tabBarInactiveTintColor: light_grey,
           tabBarStyle: {
-            backgroundColor: greenPrimary,
+            backgroundColor: white,
             height: Platform.OS == 'ios' ? 80 : 55,
             paddingHorizontal: 10,
           },
@@ -148,21 +162,24 @@ function HomeTabs() {
                 <View
                   style={{
                     alignItems: 'center',
-                    backgroundColor: focused ? white : greenPrimary,
+                    backgroundColor: focused ? white : white,
                     width: 65,
                     paddingVertical: 8,
                     flex: 1,
                   }}>
-                  <Image
-                    style={{ width: size - 5, height: size - 5 }}
-                    tintColor={focused ? greenPrimary : white}
-                    resizeMode="contain"
-                    source={focused ? tab.icon : tab.icon}
-                  />
+                  <View style={{ width: 50, height: 30, backgroundColor: focused ? paleGreen : white, alignItems: "center", justifyContent: "center", borderRadius: 100 }}>
+                    <Image
+                      style={{ width: size - 5, height: size - 5, marginHorizontal: 10 }}
+                      tintColor={focused ? greenPrimary : black}
+                      resizeMode="contain"
+                      source={focused ? tab.icon : tab.icon}
+                    />
+                  </View>
+
                   <Text
                     style={{
                       fontSize: FontSize.FS_09,
-                      color: focused ? greenPrimary : white,
+                      color: focused ? greenPrimary : black,
                       fontFamily: SEMIBOLD,
                       marginTop: 3,
                     }}>
@@ -225,11 +242,24 @@ function AppStacks() {
       <Stack.Screen name="InComingCallScreen" component={InComingCallScreen} />
       <Stack.Screen name="Error" component={Error} />
       <Stack.Screen name="Crm" component={Crm} />
-      <Stack.Screen name="Calendar" component={Calendar} />
+      <Stack.Screen name="CalendarScreen" component={CalendarScreen} />
       <Stack.Screen name="InternalChat" component={InternalChat} />
       <Stack.Screen name="UserChatLog" component={UserChatLog} />
       <Stack.Screen name="GroupChatLog" component={GroupChatLog} />
       <Stack.Screen name="GroupInfo" component={GroupInfo} />
+      <Stack.Screen name="UserOnBoarding" component={UserOnBoarding} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} />
+      <Stack.Screen name="UserProfile" component={UserProfile} />
+      <Stack.Screen name="E911User" component={E911User} />
+      <Stack.Screen name="CompanyProfile" component={CompanyProfile} />
+      <Stack.Screen name="CompanySignatature" component={CompanySignatature} />
+      <Stack.Screen name="MessageModule" component={MessageModule} />
+      <Stack.Screen name="MessageLog" component={MessageLog} />
+      <Stack.Screen name="SmsTemplate" component={SmsTemplate} />
+      <Stack.Screen name="SmsTemplateManage" component={SmsTemplateManage} />
+      <Stack.Screen name="Events" component={Events} />
+      <Stack.Screen name="SetAvailability" component={SetAvailability} />
     </Stack.Navigator>
   );
 }
@@ -302,6 +332,16 @@ function CustomDrawerContent({ navigation }) {
             case item.title.toLowerCase().includes("users"):
               imageSource = ic_dashlets;
               url = "Users";
+              name = item.title
+              break;
+            case item.title.toLowerCase().includes("events"):
+              imageSource = ic_auto_attendant;
+              url = "Events";
+              name = item.title
+              break;
+            case item.title.toLowerCase().includes("availability"):
+              imageSource = ic_business_hour;
+              url = "SetAvailability";
               name = item.title
               break;
             default:

@@ -30,10 +30,46 @@ const Incoming = () => {
         if (global.session !== null) {
             const options = {
                 mediaConstraints: {
-                    audio: true,
-                    video: false,
+                  audio: {
+                    optional: [{ minptime: '10' }, { useinbandfec: '1' }],
+                    mandatory: {
+                      offerToReceiveAudio: true,
+                      offerToReceiveVideo: false,
+                      echoCancellation: true,
+                      noiseSuppression: true,
+                      googEchoCancellation: true,
+                    },
+                  },
+                  video: false,
                 },
-            };
+                rtcOfferConstraints: {
+                  offerToReceiveAudio: true,
+                  offerToReceiveVideo: false,
+                },
+                sessionTimersExpires: 120,
+                pcConfig: {
+                  iceServers: [
+                    {
+                      urls: [
+                        'stun:stun.l.google.com:19302',
+                        'stun:stun1.l.google.com:19302',
+                      ],
+                    },
+                  ],
+                },
+              };
+          
+            // const options = {
+            //     mediaConstraints: {
+            //         audio: true,
+            //         video: false,
+            //     },
+            //     rtcOfferConstraints:{
+            //         offerToReceiveAudio: true,
+            //         offerToReceiveVideo: false
+            //     }
+            // };
+            console.log("global.session",global.session)
             global.session.answer(options);
               navigate("InComingCallScreen", { item: null, from: "INCOMING" })
             dispatch(changeIncomingAlertState(false));

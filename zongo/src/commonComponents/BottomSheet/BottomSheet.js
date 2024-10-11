@@ -45,7 +45,7 @@ const BottomSheet = ({ bottomSheetRef = "", selectedValue, Data, headerTitle, ti
                     {Data?.length > 0 ? <FlatList
                         data={Data}
                         renderItem={({ item }) => <RenderItem item={item} />}
-                        keyExtractor={item => item.id}
+                        keyExtractor={item => Math.random()}
                     />
                         : <Text style={{
                             fontFamily: MEDIUM, textAlign: "center", fontSize: FontSize.FS_11, color: grey, justifyContent: "center", marginTop: "50%"

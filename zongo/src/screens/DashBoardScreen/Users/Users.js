@@ -1,8 +1,6 @@
 
-import { StyleSheet, TouchableOpacity, Text, View, Modal, LayoutAnimation, Alert } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import HeaderView from '@commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
+import { StyleSheet, TouchableOpacity, Text, View, Modal, LayoutAnimation, Alert, ScrollView } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderBackView from '@commonComponents/HeaderBackView';
 import { black, white } from '@constants/Color';
 import { FontSize, SEMIBOLD } from '@constants/Fonts';
@@ -15,7 +13,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import LoadingView from '../../../commonComponents/LoadingView';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetTimeBasedRoutingApiStatus } from '../../../redux/reducers/timeBasedRoutingReducer';
-import { Cretae_User, Delete_Time_Based_Routing, Get_Role_List_Dp, Get_Time_Based_Routing_List, Get_User_List, User_Delete } from '../../../redux/api/Api';
+import { Cretae_User, Get_Role_List_Dp, Get_User_List, User_Delete } from '../../../redux/api/Api';
 import { useFocusEffect } from '@react-navigation/native';
 import { Log } from '../../../commonComponents/Log';
 import { STATUS_FULFILLED, STATUS_REJECTED } from '../../../constants/ConstantKey';
@@ -25,7 +23,6 @@ import { USERSTATUS } from '../../../constants/DATA/Status';
 import CheckModulePermisson from '../../../commonComponents/RolePermission/CheckModulePermisson';
 import PermissionCheck from '../../../commonComponents/RolePermission/PermissionCheck';
 import DoNotAccess from '../../../commonComponents/DoNotAccess';
-import { WEBSOCKET_URL } from '../../../constants/ApiUrl';
 import Global from '../../../constants/Global';
 
 
@@ -353,7 +350,7 @@ const Users = ({ navigation }) => {
 
 
     const DeleteUser = (id) => {
-        
+
         setUserUuid(id)
         const fileData = {
             type: "user_delete",
@@ -498,7 +495,7 @@ const Users = ({ navigation }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => {}, style: 'cancel'
+                    onPress: () => { }, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -581,445 +578,431 @@ const Users = ({ navigation }) => {
     }
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
-                    paddingBottom: 100
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title="Users"
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
-                        }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
+            <HeaderBackView
+                title="Users"
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+            {isPermission == true ?
+                <ScrollView style={{ paddingHorizontal: 0, marginVertical: 22, marginBottom: 80, }}>
+                    <View style={{
+                        marginHorizontal: 20,
+                        flexDirection: "row", alignItems: "center", borderWidth: 1,
+                        borderColor: grey,
+                        height: 38,
+                        borderRadius: 4,
+                    }}>
+                        <TouchableOpacity style={{ paddingLeft: 14 }}>
+                            <Icon name="magnify" size={25} color={grey} />
+                        </TouchableOpacity>
+                        <TextInput
+                            value={SearchText}
+                            placeholder='Search Here...'
+                            placeholderTextColor={grey01}
+                            style={{
+                                fontFamily: MEDIUM,
+                                fontSize: FontSize.FS_13,
+                                color: black,
+                                flex: 1,
+                                paddingHorizontal: 14,
 
-                </View>
-                {isPermission == true ?
-                    <>
-                        <View style={{ marginHorizontal: 20, marginVertical: 22 }}>
-                            <View style={{
-                                flexDirection: "row", alignItems: "center", borderWidth: 1,
-                                borderColor: grey,
-                                height: 38,
-                                borderRadius: 4,
-                            }}>
-                                <TouchableOpacity style={{ paddingLeft: 14 }}>
-                                    <Icon name="magnify" size={25} color={grey} />
-                                </TouchableOpacity>
-                                <TextInput
-                                    value={SearchText}
-                                    placeholder='Search Here...'
-                                    placeholderTextColor={grey01}
-                                    style={{
-                                        fontFamily: MEDIUM,
-                                        fontSize: FontSize.FS_13,
-                                        color: black,
-                                        flex: 1,
-                                        paddingHorizontal: 14,
+                            }}
+                            onChangeText={(txt) => {
+                                handleSearchText(txt)
+                            }}
+                        />
+                        {SearchText?.length > 0 &&
+                            <TouchableOpacity onPress={() => {
+                                setUserList(listDataSource)
+                                setSearchText("")
+                            }}
+                                style={{ paddingRight: 14 }}>
+                                <Icon name="close" size={20} color={grey} />
+                            </TouchableOpacity>
+                        }
+                        <TouchableOpacity onPress={() => {
+                            // GetPrefix()
+                            setFilterModal(!FilterModal);
+                            GetRoleList()
+                        }}
+                            style={{ backgroundColor: grey02, height: 38, width: 38, alignItems: "center", justifyContent: "center" }}>
+                            <Icon name="filter-variant" size={24} color={white} />
 
+                        </TouchableOpacity>
+                    </View>
+
+                    {
+                        UserList !== null && isPermission == true &&
+                        <>
+                            {UserList.map((item, key) => (
+                                <ExpandableComponent
+                                    key={item.uuid}
+                                    onClickFunction={() => {
+                                        updateLayout(key);
                                     }}
-                                    onChangeText={(txt) => {
-                                        handleSearchText(txt)
+                                    item={item}
+                                    onDelete={() => {
+                                        handleDeleteBtn(item)
                                     }}
                                 />
-                                {SearchText?.length > 0 &&
-                                    <TouchableOpacity onPress={() => {
-                                        setUserList(listDataSource)
-                                        setSearchText("")
-                                    }}
-                                        style={{ paddingRight: 14 }}>
-                                        <Icon name="close" size={20} color={grey} />
-                                    </TouchableOpacity>
+                            ))}
+                        </>
+                    }
+                </ScrollView>
+
+                :
+                <DoNotAccess />
+            }
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={AddNewUserModal}
+                onRequestClose={() => {
+                    setAddNewUserModal(!AddNewUserModal);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
+                            onPress={() => resetAddNewModal()}>
+                            <Icon name={"close"} size={24} color={black} />
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"First Name"}</Text>
+                        <TextInput
+                            value={AddFirstName}
+                            placeholder='Enter First Name'
+                            placeholderTextColor={grey}
+                            style={styles.textInputModal}
+                            onChangeText={(txt) => {
+                                if (txt.length > 0) {
+                                    setAddFirstNameError("")
                                 }
-                                <TouchableOpacity onPress={() => {
-                                    // GetPrefix()
-                                    setFilterModal(!FilterModal);
-                                    GetRoleList()
-                                }}
-                                    style={{ backgroundColor: grey02, height: 38, width: 38, alignItems: "center", justifyContent: "center" }}>
-                                    <Icon name="filter-variant" size={24} color={white} />
-
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        {
-                            UserList !== null && isPermission == true &&
-                            <>
-                                {UserList.map((item, key) => (
-                                    <ExpandableComponent
-                                        key={item.uuid}
-                                        onClickFunction={() => {
-                                            updateLayout(key);
-                                        }}
-                                        item={item}
-                                        onDelete={() => {
-                                            handleDeleteBtn(item)
-                                        }}
-                                    />
-                                ))}
-                            </>
+                                setAddFirstName(txt)
+                            }}
+                        />
+                        {AddFirstNameError !== "" && <Text style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: REGULAR,
+                        }}>{AddFirstNameError}</Text>
                         }
-
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={AddNewUserModal}
-                            onRequestClose={() => {
-                                setAddNewUserModal(!AddNewUserModal);
-                            }}>
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
-                                        onPress={() => resetAddNewModal()}>
-                                        <Icon name={"close"} size={24} color={black} />
-                                    </TouchableOpacity>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 10
-                                    }}>{"First Name"}</Text>
-                                    <TextInput
-                                        value={AddFirstName}
-                                        placeholder='Enter First Name'
-                                        placeholderTextColor={grey}
-                                        style={styles.textInputModal}
-                                        onChangeText={(txt) => {
-                                            if (txt.length > 0) {
-                                                setAddFirstNameError("")
-                                            }
-                                            setAddFirstName(txt)
-                                        }}
-                                    />
-                                    {AddFirstNameError !== "" && <Text style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: red,
-                                        fontFamily: REGULAR,
-                                    }}>{AddFirstNameError}</Text>
-                                    }
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 10
-                                    }}>{"Last Name"}</Text>
-                                    <TextInput
-                                        value={AddLastName}
-                                        placeholder='Enter Last Name'
-                                        placeholderTextColor={grey}
-                                        style={styles.textInputModal}
-                                        onChangeText={(txt) => {
-                                            if (txt.length > 0) {
-                                                setAddLastNameError("")
-                                            }
-                                            setAddLastName(txt)
-                                        }}
-                                    />
-                                    {AddLastNameError !== "" && <Text style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: red,
-                                        fontFamily: REGULAR,
-                                    }}>{AddLastNameError}</Text>
-                                    }
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 10
-                                    }}>{"Email"}</Text>
-                                    <TextInput
-                                        value={AddEmail}
-                                        placeholder='Enter Email'
-                                        placeholderTextColor={grey}
-                                        style={styles.textInputModal}
-                                        onChangeText={(txt) => {
-                                            if (txt.length > 0) {
-                                                setAddEmailError("")
-                                            }
-                                            setAddEmail(txt)
-                                        }}
-                                    />
-                                    {AddEmailError !== "" && <Text style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: red,
-                                        fontFamily: REGULAR,
-                                    }}>{AddEmailError}</Text>
-                                    }
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 10
-                                    }}>{"Role"}</Text>
-                                    <TouchableOpacity onPress={() => {
-                                        openRoleBottomSheet()
-                                    }}
-                                        style={{
-                                            flexDirection: "row",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            borderWidth: 1,
-                                            borderColor: black,
-                                            paddingVertical: 6,
-                                            paddingHorizontal: 12,
-                                            marginVertical: 10,
-                                            borderRadius: 4,
-                                        }}>
-                                        <Text style={{
-                                            fontSize: FontSize.FS_12,
-                                            color: black,
-                                            fontFamily: MEDIUM,
-                                            marginTop: 4
-                                        }}>{AddRole == null ? "Select Role" : AddRole?.role_name}</Text>
-                                        <Icon name={"chevron-down"} size={22} color={grey} />
-
-                                    </TouchableOpacity>
-                                    {AddRoleError !== "" && <Text style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: red,
-                                        fontFamily: REGULAR,
-                                    }}>{AddRoleError}</Text>}
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 10
-                                    }}>{"Job Title"}</Text>
-                                    <TextInput
-                                        value={AddJobTitle}
-                                        placeholder='Enter Job Title'
-                                        placeholderTextColor={grey}
-                                        style={styles.textInputModal}
-                                        onChangeText={(txt) => {
-                                            if (txt.length > 0) {
-                                                setAddJobTitleError("")
-                                            }
-                                            setAddJobTitle(txt)
-                                        }}
-                                    />
-                                    {AddJobTitleError !== "" && <Text style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: red,
-                                        fontFamily: REGULAR,
-                                    }}>{AddJobTitleError}</Text>}
-                                    <TouchableOpacity onPress={() => {
-                                        handleAdd()
-                                    }}
-                                        style={{
-                                            backgroundColor: greenPrimary,
-                                            alignItems: "center",
-                                            paddingVertical: 6,
-                                            marginTop: 20,
-                                            justifyContent: "center",
-                                            borderRadius: 4,
-                                            width: "100%"
-                                        }}>
-                                        <Text style={{
-                                            fontSize: FontSize.FS_12,
-                                            color: white,
-                                            fontFamily: SEMIBOLD,
-                                            lineHeight: 24,
-                                            marginLeft: 10
-                                        }}>{"Create"}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </Modal>
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={FilterModal}
-                            onRequestClose={() => {
-                                setFilterModal(!FilterModal);
-                            }}>
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 18 }}>
-                                        <Text style={{
-                                            fontSize: FontSize.FS_16,
-                                            color: black,
-                                            fontFamily: SEMIBOLD,
-                                            textAlign: "center",
-                                            flex: 1
-                                        }}>{"Filter"}</Text>
-                                        <TouchableOpacity style={{}}
-                                            onPress={() => setFilterModal(false)}>
-                                            <Icon name={"close"} size={24} color={black} />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 10
-                                    }}>{"Name"}</Text>
-                                    <TextInput
-                                        value={FilterName}
-                                        placeholder='Enter description...'
-                                        placeholderTextColor={grey}
-                                        style={{
-                                            borderWidth: 1,
-                                            borderColor: black,
-                                            height: 38,
-                                            borderRadius: 4,
-                                            paddingHorizontal: 14,
-                                            marginVertical: 10,
-                                            fontFamily: MEDIUM,
-                                            fontSize: FontSize.FS_12,
-                                            color: black
-                                        }}
-                                        onChangeText={(txt) => {
-                                            setFilterName(txt)
-                                        }}
-                                    />
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 10
-                                    }}>{"Email"}</Text>
-                                    <TextInput
-                                        value={FilterEmail}
-                                        placeholder='Enter description...'
-                                        placeholderTextColor={grey}
-                                        style={{
-                                            borderWidth: 1,
-                                            borderColor: black,
-                                            height: 38,
-                                            borderRadius: 4,
-                                            paddingHorizontal: 14,
-                                            marginVertical: 10,
-                                            fontFamily: MEDIUM,
-                                            fontSize: FontSize.FS_12,
-                                            color: black
-                                        }}
-                                        onChangeText={(txt) => {
-                                            setFilterEmail(txt)
-                                        }}
-                                    />
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 10
-                                    }}>{"Role"}</Text>
-                                    <TouchableOpacity onPress={() => {
-                                        openRoleBottomSheet()
-                                    }}
-                                        style={{
-                                            flexDirection: "row",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            borderWidth: 1,
-                                            borderColor: black,
-                                            paddingVertical: 6,
-                                            paddingHorizontal: 12,
-                                            marginVertical: 10,
-                                            borderRadius: 4,
-                                        }}>
-                                        <Text style={{
-                                            fontSize: FontSize.FS_12,
-                                            color: black,
-                                            fontFamily: MEDIUM,
-                                            marginTop: 4
-                                        }}>{FilterRole == null ? "Select Role" : FilterRole?.role_name}</Text>
-                                        <Icon name={"chevron-down"} size={22} color={grey} />
-
-                                    </TouchableOpacity>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 10
-                                    }}>{"Status"}</Text>
-                                    <TouchableOpacity onPress={() => {
-                                        openStatusBottomSheet()
-                                    }}
-                                        style={{
-                                            flexDirection: "row",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            borderWidth: 1,
-                                            borderColor: black,
-                                            paddingVertical: 6,
-                                            paddingHorizontal: 12,
-                                            marginVertical: 10,
-                                            borderRadius: 4,
-                                        }}>
-                                        <Text style={{
-                                            fontSize: FontSize.FS_12,
-                                            color: black,
-                                            fontFamily: MEDIUM,
-                                            marginTop: 4
-                                        }}>{FilterStatus == null ? "Select Status" : FilterStatus?.status}</Text>
-                                        <Icon name={"chevron-down"} size={22} color={grey} />
-
-                                    </TouchableOpacity>
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-
-                                        <TouchableOpacity onPress={() => {
-                                            resetFilter()
-                                        }}
-                                            style={{ backgroundColor: grey, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
-                                            <Text style={{
-                                                fontSize: FontSize.FS_12,
-                                                color: white,
-                                                fontFamily: MEDIUM,
-                                            }}>{"Reset"}</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => {
-                                            handleFilter()
-                                        }}
-                                            style={{ backgroundColor: greenPrimary, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
-                                            <Text style={{
-                                                fontSize: FontSize.FS_12,
-                                                color: white,
-                                                fontFamily: MEDIUM,
-                                            }}>{"Apply Filter"}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                        </Modal>
-                        <BottomSheet
-                            headerTitle={"Select Role"}
-                            Data={role_list}
-                            titleValue={"role_name"}
-                            bottomSheetRef={RolebottomSheetRef}
-                            selectedValue={(data) => {
-                                if (AddNewUserModal == true) {
-                                    setAddRole(data)
-                                    setAddRoleError("")
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Last Name"}</Text>
+                        <TextInput
+                            value={AddLastName}
+                            placeholder='Enter Last Name'
+                            placeholderTextColor={grey}
+                            style={styles.textInputModal}
+                            onChangeText={(txt) => {
+                                if (txt.length > 0) {
+                                    setAddLastNameError("")
                                 }
-                                else {
-                                    setFilterRole(data)
+                                setAddLastName(txt)
+                            }}
+                        />
+                        {AddLastNameError !== "" && <Text style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: REGULAR,
+                        }}>{AddLastNameError}</Text>
+                        }
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Email"}</Text>
+                        <TextInput
+                            value={AddEmail}
+                            placeholder='Enter Email'
+                            placeholderTextColor={grey}
+                            style={styles.textInputModal}
+                            onChangeText={(txt) => {
+                                if (txt.length > 0) {
+                                    setAddEmailError("")
                                 }
-                            }} />
+                                setAddEmail(txt)
+                            }}
+                        />
+                        {AddEmailError !== "" && <Text style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: REGULAR,
+                        }}>{AddEmailError}</Text>
+                        }
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Role"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openRoleBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{AddRole == null ? "Select Role" : AddRole?.role_name}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
 
-                        <BottomSheet
-                            headerTitle={"Select Status"}
-                            Data={USERSTATUS}
-                            titleValue={"status"}
-                            bottomSheetRef={StatusbottomSheetRef}
-                            selectedValue={(data) => {
-                                setFilterStatus(data)
-                            }} />
-                    </>
-                    :
-                    <DoNotAccess />
-                }
-            </HeaderView>
+                        </TouchableOpacity>
+                        {AddRoleError !== "" && <Text style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: REGULAR,
+                        }}>{AddRoleError}</Text>}
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Job Title"}</Text>
+                        <TextInput
+                            value={AddJobTitle}
+                            placeholder='Enter Job Title'
+                            placeholderTextColor={grey}
+                            style={styles.textInputModal}
+                            onChangeText={(txt) => {
+                                if (txt.length > 0) {
+                                    setAddJobTitleError("")
+                                }
+                                setAddJobTitle(txt)
+                            }}
+                        />
+                        {AddJobTitleError !== "" && <Text style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: REGULAR,
+                        }}>{AddJobTitleError}</Text>}
+                        <TouchableOpacity onPress={() => {
+                            handleAdd()
+                        }}
+                            style={{
+                                backgroundColor: greenPrimary,
+                                alignItems: "center",
+                                paddingVertical: 6,
+                                marginTop: 20,
+                                justifyContent: "center",
+                                borderRadius: 4,
+                                width: "100%"
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: white,
+                                fontFamily: SEMIBOLD,
+                                lineHeight: 24,
+                                marginLeft: 10
+                            }}>{"Create"}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={FilterModal}
+                onRequestClose={() => {
+                    setFilterModal(!FilterModal);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 18 }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_16,
+                                color: black,
+                                fontFamily: SEMIBOLD,
+                                textAlign: "center",
+                                flex: 1
+                            }}>{"Filter"}</Text>
+                            <TouchableOpacity style={{}}
+                                onPress={() => setFilterModal(false)}>
+                                <Icon name={"close"} size={24} color={black} />
+                            </TouchableOpacity>
+                        </View>
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Name"}</Text>
+                        <TextInput
+                            value={FilterName}
+                            placeholder='Enter description...'
+                            placeholderTextColor={grey}
+                            style={{
+                                borderWidth: 1,
+                                borderColor: black,
+                                height: 38,
+                                borderRadius: 4,
+                                paddingHorizontal: 14,
+                                marginVertical: 10,
+                                fontFamily: MEDIUM,
+                                fontSize: FontSize.FS_12,
+                                color: black
+                            }}
+                            onChangeText={(txt) => {
+                                setFilterName(txt)
+                            }}
+                        />
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Email"}</Text>
+                        <TextInput
+                            value={FilterEmail}
+                            placeholder='Enter description...'
+                            placeholderTextColor={grey}
+                            style={{
+                                borderWidth: 1,
+                                borderColor: black,
+                                height: 38,
+                                borderRadius: 4,
+                                paddingHorizontal: 14,
+                                marginVertical: 10,
+                                fontFamily: MEDIUM,
+                                fontSize: FontSize.FS_12,
+                                color: black
+                            }}
+                            onChangeText={(txt) => {
+                                setFilterEmail(txt)
+                            }}
+                        />
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Role"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openRoleBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{FilterRole == null ? "Select Role" : FilterRole?.role_name}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
+
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Status"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openStatusBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{FilterStatus == null ? "Select Status" : FilterStatus?.status}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
+
+                        </TouchableOpacity>
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+
+                            <TouchableOpacity onPress={() => {
+                                resetFilter()
+                            }}
+                                style={{ backgroundColor: grey, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: white,
+                                    fontFamily: MEDIUM,
+                                }}>{"Reset"}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => {
+                                handleFilter()
+                            }}
+                                style={{ backgroundColor: greenPrimary, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: white,
+                                    fontFamily: MEDIUM,
+                                }}>{"Apply Filter"}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            <BottomSheet
+                headerTitle={"Select Role"}
+                Data={role_list}
+                titleValue={"role_name"}
+                bottomSheetRef={RolebottomSheetRef}
+                selectedValue={(data) => {
+                    if (AddNewUserModal == true) {
+                        setAddRole(data)
+                        setAddRoleError("")
+                    }
+                    else {
+                        setFilterRole(data)
+                    }
+                }} />
+
+            <BottomSheet
+                headerTitle={"Select Status"}
+                Data={USERSTATUS}
+                titleValue={"status"}
+                bottomSheetRef={StatusbottomSheetRef}
+                selectedValue={(data) => {
+                    setFilterStatus(data)
+                }} />
+
             {add_per === "yes" &&
                 <TouchableOpacity onPress={() => {
                     setAddNewUserModal(!AddNewUserModal);

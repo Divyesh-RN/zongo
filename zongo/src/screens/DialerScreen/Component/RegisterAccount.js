@@ -6,12 +6,69 @@ import JsSIP from 'jssip';
 import { useDispatch } from 'react-redux';
 import { changeIncomingAlertState, storeUseStatus } from '../../../redux/reducers/userReducer';
 import global from '../../../constants/Global';
+import DeviceInfo from 'react-native-device-info';
+import { NetworkInfo } from 'react-native-network-info';
+import NetInfo from '@react-native-community/netinfo';
+import RNCallKeep from 'react-native-callkeep';
+
 let userAgent = null;
 let session = null;
 
 const RegisterAccount = ({ toggleLoading, registerData }) => {
-console.log("registerData",registerData)
+  console.log("registerData", registerData)
   const dispatch = useDispatch()
+
+
+  useEffect(() => {
+    RNCallKeep.addEventListener('answerCall', ({ callUUID }) => {
+      console.log("global.session",global.session)
+      if (global.session) {
+        console.log("Answer from CALL-KEEP")
+        // global.session.answer();
+        const options = {
+          mediaConstraints: {
+            audio: {
+              optional: [{ minptime: '10' }, { useinbandfec: '1' }],
+              mandatory: {
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: false,
+                echoCancellation: true,
+                noiseSuppression: true,
+                googEchoCancellation: true,
+              },
+            },
+            video: false,
+          },
+          rtcOfferConstraints: {
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: false,
+          },
+          sessionTimersExpires: 120,
+          pcConfig: {
+            iceServers: [
+              {
+                urls: [
+                  'stun:stun.l.google.com:19302',
+                  'stun:stun1.l.google.com:19302',
+                ],
+              },
+            ],
+          },
+        };
+      global.session.answer(options);
+      }
+    });
+    
+    // End call
+    RNCallKeep.addEventListener('endCall', ({ callUUID }) => {
+      if (global.session) {
+        console.log("Answer from CALL-KEEP")
+        global.session.terminate();
+      }
+    });
+    
+    return () => { };
+  }, []);
 
   useEffect(() => {
     if (userAgent == null) {
@@ -26,68 +83,46 @@ console.log("registerData",registerData)
     }
   }, [registerData])
 
+  useEffect(() => {
+    // Subscribe to network changes
+    const unsubscribe = NetInfo.addEventListener(state => {
+      console.log("ConnectionType",state.type)
+      console.log("IsConnected",state.isConnected)
+    });
+
+    // Unsubscribe when component unmounts
+    return () => unsubscribe();
+  }, []);
+
 
   const registerAccount = data => {
 
-
     // JsSIP.debug.enable('JsSIP:*');
 
-    var socket = new JsSIP.WebSocketInterface(data?.WebsoketUrl
-  
-    );
-   
+    var socket = new JsSIP.WebSocketInterface(data?.WebsoketUrl);
 
-    console.log('WebSocket connection:', socket);
-    console.log("WebSocket", data?.WebsoketUrl)
-    // const config = {
-    //   uri: data?.PublicIdentity,
-    //   authorization_user: data?.PrivateIdentity,
-    //   password: data?.Password,
-    //   display_name: data?.DisplayName,
-    //   transportOptions: {
-    //     wsServers: [data?.WebsoketUrl],
-    //   },
-    //   sockets: [socket],
-    //   realm: data?.Realm,
-    //   session_timers: true,
-    //   session_timers_refresh_method: 'UPDATE',
-    //   session_timers_expires: 120,
-    //   register: true,
-    //   traceSip: true, // Enable SIP logging
-    //   use_preloaded_route: true,
-    //   with_react_native: true,
-    //   contact_uri: 'sip:' + data?.PrivateIdentity + '@' + data?.Realm, // Set your desired contact URI
-
-    // };
-   const  url = data?.Realm + ":7443"
-   console.log("url :",url)
-       const config = {
+    const url = data?.Realm
+    const config = {
       uri: data?.PublicIdentity,
-      authorizationUser: data?.PrivateIdentity,
+      authorization_user: data?.PrivateIdentity,
       password: data?.Password,
-      // transportOptions: {
-      //   wsServers: [data?.WebsoketUrl],
-      // },
-      // wsServers: [url],
+      display_name: data?.displayName,
+      transportOptions: {
+        wsServers: [data?.WebsoketUrl],
+      },
       sockets: [socket],
-
-      displayName: "Test",
-
-      // realm: data?.Realm,
-      // session_timers: true,
-      // session_timers_refresh_method: 'UPDATE',
-      // session_timers_expires: 120,
-      // hackIpInContact: true,
-      // hackWssInTransport: true,
-      // register: true,
-      // traceSip: true, // Enable SIP logging
-      // use_preloaded_route: true,
-      // with_react_native: true,
-      contact_uri: 'sip:' + data?.PrivateIdentity + '@' + data?.Realm, // Set your desired contact URI
-      // rtcpMuxPolicy: "negotiate",
-      // rel100: "none",
+      realm: data?.Realm,
+      session_timers: true,
+      session_timers_refresh_method: 'UPDATE',
+      session_timers_expires: 120,
+      register: true,
+      traceSip: true, // Enable SIP logging
+      use_preloaded_route: true,
+      with_react_native: true,
+      // contact_uri: 'sip:' + data?.PrivateIdentity + '@' + data?.Realm,
 
     };
+    console.log("config", config)
     userAgent = new JsSIP.UA(config);
     console.log('User Agent', userAgent);
     global.userAgent = userAgent
@@ -102,10 +137,21 @@ console.log("registerData",registerData)
       console.log("================== DISPLAY NAME   ================:", session?._remote_identity?._display_name)
       console.log("================== USER_NAME   ================:", session?._remote_identity?._uri?._user)
       console.log("================== DIRECTION  ================:", session.direction)
-      
+      const callerId = session.remote_identity.uri.user;
+    const displayName = session.remote_identity.display_name || callerId; RNCallKeep.displayIncomingCall(
+      'call-uuid', // a unique identifier for this call
+      callerId,    // SIP username
+      displayName, // caller's display name
+      'generic',   // call type ('generic', 'video')
+      false         // whether it's video call
+    );
+
       global.session = session
       if (session.direction === 'incoming') {
-        dispatch(changeIncomingAlertState(true));
+        // dispatch(changeIncomingAlertState(true));
+
+
+
         // session.on('accepted', () => {
         //   // Here, you can show the RTCView and render the remote stream
         //   let remoteStream = session.connection.getRemoteStreams()[0];

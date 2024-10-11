@@ -84,7 +84,7 @@ const UserChatLog = ({ route }) => {
             Log('WebSocket connection closed:', event.reason);
         };
         return () => {
-            ws.close();
+            // ws.close();
         };
     }, [])
 

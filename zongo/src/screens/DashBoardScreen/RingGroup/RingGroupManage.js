@@ -1,8 +1,6 @@
 import { View, StyleSheet, Text, TouchableOpacity, TextInput, Switch, Modal, FlatList, Alert } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import HeaderView from '../../../commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '../../../commonComponents/ResponsiveScreen';
 import HeaderBackView from '../../../commonComponents/HeaderBackView';
 import { black, black05, disableColor, greenPrimary, grey, grey01, paleGreen, red, white } from '../../../constants/Color';
 import { FontSize, MEDIUM, SEMIBOLD } from '../../../constants/Fonts';
@@ -151,7 +149,7 @@ const RingGroupManage = ({ navigation, route }) => {
     //Get Admin Voice Mail
 
 
-    const GetAdminVoiceMail = () =>{
+    const GetAdminVoiceMail = () => {
 
         if (route?.params?.isEdit == false) {
             var dict = {};
@@ -165,18 +163,18 @@ const RingGroupManage = ({ navigation, route }) => {
         Log('apiGetAdminVoiceMail :', apiGetAdminVoiceMail);
         if (apiGetAdminVoiceMail == STATUS_FULFILLED) {
             if (admin_voice_mail_data !== null) {
-                if(route?.params?.isEdit == false){
+                if (route?.params?.isEdit == false) {
                     setAdminVoiceMailData(admin_voice_mail_data)
                     setFailOverDesMaxWaitValue(admin_voice_mail_data[0]?.voicemail_uuid)
                     setFailOverDesMaxWait(admin_voice_mail_data[0]?.extension)
-                    const routeValByName = destination_list?.find(item => item.value.includes(admin_voice_mail_data[0]?.voicemail_uuid) );
+                    const routeValByName = destination_list?.find(item => item.value.includes(admin_voice_mail_data[0]?.voicemail_uuid));
                     setFailOverDesMaxWaitTypeName(routeValByName?.optgroup)
-                    const  routeType = ROUTE.find(item => item.value == routeValByName?.optgroup)?.route
+                    const routeType = ROUTE.find(item => item.value == routeValByName?.optgroup)?.route
                     setFailOverDesMaxWaitType(routeType)
 
-                   
+
                 }
-              }
+            }
         } else if (apiGetAdminVoiceMail == STATUS_REJECTED) {
             if (isError) {
                 Alert.alert('Alert', error_message);
@@ -308,13 +306,13 @@ const RingGroupManage = ({ navigation, route }) => {
 
     //Get destination list
 
-    const GetDestinationList = () =>{
+    const GetDestinationList = () => {
         var dict = {};
         dict.type = "",
             dict.createdby = user_data?.data?.user_uuid
         dispatch(Get_Destination_List(dict));
     }
-  
+
 
     useEffect(() => {
         Log('apiGetDestinationList :', apiGetDestinationList);
@@ -326,7 +324,7 @@ const RingGroupManage = ({ navigation, route }) => {
                 const routeValByName = destination_list?.find(item => item.value.toLowerCase() === (FailOverDesMaxWaitType + "_" + FailOverDesMaxWaitValue).toLowerCase())?.optgroup || "";
                 setFailOverDesMaxWaitTypeName(routeValByName) // set his route capital
                 GetAdminVoiceMail()
-               
+
 
             }
         } else if (apiGetDestinationList == STATUS_REJECTED) {
@@ -397,7 +395,7 @@ const RingGroupManage = ({ navigation, route }) => {
         }
     }, [apiRingGroupDetails]);
 
-    const storeAllRingGroupStateData = async(data) => {
+    const storeAllRingGroupStateData = async (data) => {
         setRingGroupId(data[0]?.ring_group_extension)
         setRingGroupName(data[0]?.ring_group_name)
         setRingGroupStrategyValue(data[0]?.ring_group_strategy)
@@ -744,13 +742,13 @@ const RingGroupManage = ({ navigation, route }) => {
             setAddSelectedSkillSetError("* Please select skill set")
         }
         else {
-            if (isExtensionExists(AddSelectedExtensionId)){
+            if (isExtensionExists(AddSelectedExtensionId)) {
                 setAddSelectedExtensionError("* Extension already exists")
-    
-                }
-                else{
-                    AddRingGroupExtensionList()
-                }
+
+            }
+            else {
+                AddRingGroupExtensionList()
+            }
         }
 
     }
@@ -766,12 +764,12 @@ const RingGroupManage = ({ navigation, route }) => {
             setAddSelectedExternalNumberError("* Please enter valid external number")
         }
         else {
-            if (isExternalNumberExists(AddSelectedExternalNumber)){
-            setAddSelectedExternalNumberError("* External number already exists")
+            if (isExternalNumberExists(AddSelectedExternalNumber)) {
+                setAddSelectedExternalNumberError("* External number already exists")
 
             }
-            else{
-                 AddRingGroupExternalNumber()
+            else {
+                AddRingGroupExternalNumber()
             }
         }
     }
@@ -788,7 +786,7 @@ const RingGroupManage = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () =>{}, style: 'cancel'
+                    onPress: () => { }, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -865,293 +863,284 @@ const RingGroupManage = ({ navigation, route }) => {
     };
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(20),
+            <HeaderBackView isBack={true}
+                title={RingGroupId == "" ? "Create Ring Group" : RingGroupId}
+                onPressBack={() => { goBack(); }}
+                onPressMenu={() => { navigation.toggleDrawer(); }}
+            />
+            <ScrollView
+                style={{ marginBottom: 40 ,paddingHorizontal:20}}>
+                <View style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    paddingVertical: 16,
+                    paddingHorizontal: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor: disableColor,
+                    marginHorizontal: -20,
                 }}>
-                <HeaderBackView isBack={true}
-                    title={RingGroupId == "" ? "Create Ring Group" : RingGroupId}
-                    onPressBack={() => { goBack(); }}
-                    onPressMenu={() => { navigation.toggleDrawer(); }}
-                />
-                <View
-                    style={{ marginBottom: 40 }}>
+                    <Text style={styles.black12Medium}>{"Ring Group ID"}</Text>
+                    <Text style={styles.black12Semibold}>{RingGroupId}</Text>
+                </View>
+                <Text style={styles.headerSectionTitle}>{"General"}</Text>
+                <View style={{
+                    paddingVertical: 16,
+                    paddingHorizontal: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor: disableColor,
+                    marginHorizontal: -20,
+                }}>
+                    <View style={styles.HStack}>
+                        <View>
+                            <Text style={styles.black12Medium}>{"Ring Group Name"}</Text>
+                            <Text style={styles.grey10Medium}>{RingGroupName !== "" ? RingGroupName : "Enter Ring Group Name"}</Text>
+                        </View>
+                        {RGNameEdit == false &&
+                            <TouchableOpacity onPress={() => {
+                                setRGNameEdit(!RGNameEdit)
+                            }}>
+                                <Icon name={"pencil"} size={22} color={black} />
+                            </TouchableOpacity>
+                        }
+                    </View>
+                    {RingGroupNameError !== "" && <Text style={styles.errorText}>{RingGroupNameError}</Text>}
+                    {RGNameEdit == true &&
+                        <View style={{
+                            marginTop: 14,
+                            flexDirection: "row", alignItems: "center"
+                        }}>
+                            <TextInput
+                                value={RingGroupName}
+                                placeholder='12345'
+                                placeholderTextColor={grey01}
+                                style={styles.textInputStyle}
+                                onChangeText={(txt) => {
+                                    setRingGroupName(txt)
+                                    setRingGroupNameError("")
+                                }}
+                            />
+                            <TouchableOpacity onPress={() => {
+                                setRGNameEdit(false)
+
+                            }}
+                                style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
+                                <Icon name="check" size={22} color={white} />
+                            </TouchableOpacity>
+                        </View>
+                    }
+                </View>
+                <TouchableOpacity onPress={() => { openRingStrategyBottomSheet() }}
+                    style={{
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                    <View style={styles.HStack}>
+                        <Text style={styles.black12Medium}>{"Ring Strategy"}</Text>
+                        <Icon name="chevron-down" size={22} color={black} />
+                    </View>
+                    <Text style={styles.grey10Medium}>{RingGroupStrategy == null ? "Select Strategy" : RingGroupStrategy}</Text>
+                    {RingGroupStrategyError !== null && <Text style={[styles.errorText, {}]}>{RingGroupStrategyError}</Text>}
+                </TouchableOpacity>
+                <View style={{
+                    paddingVertical: 16,
+                    paddingHorizontal: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor: disableColor,
+                    marginHorizontal: -20,
+                }}>
+
+                    <View style={styles.HStack}>
+                        <View>
+                            <Text style={styles.black12Medium}>{"CID Name Prefix"}</Text>
+                            <Text style={[styles.grey10Medium, { marginTop: 4 }]}>{RingGroupPrifix == "" ? "Enter CID Name Prefix" : RingGroupPrifix}</Text>
+                        </View>
+                        {RGNamePrefix == false &&
+                            <TouchableOpacity onPress={() => {
+                                setRGNamePrefix(!RGNamePrefix)
+                            }}>
+                                <Icon name={"pencil"} size={22} color={black} />
+                            </TouchableOpacity>
+                        }
+                    </View>
+                    {RingGroupPrifixError !== "" && <Text style={styles.errorText}>{RingGroupPrifixError}</Text>}
+                    {RGNamePrefix == true &&
+                        <View style={{
+                            marginTop: 14,
+                            flexDirection: "row", alignItems: "center"
+                        }}>
+                            <TextInput
+                                value={RingGroupPrifix}
+                                placeholder='Enter Prefix...'
+                                placeholderTextColor={grey01}
+                                style={styles.textInputStyle}
+                                onChangeText={(txt) => {
+                                    setRingGroupPrefix(txt)
+                                    setRingGroupPrefixError("")
+                                }}
+                            />
+                            <TouchableOpacity onPress={() => {
+                                setRGNamePrefix(false)
+
+                            }}
+                                style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
+                                <Icon name="check" size={22} color={white} />
+                            </TouchableOpacity>
+                        </View>
+                    }
+                </View>
+                <TouchableOpacity onPress={() => { openMaxCallWaitTimeBottomSheet() }}
+                    style={{
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                    <View style={styles.HStack}>
+                        <Text style={styles.black12Medium}>{"Max Caller Wait Time"}</Text>
+                        <Icon name="chevron-down" size={22} color={black} />
+                    </View>
+                    <Text style={styles.grey10Medium}>{RingGroupMaxCallTime == "" ? "Select Max Caller Wait Time" : RingGroupMaxCallTime + " Min"}</Text>
+                    {RingGroupMaxCallTimeError !== "" && <Text style={styles.errorText}>{RingGroupMaxCallTimeError}</Text>}
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => {
+                    openFailOverDesWaitBottomSheet()
+                }}
+                    style={{
+
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
                     <View style={{
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        paddingVertical: 16,
-                        paddingHorizontal: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: disableColor,
-                        marginHorizontal: -20,
                     }}>
-                        <Text style={styles.black12Medium}>{"Ring Group ID"}</Text>
-                        <Text style={styles.black12Semibold}>{RingGroupId}</Text>
+                        <Text style={{
+                            fontSize: FontSize.FS_12,
+                            color: black,
+                            fontFamily: MEDIUM,
+                        }}>{"Failover Destination After Max Wait Time"}</Text>
+                        <Icon name="chevron-down" size={22} color={black} />
                     </View>
-                    <Text style={styles.headerSectionTitle}>{"General"}</Text>
-                    <View style={{
-                        paddingVertical: 16,
-                        paddingHorizontal: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: disableColor,
-                        marginHorizontal: -20,
-                    }}>
-                        <View style={styles.HStack}>
-                            <View>
-                                <Text style={styles.black12Medium}>{"Ring Group Name"}</Text>
-                                <Text style={styles.grey10Medium}>{RingGroupName !== "" ? RingGroupName : "Enter Ring Group Name"}</Text>
-                            </View>
-                            {RGNameEdit == false &&
-                                <TouchableOpacity onPress={() => {
-                                    setRGNameEdit(!RGNameEdit)
-                                }}>
-                                    <Icon name={"pencil"} size={22} color={black} />
-                                </TouchableOpacity>
-                            }
-                        </View>
-                        {RingGroupNameError !== "" && <Text style={styles.errorText}>{RingGroupNameError}</Text>}
-                        {RGNameEdit == true &&
-                            <View style={{
-                                marginTop: 14,
-                                flexDirection: "row", alignItems: "center"
-                            }}>
-                                <TextInput
-                                    value={RingGroupName}
-                                    placeholder='12345'
-                                    placeholderTextColor={grey01}
-                                    style={styles.textInputStyle}
-                                    onChangeText={(txt) => {
-                                        setRingGroupName(txt)
-                                        setRingGroupNameError("")
-                                    }}
-                                />
-                                <TouchableOpacity onPress={() => {
-                                    setRGNameEdit(false)
+                    <Text style={{
+                        fontSize: FontSize.FS_11,
+                        color: grey,
+                        fontFamily: MEDIUM,
+                    }}>{FailOverDesMaxWait == "" && FailOverDesMaxWaitTypeName == "" ? "Select Failover Destination" : FailOverDesMaxWaitTypeName + " - " + FailOverDesMaxWait}</Text>
+                    {FailOverDesMaxWaitError !== "" && <Text style={styles.errorText}>{FailOverDesMaxWaitError}</Text>}
 
-                                }}
-                                    style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
-                                    <Icon name="check" size={22} color={white} />
-                                </TouchableOpacity>
-                            </View>
-                        }
-                    </View>
-                    <TouchableOpacity onPress={() => { openRingStrategyBottomSheet() }}
-                        style={{
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                        <View style={styles.HStack}>
-                            <Text style={styles.black12Medium}>{"Ring Strategy"}</Text>
-                            <Icon name="chevron-down" size={22} color={black} />
-                        </View>
-                        <Text style={styles.grey10Medium}>{RingGroupStrategy == null ? "Select Strategy" : RingGroupStrategy}</Text>
-                        {RingGroupStrategyError !== null && <Text style={[styles.errorText, {}]}>{RingGroupStrategyError}</Text>}
-                    </TouchableOpacity>
-                    <View style={{
-                        paddingVertical: 16,
-                        paddingHorizontal: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: disableColor,
-                        marginHorizontal: -20,
-                    }}>
-
-                        <View style={styles.HStack}>
-                            <View>
-                                <Text style={styles.black12Medium}>{"CID Name Prefix"}</Text>
-                                <Text style={[styles.grey10Medium, { marginTop: 4 }]}>{RingGroupPrifix == "" ? "Enter CID Name Prefix" : RingGroupPrifix}</Text>
-                            </View>
-                            {RGNamePrefix == false &&
-                                <TouchableOpacity onPress={() => {
-                                    setRGNamePrefix(!RGNamePrefix)
-                                }}>
-                                    <Icon name={"pencil"} size={22} color={black} />
-                                </TouchableOpacity>
-                            }
-                        </View>
-                        {RingGroupPrifixError !== "" && <Text style={styles.errorText}>{RingGroupPrifixError}</Text>}
-                        {RGNamePrefix == true &&
-                            <View style={{
-                                marginTop: 14,
-                                flexDirection: "row", alignItems: "center"
-                            }}>
-                                <TextInput
-                                    value={RingGroupPrifix}
-                                    placeholder='Enter Prefix...'
-                                    placeholderTextColor={grey01}
-                                    style={styles.textInputStyle}
-                                    onChangeText={(txt) => {
-                                        setRingGroupPrefix(txt)
-                                        setRingGroupPrefixError("")
-                                    }}
-                                />
-                                <TouchableOpacity onPress={() => {
-                                    setRGNamePrefix(false)
-
-                                }}
-                                    style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
-                                    <Icon name="check" size={22} color={white} />
-                                </TouchableOpacity>
-                            </View>
-                        }
-                    </View>
-                    <TouchableOpacity onPress={() => { openMaxCallWaitTimeBottomSheet() }}
-                        style={{
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                        <View style={styles.HStack}>
-                            <Text style={styles.black12Medium}>{"Max Caller Wait Time"}</Text>
-                            <Icon name="chevron-down" size={22} color={black} />
-                        </View>
-                        <Text style={styles.grey10Medium}>{RingGroupMaxCallTime == "" ? "Select Max Caller Wait Time" : RingGroupMaxCallTime + " Min"}</Text>
-                        {RingGroupMaxCallTimeError !== "" && <Text style={styles.errorText}>{RingGroupMaxCallTimeError}</Text>}
-                    </TouchableOpacity>
-
+                </TouchableOpacity>
+                <View style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    marginHorizontal: -20,
+                    backgroundColor: "#f0f0f0b5",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                }}>
+                    <Text style={styles.black14Semibold}>{"Extension List"}</Text>
+                </View>
+                <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", flex: 1, marginTop: 16, }}>
                     <TouchableOpacity onPress={() => {
-                        openFailOverDesWaitBottomSheet()
+                        setAddExtensionModel(!AddExtensionModel);
                     }}
                         style={{
-
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                        <View style={{
+                            borderWidth: 1,
+                            borderColor: greenPrimary,
+                            padding: 6,
+                            borderRadius: 4,
+                            flex: 1,
+                            width: "100%",
+                            alignContent: "center",
+                            justifyContent: "center",
                             flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "space-between",
                         }}>
-                            <Text style={{
-                                fontSize: FontSize.FS_12,
-                                color: black,
-                                fontFamily: MEDIUM,
-                            }}>{"Failover Destination After Max Wait Time"}</Text>
-                            <Icon name="chevron-down" size={22} color={black} />
-                        </View>
                         <Text style={{
-                            fontSize: FontSize.FS_11,
-                            color: grey,
-                            fontFamily: MEDIUM,
-                        }}>{FailOverDesMaxWait == "" && FailOverDesMaxWaitTypeName == "" ? "Select Failover Destination" : FailOverDesMaxWaitTypeName + " - " + FailOverDesMaxWait}</Text>
-                        {FailOverDesMaxWaitError !== "" && <Text style={styles.errorText}>{FailOverDesMaxWaitError}</Text>}
+                            fontSize: FontSize.FS_10,
+                            color: greenPrimary,
+                            fontFamily: SEMIBOLD,
+                            textAlign: "center",
+                            marginRight: 10
+
+                        }}>{"Add Extension"}</Text>
+                        <Icon name="plus-circle-outline" size={18} color={greenPrimary} />
 
                     </TouchableOpacity>
-                    <View style={{
-                        paddingVertical: 10,
-                        paddingHorizontal: 20,
-                        marginHorizontal: -20,
-                        backgroundColor: "#f0f0f0b5",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between"
-                    }}>
-                        <Text style={styles.black14Semibold}>{"Extension List"}</Text>
-                    </View>
-                    <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", flex: 1, marginTop: 16, }}>
-                        <TouchableOpacity onPress={() => {
-                            setAddExtensionModel(!AddExtensionModel);
-                        }}
-                            style={{
-                                borderWidth: 1,
-                                borderColor: greenPrimary,
-                                padding: 6,
-                                borderRadius: 4,
-                                flex: 1,
-                                width: "100%",
-                                alignContent: "center",
-                                justifyContent: "center",
-                                flexDirection: "row",
-                            }}>
-                            <Text style={{
-                                fontSize: FontSize.FS_10,
-                                color: greenPrimary,
-                                fontFamily: SEMIBOLD,
-                                textAlign: "center",
-                                marginRight: 10
+                    <View style={{ flex: 0.2 }}></View>
+                    <TouchableOpacity onPress={() => {
+                        setAddExternalNumberModel(!AddExternalNumberModel);
+                    }}
+                        style={{
+                            borderWidth: 1,
+                            borderColor: greenPrimary,
+                            padding: 6,
+                            borderRadius: 4,
+                            alignContent: "center",
+                            justifyContent: "center",
+                            flexDirection: "row",
+                            flex: 1,
+                            width: "100%",
+                        }}>
+                        <Text style={{
+                            fontSize: FontSize.FS_10,
+                            color: greenPrimary,
+                            fontFamily: SEMIBOLD,
+                            textAlign: "center",
+                            marginRight: 10
 
-                            }}>{"Add Extension"}</Text>
-                            <Icon name="plus-circle-outline" size={18} color={greenPrimary} />
+                        }}>{"Add External number"}</Text>
+                        <Icon name="plus-circle-outline" size={18} color={greenPrimary} />
 
-                        </TouchableOpacity>
-                        <View style={{ flex: 0.2 }}></View>
-                        <TouchableOpacity onPress={() => {
-                            setAddExternalNumberModel(!AddExternalNumberModel);
-                        }}
-                            style={{
-                                borderWidth: 1,
-                                borderColor: greenPrimary,
-                                padding: 6,
-                                borderRadius: 4,
-                                alignContent: "center",
-                                justifyContent: "center",
-                                flexDirection: "row",
-                                flex: 1,
-                                width: "100%",
-                            }}>
-                            <Text style={{
-                                fontSize: FontSize.FS_10,
-                                color: greenPrimary,
-                                fontFamily: SEMIBOLD,
-                                textAlign: "center",
-                                marginRight: 10
-
-                            }}>{"Add External number"}</Text>
-                            <Icon name="plus-circle-outline" size={18} color={greenPrimary} />
-
-                        </TouchableOpacity>
-                    </View>
-                    <ScrollView style={{ marginHorizontal: -20, marginVertical: 14 }} horizontal={true}>
-                        <View >
-                            {ExtensionListData?.length > 0 &&
-                                <View style={[
-                                    styles.rowItem,
-                                    {
-                                        backgroundColor: greenPrimary,
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        padding: 6,
-                                        marginTop: 5,
-                                    },
-                                ]}>
-                                    <View style={{ flexDirection: 'column', width: 40, alignItems: "center", }}>
-                                        <Icon name="chevron-up" size={20} color={white} />
-                                        <Icon name="chevron-down" size={20} color={white} />
-                                    </View>
-                                    <Text style={[styles.TableHaderText, {
-                                        width: 50, textAlign: "center",
-                                    }]}>SEQ.</Text>
-                                    <Text style={[styles.TableHaderText, {
-                                        width: 90, textAlign: "center",
-                                    }]}>TYPE</Text>
-                                    <Text style={[styles.TableHaderText, {
-                                        width: 115, textAlign: "center",
-                                    }]}>EXTENSION</Text>
-                                    <Text style={[styles.TableHaderText, {
-                                        width: 100, textAlign: "center",
-                                    }]}>SKILLSET</Text>
-                                    <Text style={[styles.TableHaderText, {
-                                        width: 100, textAlign: "center",
-                                    }]}>{"RING \nTIMEOUT"}</Text>
-                                    <View style={{ width: 60, alignItems: "center" }}></View>
-
+                    </TouchableOpacity>
+                </View>
+                <ScrollView style={{ marginHorizontal: -20, marginVertical: 14 }} horizontal={true}>
+                    <View >
+                        {ExtensionListData?.length > 0 &&
+                            <View style={[
+                                styles.rowItem,
+                                {
+                                    backgroundColor: greenPrimary,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    padding: 6,
+                                    marginTop: 5,
+                                },
+                            ]}>
+                                <View style={{ flexDirection: 'column', width: 40, alignItems: "center", }}>
+                                    <Icon name="chevron-up" size={20} color={white} />
+                                    <Icon name="chevron-down" size={20} color={white} />
                                 </View>
-                            }
-                            <View style={{ flex:1 }}>
+                                <Text style={[styles.TableHaderText, {
+                                    width: 50, textAlign: "center",
+                                }]}>SEQ.</Text>
+                                <Text style={[styles.TableHaderText, {
+                                    width: 90, textAlign: "center",
+                                }]}>TYPE</Text>
+                                <Text style={[styles.TableHaderText, {
+                                    width: 115, textAlign: "center",
+                                }]}>EXTENSION</Text>
+                                <Text style={[styles.TableHaderText, {
+                                    width: 100, textAlign: "center",
+                                }]}>SKILLSET</Text>
+                                <Text style={[styles.TableHaderText, {
+                                    width: 100, textAlign: "center",
+                                }]}>{"RING \nTIMEOUT"}</Text>
+                                <View style={{ width: 60, alignItems: "center" }}></View>
+
+                            </View>
+                        }
+                        <View style={{ flex: 1 }}>
                             <FlatList
                                 style={{ width: '100%', backgroundColor: white, }}
                                 data={ExtensionListData}
@@ -1263,123 +1252,56 @@ const RingGroupManage = ({ navigation, route }) => {
                                 }}
 
                             />
-                            </View>
-                           
                         </View>
-                    </ScrollView>
 
+                    </View>
+                </ScrollView>
+
+                <View style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    marginHorizontal: -20,
+                    backgroundColor: "#f0f0f0b5",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                }}>
+                    <Text style={styles.black14Semibold}>{"Advanced Options"}</Text>
+                </View>
+                <View style={{
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                    paddingHorizontal: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor: disableColor,
+                    marginHorizontal: -20,
+                }}>
                     <View style={{
-                        paddingVertical: 10,
-                        paddingHorizontal: 20,
-                        marginHorizontal: -20,
-                        backgroundColor: "#f0f0f0b5",
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
                     }}>
-                        <Text style={styles.black14Semibold}>{"Advanced Options"}</Text>
+                        <Text style={styles.black12Medium}>{"Greeting to Caller"}</Text>
+
+                        <Switch style={{ marginRight: -10 }}
+                            trackColor={{ false: '#767577', true: greenPrimary }}
+                            thumbColor={GreetinCallerSwitch ? white : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={(val) => {
+                                setGreetinCallerSwitch(val)
+                            }}
+                            value={GreetinCallerSwitch}
+                        />
                     </View>
-                    <View style={{
-                        paddingTop: 16,
-                        paddingBottom: 16,
-                        paddingHorizontal: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: disableColor,
-                        marginHorizontal: -20,
-                    }}>
-                        <View style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                        }}>
-                            <Text style={styles.black12Medium}>{"Greeting to Caller"}</Text>
 
-                            <Switch style={{ marginRight: -10 }}
-                                trackColor={{ false: '#767577', true: greenPrimary }}
-                                thumbColor={GreetinCallerSwitch ? white : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={(val) => {
-                                    setGreetinCallerSwitch(val)
-                                }}
-                                value={GreetinCallerSwitch}
-                            />
-                        </View>
+                    {GreetinCallerSwitch == true &&
+                        <Text style={styles.grey10Medium}>{MainSelectedAudioFileName == null || MainSelectedAudioFileName == "" ? "Choose Audio file" : MainSelectedAudioFileName}</Text>
+                    }
 
-                        {GreetinCallerSwitch == true &&
-                            <Text style={styles.grey10Medium}>{MainSelectedAudioFileName == null || MainSelectedAudioFileName == "" ? "Choose Audio file" : MainSelectedAudioFileName}</Text>
-                        }
-
-                        {GreetinCallerSwitch == true &&
-                            <TouchableOpacity
-                                onPress={() => {
-                                    openAudioFileListBottomSheet();
-                                }}
-                                style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    marginTop: 14,
-                                    borderWidth: 1.5,
-                                    borderColor: grey,
-                                    borderRadius: 4,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 14,
-                                }}>
-                                <Text style={styles.grey10Medium}>
-                                    {MainSelectedAudioFileName == ''
-                                        ? 'Choose Audio file'
-                                        : MainSelectedAudioFileName}
-                                </Text>
-                                <Icon name="chevron-down" size={22} color={grey} />
-                            </TouchableOpacity>
-                        }
-                    </View>
-                    <View style={{
-                        paddingTop: 16,
-                        paddingBottom: 16,
-                        paddingHorizontal: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: disableColor,
-                        marginHorizontal: -20,
-                    }}>
-                        <View style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                        }}>
-                            <View>
-                                <Text style={styles.black12Medium}>{"Call Confirm"}</Text>
-                                <Text style={styles.black10Semibold}>{CallConfirmSwitch == true ? "YES" : "NO"}</Text>
-                            </View>
-                            <Switch style={{ marginRight: -10 }}
-                                trackColor={{ false: '#767577', true: greenPrimary }}
-                                thumbColor={CallConfirmSwitch ? white : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={(val) => {
-                                    setCallConfirmSwitch(val)
-                                }}
-                                value={CallConfirmSwitch}
-                            />
-                        </View>
-                    </View>
-                    <View style={{
-                        paddingTop: 16,
-                        paddingBottom: 16,
-                        paddingHorizontal: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: disableColor,
-                        marginHorizontal: -20,
-                    }}>
-                        <View style={styles.HStack}>
-                            <View>
-                                <Text style={styles.black12Medium}>{"Music on Hold"}</Text>
-                                <Text style={styles.grey10Medium}>{MusicOnHoldFileName == "" ? "Select Music On Hold File" : MusicOnHoldFileName}</Text>
-                            </View>
-                        </View>
-
+                    {GreetinCallerSwitch == true &&
                         <TouchableOpacity
                             onPress={() => {
-                                openMusicOnHoldFileBottomSheet();
+                                openAudioFileListBottomSheet();
                             }}
                             style={{
                                 flexDirection: 'row',
@@ -1393,426 +1315,492 @@ const RingGroupManage = ({ navigation, route }) => {
                                 paddingHorizontal: 14,
                             }}>
                             <Text style={styles.grey10Medium}>
-                                {MusicOnHoldFileName == ''
-                                    ? 'Choose Music On Hold file'
-                                    : MusicOnHoldFileName}
+                                {MainSelectedAudioFileName == ''
+                                    ? 'Choose Audio file'
+                                    : MainSelectedAudioFileName}
                             </Text>
                             <Icon name="chevron-down" size={22} color={grey} />
                         </TouchableOpacity>
-                    </View>
+                    }
+                </View>
+                <View style={{
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                    paddingHorizontal: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor: disableColor,
+                    marginHorizontal: -20,
+                }}>
                     <View style={{
-                        paddingTop: 16,
-                        paddingBottom: 16,
-                        paddingHorizontal: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: disableColor,
-                        marginHorizontal: -20,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
                     }}>
-                        <View style={styles.HStack}>
-                            <View>
-                                <Text style={styles.black12Medium}>{"Skip Busy Extension"}</Text>
-                                <Text style={styles.black10Semibold}>{SkipBusyExtension == true ? "YES" : "NO"}</Text>
-                            </View>
-                            <Switch style={{ marginRight: -10 }}
-                                trackColor={{ false: '#767577', true: greenPrimary }}
-                                thumbColor={SkipBusyExtension ? white : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={(val) => {
-                                    setSkipBusyExtension(val)
-                                }}
-                                value={SkipBusyExtension}
-                            />
+                        <View>
+                            <Text style={styles.black12Medium}>{"Call Confirm"}</Text>
+                            <Text style={styles.black10Semibold}>{CallConfirmSwitch == true ? "YES" : "NO"}</Text>
+                        </View>
+                        <Switch style={{ marginRight: -10 }}
+                            trackColor={{ false: '#767577', true: greenPrimary }}
+                            thumbColor={CallConfirmSwitch ? white : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={(val) => {
+                                setCallConfirmSwitch(val)
+                            }}
+                            value={CallConfirmSwitch}
+                        />
+                    </View>
+                </View>
+                <View style={{
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                    paddingHorizontal: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor: disableColor,
+                    marginHorizontal: -20,
+                }}>
+                    <View style={styles.HStack}>
+                        <View>
+                            <Text style={styles.black12Medium}>{"Music on Hold"}</Text>
+                            <Text style={styles.grey10Medium}>{MusicOnHoldFileName == "" ? "Select Music On Hold File" : MusicOnHoldFileName}</Text>
                         </View>
                     </View>
-                    <View style={{
-                        paddingTop: 16,
-                        paddingBottom: 16,
-                        paddingHorizontal: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: disableColor,
-                        marginHorizontal: -20,
-                    }}>
-                        <View style={styles.HStack}>
-                            <View>
-                                <Text style={styles.black12Medium}>{"Position Announcement"}</Text>
-                                <Text style={styles.black10Semibold}>{PositionAnnouncement == true ? "YES" : "NO"}</Text>
-                            </View>
-                            <Switch style={{ marginRight: -10 }}
-                                trackColor={{ false: '#767577', true: greenPrimary }}
-                                thumbColor={PositionAnnouncement ? white : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={(val) => {
-                                    setPositionAnnouncement(val)
-                                }}
-                                value={PositionAnnouncement}
-                            />
-                        </View>
-                    </View>
-                    <View style={{
-                        paddingTop: 16,
-                        paddingBottom: 16,
-                        paddingHorizontal: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: disableColor,
-                        marginHorizontal: -20,
-                    }}>
-                        <View style={styles.HStack}>
-                            <View>
-                                <Text style={styles.black12Medium}>{"Caller Approximate Hold Time"}</Text>
-                                <Text style={styles.black10Semibold}>{CallerAppHoldTime == true ? "YES" : "NO"}</Text>
-                            </View>
-                            <Switch style={{ marginRight: -10 }}
-                                trackColor={{ false: '#767577', true: greenPrimary }}
-                                thumbColor={CallerAppHoldTime ? white : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={(val) => {
-                                    setCallerAppHoldTime(val)
-                                }}
-                                value={CallerAppHoldTime}
-                            />
-                        </View>
-                    </View>
-                    <View style={{
-                        paddingTop: 16,
-                        paddingBottom: 16,
-                        paddingHorizontal: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: disableColor,
-                        marginHorizontal: -20,
-                    }}>
-                        <View style={styles.HStack}>
-                            <View>
-                                <Text style={styles.black12Medium}>{"Placeholder Callback"}</Text>
-                                <Text style={styles.black10Semibold}>{PlaceHolder == true ? "YES" : "NO"}</Text>
-                            </View>
-                            <Switch style={{ marginRight: -10 }}
-                                trackColor={{ false: '#767577', true: greenPrimary }}
-                                thumbColor={PlaceHolder ? white : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={(val) => {
-                                    setPlaceHolder(val)
-                                }}
-                                value={PlaceHolder}
-                            />
-                        </View>
-                    </View>
-                    <TouchableOpacity onPress={() => {
-                        openServiceLevelAgreement()
-                    }}
-                        style={{
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                        <View style={styles.HStack}>
-                            <View>
-                                <Text style={styles.black12Medium}>{"Service Level Agreement (SLA)"}</Text>
-                                <Text style={[styles.black10Semibold, { marginTop: 4 }]}>{ServiceLevelAgreement == "" ? "None" : ServiceLevelAgreement}</Text>
-                            </View>
-                            <Icon name="chevron-down" size={22} color={black} />
-                        </View>
-                    </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => {
-                        if (isEdit == true) {
-                            UpdateRingGroup()
-                        }
-                        else {
-                            CreateRingGroup()
-                        }
-                    }}
-                        style={styles.primaryBtn}>
-                        <Text style={styles.white14Semibold}>{isEdit ? "Update" : "Add Ring Group"}</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            openMusicOnHoldFileBottomSheet();
+                        }}
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginTop: 14,
+                            borderWidth: 1.5,
+                            borderColor: grey,
+                            borderRadius: 4,
+                            paddingVertical: 6,
+                            paddingHorizontal: 14,
+                        }}>
+                        <Text style={styles.grey10Medium}>
+                            {MusicOnHoldFileName == ''
+                                ? 'Choose Music On Hold file'
+                                : MusicOnHoldFileName}
+                        </Text>
+                        <Icon name="chevron-down" size={22} color={grey} />
                     </TouchableOpacity>
                 </View>
-
-                <RouteDestinationBottomSheet
-                    data={RINGSTRATEGY}
-                    headerTitle={'Select Ring Strategy'}
-                    currentValue={RingGroupStrategyValue}
-                    bottomSheetRef={RingStrategyBottomSheetRef}
-                    selectedValue={data => {
-                        setRingGroupStrategy(data)
-                        setRingGroupStrategyError(null)
-                    }}
-                    selectedRoute={data => {
-                        setRingGroupStrategyValue(data)
-                    }}
-                />
-                <SingleTimeoutBottomSheet
-                    data={MAXCALLWAITTIME}
-                    headerTitle={'Max Caller Wait Time'}
-                    bottomSheetRef={MaxCallWaitTimeBottomSheetRef}
-                    selectedValue={data => {
-                        setRingGroupMaxCallTime(data);
-                        setRingGroupMaxCallTimeError("")
-                    }}
-                />
-                {destination_list !== null && <SectionBottomSheet
-                    data={destination_list}
-                    headerTitle={'Failover Destination After Max Wait Time'}
-                    currentValue={FailOverDesMaxWaitValue}
-                    bottomSheetRef={FailOverDesMaxWaitRef}
-                    selectedValue={data => {
-                        setFailOverDesMaxWait(data)
-                        setFailOverDesMaxWaitError("")
-                    }}
-                    selectedRoute={data => {
-
-                        const parts = data.split('_');
-                        setFailOverDesMaxWaitValue(parts[1])
-                        setFailOverDesMaxWaitType(parts[0])
-
-                    }}
-                    selectedRouteType={data => {
-                        setFailOverDesMaxWaitTypeName(data)
-                    }}
-                />
-                }
-
-                <AudioFileListBottomSheet
-                    headerTitle={'Please select VM Greetings'}
-                    AudioFileList={AudioFileList}
-                    CurrantId={MainSelectedAudioFileId}
-                    bottomSheetRef={AudioFilebottomSheetRef}
-                    selectedValue={data => {
-                        setMainSelectedAudioFileName(data);
-                    }}
-                    selectedId={data => {
-                        setMainSelectedAudioFileId(data);
-                    }}
-                />
-
-                <AudioFileListBottomSheet
-                    headerTitle={'Please select music on hold'}
-                    AudioFileList={MusicOnHoldFileList}
-                    CurrantId={MusicOnHoldFileId}
-                    bottomSheetRef={MusinOnHoldFilebottomSheetRef}
-                    selectedValue={data => {
-                        setMusicOnHoldFileName(data);
-                    }}
-                    selectedId={data => {
-                        setMusicOnHoldFileId(data);
-                    }}
-                />
-                <DestinationBottomSheet
-                    data={ExtensionData}
-                    headerTitle={'Select Extension'}
-                    currentValue={AddSelectedExtensionId}
-                    bottomSheetRef={ExtensionListBottomSheetRef}
-                    selectedValue={data => {
-                        setAddSelectedExtension(data);
-                        setAddSelectedExtensionError("")
-                    }}
-                    selectedDestination={data => {
-                        setAddSelectedExtensionId(data)
-                    }}
-                />
-
-                <SingleTimeoutBottomSheet
-                    data={SKILLSET}
-                    headerTitle={'Select Skill Set'}
-                    bottomSheetRef={SkillListBottomSheetRef}
-                    selectedValue={data => {
-                        setAddSelectedSkillSet(data);
-                        setAddSelectedSkillSetError("")
-                    }}
-                />
-
-                <SingleTimeoutBottomSheet
-                    data={SLA}
-                    headerTitle={'Service Level Agreement (SLA)'}
-                    bottomSheetRef={ServiceLevelAgreementRef}
-                    selectedValue={data => {
-                        setServiceLevelAgreement(data);
-                    }}
-                />
-                <SingleTimeoutBottomSheet
-                    data={SINGLETIMEOUT}
-                    headerTitle={'Select Ring Time out'}
-                    bottomSheetRef={ExtensionRingTimeOutRef}
-                    selectedValue={data => {
-                        setExtensionRingTimeOut(data);
-                        UpdateExtensionRingTimeOut(data)
-
-                    }}
-                />
-                <SingleTimeoutBottomSheet
-                    data={SKILLSET}
-                    headerTitle={'Select Skill set'}
-                    bottomSheetRef={ExtensionSkillSetRef}
-                    selectedValue={data => {
-                        setExtensionSkillSet(data);
-                        UpdateExtensionSkillSet(data.toString())
-
-                    }}
-                />
-
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={AddExtensionModel}
-                    onRequestClose={() => {
-                        setAddExtensionModel(!AddExtensionModel);
-                        setAddSelectedSkillSet(null)
-                        setAddSelectedExtension(null)
-                        setAddSelectedExtensionId(null)
-                    }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
-                                onPress={() => {
-                                    setAddExtensionModel(!AddExtensionModel)
-                                    setAddSelectedSkillSet(null)
-                                    setAddSelectedExtension(null)
-                                    setAddSelectedExtensionId(null)
-                                }
-                                }>
-                                <Icon name={"close"} size={24} color={black} />
-                            </TouchableOpacity>
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Extension"}</Text>
-                            <TouchableOpacity onPress={() => {
-                                openExtensionListBottomSheet()
-                            }}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 12,
-                                    marginVertical: 10,
-                                    borderRadius: 4,
-                                }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>{AddSelectedExtension == null ? "Select Extension" : AddSelectedExtension}</Text>
-                                <Icon name={"chevron-down"} size={22} color={grey} />
-
-                            </TouchableOpacity>
-                            {AddSelectedExtensionError !== "" && <Text style={[styles.errorText, { marginTop: -3 }]}>{AddSelectedExtensionError}</Text>}
-
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 14
-                            }}>{"Skill Set"}</Text>
-                            <TouchableOpacity onPress={() => {
-                                openSkillListBottomSheet()
-                            }}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 12,
-                                    marginVertical: 10,
-                                    borderRadius: 4,
-                                }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>{AddSelectedSkillSet == null ? "Select Skill Set" : AddSelectedSkillSet}</Text>
-                                <Icon name={"chevron-down"} size={22} color={grey} />
-
-                            </TouchableOpacity>
-                            {AddSelectedSkillSetError !== "" && <Text style={[styles.errorText, { marginTop: -3 }]}>{AddSelectedSkillSetError}</Text>}
-
-                            <TouchableOpacity onPress={() => {
-                                handleAddExtension()
-                            }}
-                                style={{ backgroundColor: greenPrimary, height: 40, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: white,
-                                    fontFamily: MEDIUM,
-                                }}>{"Add Extension"}</Text>
-                            </TouchableOpacity>
+                <View style={{
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                    paddingHorizontal: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor: disableColor,
+                    marginHorizontal: -20,
+                }}>
+                    <View style={styles.HStack}>
+                        <View>
+                            <Text style={styles.black12Medium}>{"Skip Busy Extension"}</Text>
+                            <Text style={styles.black10Semibold}>{SkipBusyExtension == true ? "YES" : "NO"}</Text>
                         </View>
+                        <Switch style={{ marginRight: -10 }}
+                            trackColor={{ false: '#767577', true: greenPrimary }}
+                            thumbColor={SkipBusyExtension ? white : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={(val) => {
+                                setSkipBusyExtension(val)
+                            }}
+                            value={SkipBusyExtension}
+                        />
                     </View>
-                </Modal>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={AddExternalNumberModel}
-                    onRequestClose={() => {
-                        setAddExternalNumberModel(!AddExternalNumberModel);
-                        setAddSelectedExternalNumber(null)
-                        setAddSelectedExternalNumberError("")
-
+                </View>
+                <View style={{
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                    paddingHorizontal: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor: disableColor,
+                    marginHorizontal: -20,
+                }}>
+                    <View style={styles.HStack}>
+                        <View>
+                            <Text style={styles.black12Medium}>{"Position Announcement"}</Text>
+                            <Text style={styles.black10Semibold}>{PositionAnnouncement == true ? "YES" : "NO"}</Text>
+                        </View>
+                        <Switch style={{ marginRight: -10 }}
+                            trackColor={{ false: '#767577', true: greenPrimary }}
+                            thumbColor={PositionAnnouncement ? white : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={(val) => {
+                                setPositionAnnouncement(val)
+                            }}
+                            value={PositionAnnouncement}
+                        />
+                    </View>
+                </View>
+                <View style={{
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                    paddingHorizontal: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor: disableColor,
+                    marginHorizontal: -20,
+                }}>
+                    <View style={styles.HStack}>
+                        <View>
+                            <Text style={styles.black12Medium}>{"Caller Approximate Hold Time"}</Text>
+                            <Text style={styles.black10Semibold}>{CallerAppHoldTime == true ? "YES" : "NO"}</Text>
+                        </View>
+                        <Switch style={{ marginRight: -10 }}
+                            trackColor={{ false: '#767577', true: greenPrimary }}
+                            thumbColor={CallerAppHoldTime ? white : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={(val) => {
+                                setCallerAppHoldTime(val)
+                            }}
+                            value={CallerAppHoldTime}
+                        />
+                    </View>
+                </View>
+                <View style={{
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                    paddingHorizontal: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor: disableColor,
+                    marginHorizontal: -20,
+                }}>
+                    <View style={styles.HStack}>
+                        <View>
+                            <Text style={styles.black12Medium}>{"Placeholder Callback"}</Text>
+                            <Text style={styles.black10Semibold}>{PlaceHolder == true ? "YES" : "NO"}</Text>
+                        </View>
+                        <Switch style={{ marginRight: -10 }}
+                            trackColor={{ false: '#767577', true: greenPrimary }}
+                            thumbColor={PlaceHolder ? white : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={(val) => {
+                                setPlaceHolder(val)
+                            }}
+                            value={PlaceHolder}
+                        />
+                    </View>
+                </View>
+                <TouchableOpacity onPress={() => {
+                    openServiceLevelAgreement()
+                }}
+                    style={{
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
                     }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
-                                onPress={() => {
-                                    setAddExternalNumberModel(!AddExternalNumberModel)
-                                    setAddSelectedExternalNumber(null)
+                    <View style={styles.HStack}>
+                        <View>
+                            <Text style={styles.black12Medium}>{"Service Level Agreement (SLA)"}</Text>
+                            <Text style={[styles.black10Semibold, { marginTop: 4 }]}>{ServiceLevelAgreement == "" ? "None" : ServiceLevelAgreement}</Text>
+                        </View>
+                        <Icon name="chevron-down" size={22} color={black} />
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => {
+                    if (isEdit == true) {
+                        UpdateRingGroup()
+                    }
+                    else {
+                        CreateRingGroup()
+                    }
+                }}
+                    style={styles.primaryBtn}>
+                    <Text style={styles.white14Semibold}>{isEdit ? "Update" : "Add Ring Group"}</Text>
+                </TouchableOpacity>
+            </ScrollView>
+
+            <RouteDestinationBottomSheet
+                data={RINGSTRATEGY}
+                headerTitle={'Select Ring Strategy'}
+                currentValue={RingGroupStrategyValue}
+                bottomSheetRef={RingStrategyBottomSheetRef}
+                selectedValue={data => {
+                    setRingGroupStrategy(data)
+                    setRingGroupStrategyError(null)
+                }}
+                selectedRoute={data => {
+                    setRingGroupStrategyValue(data)
+                }}
+            />
+            <SingleTimeoutBottomSheet
+                data={MAXCALLWAITTIME}
+                headerTitle={'Max Caller Wait Time'}
+                bottomSheetRef={MaxCallWaitTimeBottomSheetRef}
+                selectedValue={data => {
+                    setRingGroupMaxCallTime(data);
+                    setRingGroupMaxCallTimeError("")
+                }}
+            />
+            {destination_list !== null && <SectionBottomSheet
+                data={destination_list}
+                headerTitle={'Failover Destination After Max Wait Time'}
+                currentValue={FailOverDesMaxWaitValue}
+                bottomSheetRef={FailOverDesMaxWaitRef}
+                selectedValue={data => {
+                    setFailOverDesMaxWait(data)
+                    setFailOverDesMaxWaitError("")
+                }}
+                selectedRoute={data => {
+
+                    const parts = data.split('_');
+                    setFailOverDesMaxWaitValue(parts[1])
+                    setFailOverDesMaxWaitType(parts[0])
+
+                }}
+                selectedRouteType={data => {
+                    setFailOverDesMaxWaitTypeName(data)
+                }}
+            />
+            }
+
+            <AudioFileListBottomSheet
+                headerTitle={'Please select VM Greetings'}
+                AudioFileList={AudioFileList}
+                CurrantId={MainSelectedAudioFileId}
+                bottomSheetRef={AudioFilebottomSheetRef}
+                selectedValue={data => {
+                    setMainSelectedAudioFileName(data);
+                }}
+                selectedId={data => {
+                    setMainSelectedAudioFileId(data);
+                }}
+            />
+
+            <AudioFileListBottomSheet
+                headerTitle={'Please select music on hold'}
+                AudioFileList={MusicOnHoldFileList}
+                CurrantId={MusicOnHoldFileId}
+                bottomSheetRef={MusinOnHoldFilebottomSheetRef}
+                selectedValue={data => {
+                    setMusicOnHoldFileName(data);
+                }}
+                selectedId={data => {
+                    setMusicOnHoldFileId(data);
+                }}
+            />
+            <DestinationBottomSheet
+                data={ExtensionData}
+                headerTitle={'Select Extension'}
+                currentValue={AddSelectedExtensionId}
+                bottomSheetRef={ExtensionListBottomSheetRef}
+                selectedValue={data => {
+                    setAddSelectedExtension(data);
+                    setAddSelectedExtensionError("")
+                }}
+                selectedDestination={data => {
+                    setAddSelectedExtensionId(data)
+                }}
+            />
+
+            <SingleTimeoutBottomSheet
+                data={SKILLSET}
+                headerTitle={'Select Skill Set'}
+                bottomSheetRef={SkillListBottomSheetRef}
+                selectedValue={data => {
+                    setAddSelectedSkillSet(data);
+                    setAddSelectedSkillSetError("")
+                }}
+            />
+
+            <SingleTimeoutBottomSheet
+                data={SLA}
+                headerTitle={'Service Level Agreement (SLA)'}
+                bottomSheetRef={ServiceLevelAgreementRef}
+                selectedValue={data => {
+                    setServiceLevelAgreement(data);
+                }}
+            />
+            <SingleTimeoutBottomSheet
+                data={SINGLETIMEOUT}
+                headerTitle={'Select Ring Time out'}
+                bottomSheetRef={ExtensionRingTimeOutRef}
+                selectedValue={data => {
+                    setExtensionRingTimeOut(data);
+                    UpdateExtensionRingTimeOut(data)
+
+                }}
+            />
+            <SingleTimeoutBottomSheet
+                data={SKILLSET}
+                headerTitle={'Select Skill set'}
+                bottomSheetRef={ExtensionSkillSetRef}
+                selectedValue={data => {
+                    setExtensionSkillSet(data);
+                    UpdateExtensionSkillSet(data.toString())
+
+                }}
+            />
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={AddExtensionModel}
+                onRequestClose={() => {
+                    setAddExtensionModel(!AddExtensionModel);
+                    setAddSelectedSkillSet(null)
+                    setAddSelectedExtension(null)
+                    setAddSelectedExtensionId(null)
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
+                            onPress={() => {
+                                setAddExtensionModel(!AddExtensionModel)
+                                setAddSelectedSkillSet(null)
+                                setAddSelectedExtension(null)
+                                setAddSelectedExtensionId(null)
+                            }
+                            }>
+                            <Icon name={"close"} size={24} color={black} />
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Extension"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openExtensionListBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{AddSelectedExtension == null ? "Select Extension" : AddSelectedExtension}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
+
+                        </TouchableOpacity>
+                        {AddSelectedExtensionError !== "" && <Text style={[styles.errorText, { marginTop: -3 }]}>{AddSelectedExtensionError}</Text>}
+
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 14
+                        }}>{"Skill Set"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openSkillListBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{AddSelectedSkillSet == null ? "Select Skill Set" : AddSelectedSkillSet}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
+
+                        </TouchableOpacity>
+                        {AddSelectedSkillSetError !== "" && <Text style={[styles.errorText, { marginTop: -3 }]}>{AddSelectedSkillSetError}</Text>}
+
+                        <TouchableOpacity onPress={() => {
+                            handleAddExtension()
+                        }}
+                            style={{ backgroundColor: greenPrimary, height: 40, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: white,
+                                fontFamily: MEDIUM,
+                            }}>{"Add Extension"}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={AddExternalNumberModel}
+                onRequestClose={() => {
+                    setAddExternalNumberModel(!AddExternalNumberModel);
+                    setAddSelectedExternalNumber(null)
+                    setAddSelectedExternalNumberError("")
+
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
+                            onPress={() => {
+                                setAddExternalNumberModel(!AddExternalNumberModel)
+                                setAddSelectedExternalNumber(null)
+                                setAddSelectedExternalNumberError("")
+
+                            }}>
+                            <Icon name={"close"} size={24} color={black} />
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"External Number"}</Text>
+                        <TextInput
+                            value={AddSelectedExternalNumber}
+                            placeholder='+12765832737'
+                            placeholderTextColor={grey}
+                            maxLength={12}
+                            keyboardType='number-pad'
+                            style={{
+                                borderWidth: 1,
+                                borderColor: grey,
+                                height: 40,
+                                borderRadius: 6,
+                                paddingHorizontal: 14,
+                                marginVertical: 10
+
+                            }}
+                            onChangeText={(txt) => {
+                                setAddSelectedExternalNumber(txt)
+                                if (txt.length >= 9) {
                                     setAddSelectedExternalNumberError("")
-
-                                }}>
-                                <Icon name={"close"} size={24} color={black} />
-                            </TouchableOpacity>
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"External Number"}</Text>
-                            <TextInput
-                                value={AddSelectedExternalNumber}
-                                placeholder='+12765832737'
-                                placeholderTextColor={grey}
-                                maxLength={12}
-                                keyboardType='number-pad'
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: grey,
-                                    height: 40,
-                                    borderRadius: 6,
-                                    paddingHorizontal: 14,
-                                    marginVertical: 10
-
-                                }}
-                                onChangeText={(txt) => {
-                                    setAddSelectedExternalNumber(txt)
-                                    if (txt.length >= 9) {
-                                        setAddSelectedExternalNumberError("")
-                                    }
-                                }}
-                            />
-
-                            {AddSelectedExternalNumberError !== "" && <Text style={[styles.errorText, { marginTop: -3 }]}>{AddSelectedExternalNumberError}</Text>}
-
-                            <TouchableOpacity onPress={() => {
-                                handleAddExternalNumber()
+                                }
                             }}
-                                style={{ backgroundColor: greenPrimary, height: 40, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: white,
-                                    fontFamily: MEDIUM,
-                                }}>{"Add External Number"}</Text>
-                            </TouchableOpacity>
-                        </View>
+                        />
+
+                        {AddSelectedExternalNumberError !== "" && <Text style={[styles.errorText, { marginTop: -3 }]}>{AddSelectedExternalNumberError}</Text>}
+
+                        <TouchableOpacity onPress={() => {
+                            handleAddExternalNumber()
+                        }}
+                            style={{ backgroundColor: greenPrimary, height: 40, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: white,
+                                fontFamily: MEDIUM,
+                            }}>{"Add External Number"}</Text>
+                        </TouchableOpacity>
                     </View>
-                </Modal>
-            </HeaderView>
+                </View>
+            </Modal>
             {(isLoading || IsLoading) && <LoadingView />}
         </>
     );

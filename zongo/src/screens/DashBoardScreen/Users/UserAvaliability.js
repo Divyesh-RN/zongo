@@ -1,22 +1,26 @@
 
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Modal, FlatList, Alert } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import HeaderView from '@commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, FlatList, Alert } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderBackView from '@commonComponents/HeaderBackView';
 import { goBack } from '@navigation/RootNavigation';
 import { black05 } from '@constants/Color';
-import { black, disableColor, greenPrimary, grey, grey01, white, paleGreen, yellow, red } from '../../../constants/Color';
+import { black, disableColor, greenPrimary, grey, white, paleGreen, yellow, red } from '../../../constants/Color';
 import { FontSize, MEDIUM, SEMIBOLD } from '../../../constants/Fonts';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
-import { navigate } from '../../../navigation/RootNavigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { Copy_Time_Slot, Copy_User_Time_Slot, Create_Time_Slot, Delete_Time_Slot, Delete_User_Time_Slot, Extension_Update_Time_Slot, Get_Business_Hours_Time_Details, Get_Route_To_Destination, Get_Time_Based_Routing_Details, Get_Time_Slot_Details_Events, Get_User_Availablity_Details, Get_User_Time_Availablity_Details, Update_Time_Condition, Update_Time_Slot, User_Create_Time_Slot } from '../../../redux/api/Api';
+import {
+    Copy_User_Time_Slot,
+    Delete_User_Time_Slot,
+    Extension_Update_Time_Slot,
+    Get_Route_To_Destination,
+    Get_User_Availablity_Details,
+    Get_User_Time_Availablity_Details,
+    User_Create_Time_Slot,
+} from '../../../redux/api/Api';
 import { STATUS_FULFILLED, STATUS_REJECTED } from '../../../constants/ConstantKey';
 import { Log } from '../../../commonComponents/Log';
-import { resetTimeBasedRoutingApiStatus } from '../../../redux/reducers/timeBasedRoutingReducer';
 import LoadingView from '../../../commonComponents/LoadingView';
 import { useFocusEffect } from '@react-navigation/native';
 import RouteDestinationBottomSheet from '../../../commonComponents/BottomSheet/RouteDestinationBottomSheet';
@@ -137,7 +141,7 @@ const UserAvaliability = ({ navigation, route }) => {
             dict.createdby = user_data?.data?.user_uuid,
                 dict.user_availability_data_uuid = data?.user_availability_data_uuid,
 
-            dispatch(Get_User_Time_Availablity_Details(dict))
+                dispatch(Get_User_Time_Availablity_Details(dict))
         }
     }
 
@@ -148,7 +152,7 @@ const UserAvaliability = ({ navigation, route }) => {
     useFocusEffect(
         useCallback(() => {
             // if (route?.params?.isEdit == true) {
-                callAllApi()
+            callAllApi()
             // }
             return () => {
                 dispatch(resetUserModuleApiStatus());
@@ -327,7 +331,7 @@ const UserAvaliability = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => {}, style: 'cancel'
+                    onPress: () => { }, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -375,17 +379,17 @@ const UserAvaliability = ({ navigation, route }) => {
             else {
                 var dict = {};
                 // dict.time_slot_name = EventName,
-                    dict.createdby = user_data?.data?.user_uuid,
+                dict.createdby = user_data?.data?.user_uuid,
                     dict.from_time = moment(From).format('h:mm A'),
                     dict.id = "",
                     dict.main_admin_uuid = user_data?.data?.main_uuid
-                    dict.route_to = DestinationValue,
+                dict.route_to = DestinationValue,
                     dict.route_type = RouteValue,
                     dict.to_time = moment(To).format('h:mm A'),
                     dict.user_uuid = user_data?.data?.user_uuid
-                    dict.user_availability_data_uuid = SelectedDay?.user_availability_data_uuid,
+                dict.user_availability_data_uuid = SelectedDay?.user_availability_data_uuid,
                     // return
-                dispatch(User_Create_Time_Slot(dict))
+                    dispatch(User_Create_Time_Slot(dict))
             }
         }
 
@@ -414,8 +418,8 @@ const UserAvaliability = ({ navigation, route }) => {
                 const from = moment(From, "HH:mm").format("h:mm A");
                 const to = moment(To, "HH:mm").format("h:mm A");
                 if (SelectedSlot?.type == "default") {
-                        // dict.time_slot_name = EventName,
-                        dict.createdby = user_data?.data?.user_uuid,
+                    // dict.time_slot_name = EventName,
+                    dict.createdby = user_data?.data?.user_uuid,
                         dict.from_time = from,
                         dict.main_admin_uuid = user_data?.data?.main_uuid,
                         dict.route_data = null,
@@ -487,7 +491,7 @@ const UserAvaliability = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => {}, style: 'cancel'
+                    onPress: () => { }, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -539,49 +543,49 @@ const UserAvaliability = ({ navigation, route }) => {
 
             switch (item) {
                 case 'monday':
-                    const Monday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
+                    const Monday = TimeConditionDayData?.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Monday[0])
                     setSelectedDayName(SelectedDayName === 'monday' ? null : 'monday');
                     setMondayShow(!MondayShow)
                     GetBusinessHoursTimeDetails(Monday[0])
                     break;
                 case 'tuesday':
-                    const Tuesday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
+                    const Tuesday = TimeConditionDayData?.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Tuesday[0])
                     setSelectedDayName(SelectedDayName === 'tuesday' ? null : 'tuesday');
                     setTuesdayShow(!TuesdayShow)
                     GetBusinessHoursTimeDetails(Tuesday[0])
                     break;
                 case 'wednesday':
-                    const Wenesday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
+                    const Wenesday = TimeConditionDayData?.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Wenesday[0])
                     setSelectedDayName(SelectedDayName === 'wednesday' ? null : 'wednesday');
                     setWenesdayShow(!WenesdayShow)
                     GetBusinessHoursTimeDetails(Wenesday[0])
                     break;
                 case 'thursday':
-                    const Thursday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
+                    const Thursday = TimeConditionDayData?.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Thursday[0])
                     setSelectedDayName(SelectedDayName === 'thursday' ? null : 'thursday');
                     setThursdayShow(!ThursdayShow)
                     GetBusinessHoursTimeDetails(Thursday[0])
                     break;
                 case 'friday':
-                    const Friday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
+                    const Friday = TimeConditionDayData?.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Friday[0])
                     setSelectedDayName(SelectedDayName === 'friday' ? null : 'friday');
                     setFridayShow(!FridayShow)
                     GetBusinessHoursTimeDetails(Friday[0])
                     break;
                 case 'saturday':
-                    const Saturday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
+                    const Saturday = TimeConditionDayData?.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Saturday[0])
                     setSelectedDayName(SelectedDayName === 'saturday' ? null : 'saturday');
                     setSaturdayShow(!SaturdayShow)
                     GetBusinessHoursTimeDetails(Saturday[0])
                     break;
                 case 'sunday':
-                    const Sunday = TimeConditionDayData.filter(data => data?.user_availability_day == item)
+                    const Sunday = TimeConditionDayData?.filter(data => data?.user_availability_day == item)
                     setSelectedDay(Sunday[0])
                     setSelectedDayName(SelectedDayName === 'sunday' ? null : 'sunday');
                     setSundayShow(!SundayShow)
@@ -755,759 +759,748 @@ const UserAvaliability = ({ navigation, route }) => {
     }
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title={"Availability"}
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
-                        }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
-                    <View style={{ marginTop: 0, marginBottom: 20 }}>
-                        <Text style={{
-                            fontSize: FontSize.FS_14,
-                            color: black,
-                            fontFamily: SEMIBOLD,
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                            marginHorizontal: -20,
-                            backgroundColor: "#f0f0f0b5"
-                        }}>{"Weekly Schedule"}</Text>
+            <HeaderBackView
+                title={"Availability"}
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+            <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+                <Text style={{
+                    fontSize: FontSize.FS_14,
+                    color: black,
+                    fontFamily: SEMIBOLD,
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    marginHorizontal: -20,
+                    backgroundColor: "#f0f0f0b5"
+                }}>{"Weekly Schedule"}</Text>
 
-                        <View
-                            style={{ marginTop: 0, marginBottom: 20 }}>
-                            {/* Monday */}
-                            <View style={styles.DayRow}>
-                                <TouchableOpacity onPress={() => {
-                                    handleShowDayData('monday', MondayShow)
-                                }}
-                                    style={styles.HStack}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: MondayShow == true ? white : black,
-                                        fontFamily: SEMIBOLD,
-                                        backgroundColor: MondayShow == true ? greenPrimary : white,
-                                        paddingHorizontal: MondayShow == true ? 20 : 0,
-                                        paddingVertical: MondayShow == true ? 8 : 0
-                                    }}>{"MONDAY"}</Text>
+                <View
+                    style={{ marginTop: 0, marginBottom: 20 }}>
+                    {/* Monday */}
+                    <View style={styles.DayRow}>
+                        <TouchableOpacity onPress={() => {
+                            handleShowDayData('monday', MondayShow)
+                        }}
+                            style={styles.HStack}>
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: MondayShow == true ? white : black,
+                                fontFamily: SEMIBOLD,
+                                backgroundColor: MondayShow == true ? greenPrimary : white,
+                                paddingHorizontal: MondayShow == true ? 20 : 0,
+                                paddingVertical: MondayShow == true ? 8 : 0
+                            }}>{"MONDAY"}</Text>
 
-                                    <View >
-                                        <Icon name={MondayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
-                                    </View>
-                                </TouchableOpacity>
-                                {MondayShow == true &&
-                                    <View style={{
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: disableColor,
-                                        paddingBottom: 8,
-                                    }}>
-                                        <FlatList
-                                            data={MondayData}
-                                            key={Math.random()}
-                                            renderItem={({ item, index }) =>
-                                                <View style={{
-                                                    borderBottomWidth: 1,
-                                                    borderBottomColor: disableColor,
-                                                    paddingVertical: 8,
-                                                    flex: 1,
-                                                }}>
-                                                    {/* {item?.type !== "off_hours" &&
+                            <View >
+                                <Icon name={MondayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
+                            </View>
+                        </TouchableOpacity>
+                        {MondayShow == true &&
+                            <View style={{
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                paddingBottom: 8,
+                            }}>
+                                <FlatList
+                                    data={MondayData}
+                                    key={Math.random()}
+                                    renderItem={({ item, index }) =>
+                                        <View style={{
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: disableColor,
+                                            paddingVertical: 8,
+                                            flex: 1,
+                                        }}>
+                                            {/* {item?.type !== "off_hours" &&
                                                         <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text>
                                                     } */}
-                                                    <View style={{
-                                                        flex: 1,
-                                                        flexDirection: "row",
-                                                        alignItems: "center"
-                                                    }}>
-                                                        <View style={{
-                                                            flex: 0.7,
-                                                            marginRight: 10
-                                                        }}>
-                                                            <View style={[styles.HStack, { marginVertical: 6 }]}>
-                                                                {item?.type == "off_hours" ?
-                                                                    <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
-                                                                    :
-                                                                    <View style={styles.HStack}>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                    </View>
-                                                                }
-                                                            </View>
-                                                            <View style={[styles.HStack, { marginBottom: 4 }]}>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
-                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
-                                                            </View>
-                                                        </View>
-                                                        <EditRemoveBtn item={item}
-                                                            onEdit={() => {
-                                                                setIsFromEdit(true)
-                                                                EditTimeData(item, "mondey")
-                                                                setDay("monday")
-                                                            }}
-                                                            onDelete={() => {
-                                                                DeleteTimeBlock(item)
-                                                            }}
-                                                        />
-                                                    </View>
-                                                </View>
-                                            }
-                                        />
-                                        <View style={[styles.HStack, { marginTop: 8 }]}>
-                                            <AddTimeBlock onPress={() => {
-                                                setModalVisible(!modalVisible)
-                                                setDay("monday")
-                                                setIsFromEdit(false)
-                                            }} />
-                                            <View style={{ flex: 0.3 }}></View>
-                                            <MoreBtn onPress={() => {
-                                                setMoreModelVisible(!MoreModelVisible)
-                                            }} />
-                                        </View>
-                                    </View>
-                                }
-                            </View>
-                            {/* Tuesday */}
-                            <View style={styles.DayRow}>
-                                <TouchableOpacity onPress={() => {
-                                    handleShowDayData('tuesday', TuesdayShow)
-                                }}
-                                    style={styles.HStack}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: TuesdayShow == true ? white : black,
-                                        fontFamily: SEMIBOLD,
-                                        backgroundColor: TuesdayShow == true ? greenPrimary : white,
-                                        paddingHorizontal: TuesdayShow == true ? 20 : 0,
-                                        paddingVertical: TuesdayShow == true ? 8 : 0
-                                    }}>{"TUESDAY"}</Text>
-
-                                    <View >
-                                        <Icon name={TuesdayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
-                                    </View>
-                                </TouchableOpacity>
-                                {TuesdayShow == true &&
-                                    <View style={{
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: disableColor,
-                                        paddingBottom: 8,
-                                    }}>
-                                        <FlatList
-                                            data={TuesdayData}
-                                            key={Math.random()}
-                                            renderItem={({ item, index }) =>
+                                            <View style={{
+                                                flex: 1,
+                                                flexDirection: "row",
+                                                alignItems: "center"
+                                            }}>
                                                 <View style={{
-                                                    borderBottomWidth: 1,
-                                                    borderBottomColor: disableColor,
-                                                    paddingVertical: 8,
-                                                    flex: 1,
+                                                    flex: 0.7,
+                                                    marginRight: 10
                                                 }}>
-                                                    {/* {item?.time_slot_name && */}
-                                                    {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
-                                                    {/* } */}
-                                                    <View style={{
-                                                        flex: 1,
-                                                        flexDirection: "row",
-                                                        alignItems: "center"
-                                                    }}>
-                                                        <View style={{
-                                                            flex: 0.7,
-                                                            marginRight: 10
-                                                        }}>
-                                                            <View style={[styles.HStack, { marginVertical: 6 }]}>
-                                                                {item?.type == "off_hours" ?
-                                                                    <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
-                                                                    :
-                                                                    <View style={styles.HStack}>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                    </View>
-                                                                }
+                                                    <View style={[styles.HStack, { marginVertical: 6 }]}>
+                                                        {item?.type == "off_hours" ?
+                                                            <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
+                                                            :
+                                                            <View style={styles.HStack}>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
                                                             </View>
-                                                            <View style={[styles.HStack, { marginBottom: 4 }]}>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
-                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
-                                                            </View>
-                                                        </View>
-                                                        <EditRemoveBtn item={item}
-                                                            onEdit={() => {
-                                                                setIsFromEdit(true)
-                                                                EditTimeData(item, "tuesday")
-                                                                setDay("tuesday")
-                                                            }}
-                                                            onDelete={() => {
-                                                                DeleteTimeBlock(item)
-                                                            }}
-                                                        />
+                                                        }
+                                                    </View>
+                                                    <View style={[styles.HStack, { marginBottom: 4 }]}>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
+                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
                                                     </View>
                                                 </View>
-                                            }
-                                        />
-                                        <View style={[styles.HStack, { marginTop: 8 }]}>
-                                            <AddTimeBlock onPress={() => {
-                                                setModalVisible(!modalVisible)
-                                                setDay("tuesday")
-                                                setIsFromEdit(false)
-                                            }} />
-                                            <View style={{ flex: 0.3 }}></View>
-                                            <MoreBtn onPress={() => {
-                                                setMoreModelVisible(!MoreModelVisible)
-                                            }} />
+                                                <EditRemoveBtn item={item}
+                                                    onEdit={() => {
+                                                        setIsFromEdit(true)
+                                                        EditTimeData(item, "mondey")
+                                                        setDay("monday")
+                                                    }}
+                                                    onDelete={() => {
+                                                        DeleteTimeBlock(item)
+                                                    }}
+                                                />
+                                            </View>
                                         </View>
-                                    </View>
-                                }
-                            </View>
-                            {/* Wenesday */}
-                            <View style={styles.DayRow}>
-                                <TouchableOpacity onPress={() => {
-                                    handleShowDayData('wednesday', WenesdayShow)
-                                }}
-                                    style={styles.HStack}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: WenesdayShow == true ? white : black,
-                                        fontFamily: SEMIBOLD,
-                                        backgroundColor: WenesdayShow == true ? greenPrimary : white,
-                                        paddingHorizontal: WenesdayShow == true ? 20 : 0,
-                                        paddingVertical: WenesdayShow == true ? 8 : 0
-                                    }}>{"WENESDAY"}</Text>
-
-                                    <View >
-                                        <Icon name={WenesdayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
-                                    </View>
-                                </TouchableOpacity>
-                                {WenesdayShow == true &&
-                                    <View style={{
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: disableColor,
-                                        paddingBottom: 8,
-                                    }}>
-                                        <FlatList
-                                            data={WenesdayData}
-                                            key={Math.random()}
-                                            renderItem={({ item, index }) =>
-                                                <View style={{
-                                                    borderBottomWidth: 1,
-                                                    borderBottomColor: disableColor,
-                                                    paddingVertical: 8,
-                                                    flex: 1,
-                                                }}>
-                                                    {/* {item?.time_slot_name && */}
-                                                    {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
-                                                    {/* } */}
-                                                    <View style={{
-                                                        flex: 1,
-                                                        flexDirection: "row",
-                                                        alignItems: "center"
-                                                    }}>
-                                                        <View style={{
-                                                            flex: 0.7,
-                                                            marginRight: 10
-                                                        }}>
-                                                            <View style={[styles.HStack, { marginVertical: 6 }]}>
-                                                                {item?.type == "off_hours" ?
-                                                                    <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
-                                                                    :
-                                                                    <View style={styles.HStack}>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                    </View>
-                                                                }
-                                                            </View>
-                                                            <View style={[styles.HStack, { marginBottom: 4 }]}>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
-                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
-                                                            </View>
-                                                        </View>
-                                                        <EditRemoveBtn item={item}
-                                                            onEdit={() => {
-                                                                setIsFromEdit(true)
-                                                                EditTimeData(item, "wednesday")
-                                                                setDay("wednesday")
-                                                            }}
-                                                            onDelete={() => {
-                                                                DeleteTimeBlock(item)
-                                                            }}
-                                                        />
-                                                    </View>
-                                                </View>
-                                            }
-                                        />
-                                        <View style={[styles.HStack, { marginTop: 8 }]}>
-                                            <AddTimeBlock onPress={() => {
-                                                setModalVisible(!modalVisible)
-                                                setDay("wednesday")
-                                                setIsFromEdit(false)
-                                            }} />
-                                            <View style={{ flex: 0.3 }}></View>
-                                            <MoreBtn onPress={() => {
-                                                setMoreModelVisible(!MoreModelVisible)
-                                            }} />
-                                        </View>
-                                    </View>
-                                }
-                            </View>
-                            {/* Thursday */}
-                            <View style={styles.DayRow}>
-                                <TouchableOpacity onPress={() => {
-                                    handleShowDayData('thursday', ThursdayShow)
-                                }}
-                                    style={styles.HStack}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: ThursdayShow == true ? white : black,
-                                        fontFamily: SEMIBOLD,
-                                        backgroundColor: ThursdayShow == true ? greenPrimary : white,
-                                        paddingHorizontal: ThursdayShow == true ? 20 : 0,
-                                        paddingVertical: ThursdayShow == true ? 8 : 0
-                                    }}>{"THURSDAY"}</Text>
-
-                                    <View >
-                                        <Icon name={ThursdayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
-                                    </View>
-                                </TouchableOpacity>
-                                {ThursdayShow == true &&
-                                    <View style={{
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: disableColor,
-                                        paddingBottom: 8,
-                                    }}>
-                                        <FlatList
-                                            data={ThursdayData}
-                                            key={Math.random()}
-                                            renderItem={({ item, index }) =>
-                                                <View style={{
-                                                    borderBottomWidth: 1,
-                                                    borderBottomColor: disableColor,
-                                                    paddingVertical: 8,
-                                                    flex: 1,
-                                                }}>
-                                                    {/* {item?.time_slot_name && */}
-                                                    {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
-                                                    {/* } */}
-                                                    <View style={{
-                                                        flex: 1,
-                                                        flexDirection: "row",
-                                                        alignItems: "center"
-                                                    }}>
-                                                        <View style={{
-                                                            flex: 0.7,
-                                                            marginRight: 10
-                                                        }}>
-                                                            <View style={[styles.HStack, { marginVertical: 6 }]}>
-                                                                {item?.type == "off_hours" ?
-                                                                    <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
-                                                                    :
-                                                                    <View style={styles.HStack}>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                    </View>
-                                                                }
-                                                            </View>
-                                                            <View style={[styles.HStack, { marginBottom: 4 }]}>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
-                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
-                                                            </View>
-                                                        </View>
-                                                        <EditRemoveBtn item={item}
-                                                            onEdit={() => {
-                                                                setIsFromEdit(true)
-                                                                EditTimeData(item, "thursday")
-                                                                setDay("thursday")
-                                                            }}
-                                                            onDelete={() => {
-                                                                DeleteTimeBlock(item)
-                                                            }}
-                                                        />
-                                                    </View>
-                                                </View>
-                                            }
-                                        />
-                                        <View style={[styles.HStack, { marginTop: 8 }]}>
-                                            <AddTimeBlock onPress={() => {
-                                                setModalVisible(!modalVisible)
-                                                setDay("thursday")
-                                                setIsFromEdit(false)
-                                            }} />
-                                            <View style={{ flex: 0.3 }}></View>
-                                            <MoreBtn onPress={() => {
-                                                setMoreModelVisible(!MoreModelVisible)
-                                            }} />
-                                        </View>
-                                    </View>
-                                }
-                            </View>
-                            {/* Friday */}
-                            <View style={styles.DayRow}>
-                                <TouchableOpacity onPress={() => {
-                                    handleShowDayData('friday', FridayShow)
-                                }}
-                                    style={styles.HStack}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: FridayShow == true ? white : black,
-                                        fontFamily: SEMIBOLD,
-                                        backgroundColor: FridayShow == true ? greenPrimary : white,
-                                        paddingHorizontal: FridayShow == true ? 20 : 0,
-                                        paddingVertical: FridayShow == true ? 8 : 0
-                                    }}>{"FRIDAY"}</Text>
-
-                                    <View >
-                                        <Icon name={FridayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
-                                    </View>
-                                </TouchableOpacity>
-                                {FridayShow == true &&
-                                    <View style={{
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: disableColor,
-                                        paddingBottom: 8,
-                                    }}>
-                                        <FlatList
-                                            data={FridayData}
-                                            key={Math.random()}
-                                            renderItem={({ item, index }) =>
-                                                <View style={{
-                                                    borderBottomWidth: 1,
-                                                    borderBottomColor: disableColor,
-                                                    paddingVertical: 8,
-                                                    flex: 1,
-                                                }}>
-                                                    {/* {item?.time_slot_name && */}
-                                                    {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
-                                                    {/* } */}
-                                                    <View style={{
-                                                        flex: 1,
-                                                        flexDirection: "row",
-                                                        alignItems: "center"
-                                                    }}>
-                                                        <View style={{
-                                                            flex: 0.7,
-                                                            marginRight: 10
-                                                        }}>
-                                                            <View style={[styles.HStack, { marginVertical: 6 }]}>
-                                                                {item?.type == "off_hours" ?
-                                                                    <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
-                                                                    :
-                                                                    <View style={styles.HStack}>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                    </View>
-                                                                }
-                                                            </View>
-                                                            <View style={[styles.HStack, { marginBottom: 4 }]}>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
-                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
-                                                            </View>
-                                                        </View>
-                                                        <EditRemoveBtn item={item}
-                                                            onEdit={() => {
-                                                                setIsFromEdit(true)
-                                                                EditTimeData(item, "friday")
-                                                                setDay("friday")
-                                                            }}
-                                                            onDelete={() => {
-                                                                DeleteTimeBlock(item)
-                                                            }}
-                                                        />
-                                                    </View>
-                                                </View>
-                                            }
-                                        />
-                                        <View style={[styles.HStack, { marginTop: 8 }]}>
-                                            <AddTimeBlock onPress={() => {
-                                                setModalVisible(!modalVisible)
-                                                setDay("friday")
-                                                setIsFromEdit(false)
-                                            }} />
-                                            <View style={{ flex: 0.3 }}></View>
-                                            <MoreBtn onPress={() => {
-                                                setMoreModelVisible(!MoreModelVisible)
-                                            }} />
-                                        </View>
-                                    </View>
-                                }
-                            </View>
-                            {/* Saturday */}
-                            <View style={styles.DayRow}>
-                                <TouchableOpacity onPress={() => {
-                                    handleShowDayData('saturday', SaturdayShow)
-                                }}
-                                    style={styles.HStack}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: SaturdayShow == true ? white : black,
-                                        fontFamily: SEMIBOLD,
-                                        backgroundColor: SaturdayShow == true ? greenPrimary : white,
-                                        paddingHorizontal: SaturdayShow == true ? 20 : 0,
-                                        paddingVertical: SaturdayShow == true ? 8 : 0
-                                    }}>{"SATURDAY"}</Text>
-
-                                    <View >
-                                        <Icon name={SaturdayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
-                                    </View>
-                                </TouchableOpacity>
-                                {SaturdayShow == true &&
-                                    <View style={{
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: disableColor,
-                                        paddingBottom: 8,
-                                    }}>
-                                        <FlatList
-                                            data={SaturdayData}
-                                            key={Math.random()}
-                                            renderItem={({ item, index }) =>
-                                                <View style={{
-                                                    borderBottomWidth: 1,
-                                                    borderBottomColor: disableColor,
-                                                    paddingVertical: 8,
-                                                    flex: 1,
-                                                }}>
-                                                    {/* {item?.time_slot_name && */}
-                                                    {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
-                                                    {/* } */}
-                                                    <View style={{
-                                                        flex: 1,
-                                                        flexDirection: "row",
-                                                        alignItems: "center"
-                                                    }}>
-                                                        <View style={{
-                                                            flex: 0.7,
-                                                            marginRight: 10
-                                                        }}>
-                                                            <View style={[styles.HStack, { marginVertical: 6 }]}>
-                                                                {item?.type == "off_hours" ?
-                                                                    <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
-                                                                    :
-                                                                    <View style={styles.HStack}>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                    </View>
-                                                                }
-                                                            </View>
-                                                            <View style={[styles.HStack, { marginBottom: 4 }]}>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
-                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
-                                                            </View>
-                                                        </View>
-                                                        <EditRemoveBtn item={item}
-                                                            onEdit={() => {
-                                                                setIsFromEdit(true)
-                                                                EditTimeData(item, "saturday")
-                                                                setDay("saturday")
-                                                            }}
-                                                            onDelete={() => {
-                                                                DeleteTimeBlock(item)
-                                                            }}
-                                                        />
-                                                    </View>
-                                                </View>
-                                            }
-                                        />
-                                        <View style={[styles.HStack, { marginTop: 8 }]}>
-                                            <AddTimeBlock onPress={() => {
-                                                setModalVisible(!modalVisible)
-                                                setDay("saturday")
-                                                setIsFromEdit(false)
-                                            }} />
-                                            <View style={{ flex: 0.3 }}></View>
-                                            <MoreBtn onPress={() => {
-                                                setMoreModelVisible(!MoreModelVisible)
-                                            }} />
-                                        </View>
-                                    </View>
-                                }
-                            </View>
-                            {/* Sunday */}
-                            <View style={styles.DayRow}>
-                                <TouchableOpacity onPress={() => {
-                                    handleShowDayData('sunday', SundayShow)
-                                }}
-                                    style={styles.HStack}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: SundayShow == true ? white : black,
-                                        fontFamily: SEMIBOLD,
-                                        backgroundColor: SundayShow == true ? greenPrimary : white,
-                                        paddingHorizontal: SundayShow == true ? 20 : 0,
-                                        paddingVertical: SundayShow == true ? 8 : 0
-                                    }}>{"SUNDAY"}</Text>
-
-                                    <View >
-                                        <Icon name={SundayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
-                                    </View>
-                                </TouchableOpacity>
-                                {SundayShow == true &&
-                                    <View style={{
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: disableColor,
-                                        paddingBottom: 8,
-                                    }}>
-                                        <FlatList
-                                            data={SundayData}
-                                            key={Math.random()}
-                                            renderItem={({ item, index }) =>
-                                                <View style={{
-                                                    borderBottomWidth: 1,
-                                                    borderBottomColor: disableColor,
-                                                    paddingVertical: 8,
-                                                    flex: 1,
-                                                }}>
-                                                    {/* {item?.time_slot_name && */}
-                                                    {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
-                                                    {/* } */}
-                                                    <View style={{
-                                                        flex: 1,
-                                                        flexDirection: "row",
-                                                        alignItems: "center"
-                                                    }}>
-                                                        <View style={{
-                                                            flex: 0.7,
-                                                            marginRight: 10
-                                                        }}>
-                                                            <View style={[styles.HStack, { marginVertical: 6 }]}>
-                                                                {item?.type == "off_hours" ?
-                                                                    <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
-                                                                    :
-                                                                    <View style={styles.HStack}>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
-                                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
-                                                                    </View>
-                                                                }
-                                                            </View>
-                                                            <View style={[styles.HStack, { marginBottom: 4 }]}>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
-                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
-                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
-                                                            </View>
-                                                        </View>
-                                                        <EditRemoveBtn item={item}
-                                                            onEdit={() => {
-                                                                setIsFromEdit(true)
-                                                                EditTimeData(item, "sunday")
-                                                                setDay("sunday")
-                                                            }}
-                                                            onDelete={() => {
-                                                                DeleteTimeBlock(item)
-                                                            }}
-                                                        />
-                                                    </View>
-                                                </View>
-                                            }
-                                        />
-                                        <View style={[styles.HStack, { marginTop: 8 }]}>
-                                            <AddTimeBlock onPress={() => {
-                                                setModalVisible(!modalVisible)
-                                                setDay("sunday")
-                                                setIsFromEdit(false)
-                                            }} />
-                                            <View style={{ flex: 0.3 }}></View>
-                                            <MoreBtn onPress={() => {
-                                                setMoreModelVisible(!MoreModelVisible)
-                                            }} />
-                                        </View>
-                                    </View>
-                                }
-                            </View>
-                        </View>
-                    </View>
-
-                </View>
-
-
-                <RouteDestinationBottomSheet
-                    data={ROUTE}
-                    headerTitle={'Select Route Type'}
-                    currentValue={RouteValue}
-                    bottomSheetRef={RouteTobottomSheetRef}
-                    selectedValue={data => {
-                        setRouteTo(data);
-                        setRouteToError("")
-                    }}
-                    selectedRoute={data => {
-                        setRouteValue(data)
-                        setDestinationTo("")
-                        setRouteToError("")
-                    }}
-                />
-
-                <DestinationBottomSheet
-                    data={DestinationList}
-                    headerTitle={'Select Route'}
-                    currentValue={DestinationValue}
-                    bottomSheetRef={DestinationTobottomSheetRef}
-                    selectedValue={data => {
-                        setDestinationTo(data);
-                        setDestinationToError("")
-                    }}
-                    selectedDestination={data => {
-                        setDestinationValue(data)
-                        setDestinationToError("")
-                    }}
-                />
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                        setModalVisible(!modalVisible);
-                    }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={[styles.HStack, { marginBottom: 24 }]}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_16,
-                                    color: black,
-                                    fontFamily: SEMIBOLD,
-                                    textTransform: "capitalize",
-                                    flex: 1,
-                                    textAlign: "center"
-                                }}>{Day}</Text>
-                                <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
-                                    onPress={() => {
-                                        setModalVisible(false)
-                                        setFrom("")
-                                        setFromError("")
-                                        setTo("")
-                                        setToError("")
-                                        setRouteTo("")
-                                        setRouteToError("")
-                                        setDestinationTo("")
-                                        setDestinationToError("")
-                                        setEventName("")
-                                        setEventNameError("")
-                                        setModalVisible(!modalVisible)
                                     }
-                                    }>
-                                    <Icon name={"close"} size={20} color={black} />
-                                </TouchableOpacity>
+                                />
+                                <View style={[styles.HStack, { marginTop: 8 }]}>
+                                    <AddTimeBlock onPress={() => {
+                                        setModalVisible(!modalVisible)
+                                        setDay("monday")
+                                        setIsFromEdit(false)
+                                    }} />
+                                    <View style={{ flex: 0.3 }}></View>
+                                    <MoreBtn onPress={() => {
+                                        setMoreModelVisible(!MoreModelVisible)
+                                    }} />
+                                </View>
                             </View>
-                            {EditOffHours == false &&
-                                <>
-                                    {/* <Text style={[styles.black12SemiBold, { marginTop: 10 }]}>{"Time Block Name"}</Text>
+                        }
+                    </View>
+                    {/* Tuesday */}
+                    <View style={styles.DayRow}>
+                        <TouchableOpacity onPress={() => {
+                            handleShowDayData('tuesday', TuesdayShow)
+                        }}
+                            style={styles.HStack}>
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: TuesdayShow == true ? white : black,
+                                fontFamily: SEMIBOLD,
+                                backgroundColor: TuesdayShow == true ? greenPrimary : white,
+                                paddingHorizontal: TuesdayShow == true ? 20 : 0,
+                                paddingVertical: TuesdayShow == true ? 8 : 0
+                            }}>{"TUESDAY"}</Text>
+
+                            <View >
+                                <Icon name={TuesdayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
+                            </View>
+                        </TouchableOpacity>
+                        {TuesdayShow == true &&
+                            <View style={{
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                paddingBottom: 8,
+                            }}>
+                                <FlatList
+                                    data={TuesdayData}
+                                    key={Math.random()}
+                                    renderItem={({ item, index }) =>
+                                        <View style={{
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: disableColor,
+                                            paddingVertical: 8,
+                                            flex: 1,
+                                        }}>
+                                            {/* {item?.time_slot_name && */}
+                                            {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
+                                            {/* } */}
+                                            <View style={{
+                                                flex: 1,
+                                                flexDirection: "row",
+                                                alignItems: "center"
+                                            }}>
+                                                <View style={{
+                                                    flex: 0.7,
+                                                    marginRight: 10
+                                                }}>
+                                                    <View style={[styles.HStack, { marginVertical: 6 }]}>
+                                                        {item?.type == "off_hours" ?
+                                                            <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
+                                                            :
+                                                            <View style={styles.HStack}>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                            </View>
+                                                        }
+                                                    </View>
+                                                    <View style={[styles.HStack, { marginBottom: 4 }]}>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
+                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
+                                                    </View>
+                                                </View>
+                                                <EditRemoveBtn item={item}
+                                                    onEdit={() => {
+                                                        setIsFromEdit(true)
+                                                        EditTimeData(item, "tuesday")
+                                                        setDay("tuesday")
+                                                    }}
+                                                    onDelete={() => {
+                                                        DeleteTimeBlock(item)
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
+                                    }
+                                />
+                                <View style={[styles.HStack, { marginTop: 8 }]}>
+                                    <AddTimeBlock onPress={() => {
+                                        setModalVisible(!modalVisible)
+                                        setDay("tuesday")
+                                        setIsFromEdit(false)
+                                    }} />
+                                    <View style={{ flex: 0.3 }}></View>
+                                    <MoreBtn onPress={() => {
+                                        setMoreModelVisible(!MoreModelVisible)
+                                    }} />
+                                </View>
+                            </View>
+                        }
+                    </View>
+                    {/* Wenesday */}
+                    <View style={styles.DayRow}>
+                        <TouchableOpacity onPress={() => {
+                            handleShowDayData('wednesday', WenesdayShow)
+                        }}
+                            style={styles.HStack}>
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: WenesdayShow == true ? white : black,
+                                fontFamily: SEMIBOLD,
+                                backgroundColor: WenesdayShow == true ? greenPrimary : white,
+                                paddingHorizontal: WenesdayShow == true ? 20 : 0,
+                                paddingVertical: WenesdayShow == true ? 8 : 0
+                            }}>{"WENESDAY"}</Text>
+
+                            <View >
+                                <Icon name={WenesdayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
+                            </View>
+                        </TouchableOpacity>
+                        {WenesdayShow == true &&
+                            <View style={{
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                paddingBottom: 8,
+                            }}>
+                                <FlatList
+                                    data={WenesdayData}
+                                    key={Math.random()}
+                                    renderItem={({ item, index }) =>
+                                        <View style={{
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: disableColor,
+                                            paddingVertical: 8,
+                                            flex: 1,
+                                        }}>
+                                            {/* {item?.time_slot_name && */}
+                                            {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
+                                            {/* } */}
+                                            <View style={{
+                                                flex: 1,
+                                                flexDirection: "row",
+                                                alignItems: "center"
+                                            }}>
+                                                <View style={{
+                                                    flex: 0.7,
+                                                    marginRight: 10
+                                                }}>
+                                                    <View style={[styles.HStack, { marginVertical: 6 }]}>
+                                                        {item?.type == "off_hours" ?
+                                                            <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
+                                                            :
+                                                            <View style={styles.HStack}>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                            </View>
+                                                        }
+                                                    </View>
+                                                    <View style={[styles.HStack, { marginBottom: 4 }]}>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
+                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
+                                                    </View>
+                                                </View>
+                                                <EditRemoveBtn item={item}
+                                                    onEdit={() => {
+                                                        setIsFromEdit(true)
+                                                        EditTimeData(item, "wednesday")
+                                                        setDay("wednesday")
+                                                    }}
+                                                    onDelete={() => {
+                                                        DeleteTimeBlock(item)
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
+                                    }
+                                />
+                                <View style={[styles.HStack, { marginTop: 8 }]}>
+                                    <AddTimeBlock onPress={() => {
+                                        setModalVisible(!modalVisible)
+                                        setDay("wednesday")
+                                        setIsFromEdit(false)
+                                    }} />
+                                    <View style={{ flex: 0.3 }}></View>
+                                    <MoreBtn onPress={() => {
+                                        setMoreModelVisible(!MoreModelVisible)
+                                    }} />
+                                </View>
+                            </View>
+                        }
+                    </View>
+                    {/* Thursday */}
+                    <View style={styles.DayRow}>
+                        <TouchableOpacity onPress={() => {
+                            handleShowDayData('thursday', ThursdayShow)
+                        }}
+                            style={styles.HStack}>
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: ThursdayShow == true ? white : black,
+                                fontFamily: SEMIBOLD,
+                                backgroundColor: ThursdayShow == true ? greenPrimary : white,
+                                paddingHorizontal: ThursdayShow == true ? 20 : 0,
+                                paddingVertical: ThursdayShow == true ? 8 : 0
+                            }}>{"THURSDAY"}</Text>
+
+                            <View >
+                                <Icon name={ThursdayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
+                            </View>
+                        </TouchableOpacity>
+                        {ThursdayShow == true &&
+                            <View style={{
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                paddingBottom: 8,
+                            }}>
+                                <FlatList
+                                    data={ThursdayData}
+                                    key={Math.random()}
+                                    renderItem={({ item, index }) =>
+                                        <View style={{
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: disableColor,
+                                            paddingVertical: 8,
+                                            flex: 1,
+                                        }}>
+                                            {/* {item?.time_slot_name && */}
+                                            {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
+                                            {/* } */}
+                                            <View style={{
+                                                flex: 1,
+                                                flexDirection: "row",
+                                                alignItems: "center"
+                                            }}>
+                                                <View style={{
+                                                    flex: 0.7,
+                                                    marginRight: 10
+                                                }}>
+                                                    <View style={[styles.HStack, { marginVertical: 6 }]}>
+                                                        {item?.type == "off_hours" ?
+                                                            <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
+                                                            :
+                                                            <View style={styles.HStack}>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                            </View>
+                                                        }
+                                                    </View>
+                                                    <View style={[styles.HStack, { marginBottom: 4 }]}>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
+                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
+                                                    </View>
+                                                </View>
+                                                <EditRemoveBtn item={item}
+                                                    onEdit={() => {
+                                                        setIsFromEdit(true)
+                                                        EditTimeData(item, "thursday")
+                                                        setDay("thursday")
+                                                    }}
+                                                    onDelete={() => {
+                                                        DeleteTimeBlock(item)
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
+                                    }
+                                />
+                                <View style={[styles.HStack, { marginTop: 8 }]}>
+                                    <AddTimeBlock onPress={() => {
+                                        setModalVisible(!modalVisible)
+                                        setDay("thursday")
+                                        setIsFromEdit(false)
+                                    }} />
+                                    <View style={{ flex: 0.3 }}></View>
+                                    <MoreBtn onPress={() => {
+                                        setMoreModelVisible(!MoreModelVisible)
+                                    }} />
+                                </View>
+                            </View>
+                        }
+                    </View>
+                    {/* Friday */}
+                    <View style={styles.DayRow}>
+                        <TouchableOpacity onPress={() => {
+                            handleShowDayData('friday', FridayShow)
+                        }}
+                            style={styles.HStack}>
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: FridayShow == true ? white : black,
+                                fontFamily: SEMIBOLD,
+                                backgroundColor: FridayShow == true ? greenPrimary : white,
+                                paddingHorizontal: FridayShow == true ? 20 : 0,
+                                paddingVertical: FridayShow == true ? 8 : 0
+                            }}>{"FRIDAY"}</Text>
+
+                            <View >
+                                <Icon name={FridayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
+                            </View>
+                        </TouchableOpacity>
+                        {FridayShow == true &&
+                            <View style={{
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                paddingBottom: 8,
+                            }}>
+                                <FlatList
+                                    data={FridayData}
+                                    key={Math.random()}
+                                    renderItem={({ item, index }) =>
+                                        <View style={{
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: disableColor,
+                                            paddingVertical: 8,
+                                            flex: 1,
+                                        }}>
+                                            {/* {item?.time_slot_name && */}
+                                            {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
+                                            {/* } */}
+                                            <View style={{
+                                                flex: 1,
+                                                flexDirection: "row",
+                                                alignItems: "center"
+                                            }}>
+                                                <View style={{
+                                                    flex: 0.7,
+                                                    marginRight: 10
+                                                }}>
+                                                    <View style={[styles.HStack, { marginVertical: 6 }]}>
+                                                        {item?.type == "off_hours" ?
+                                                            <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
+                                                            :
+                                                            <View style={styles.HStack}>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                            </View>
+                                                        }
+                                                    </View>
+                                                    <View style={[styles.HStack, { marginBottom: 4 }]}>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
+                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
+                                                    </View>
+                                                </View>
+                                                <EditRemoveBtn item={item}
+                                                    onEdit={() => {
+                                                        setIsFromEdit(true)
+                                                        EditTimeData(item, "friday")
+                                                        setDay("friday")
+                                                    }}
+                                                    onDelete={() => {
+                                                        DeleteTimeBlock(item)
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
+                                    }
+                                />
+                                <View style={[styles.HStack, { marginTop: 8 }]}>
+                                    <AddTimeBlock onPress={() => {
+                                        setModalVisible(!modalVisible)
+                                        setDay("friday")
+                                        setIsFromEdit(false)
+                                    }} />
+                                    <View style={{ flex: 0.3 }}></View>
+                                    <MoreBtn onPress={() => {
+                                        setMoreModelVisible(!MoreModelVisible)
+                                    }} />
+                                </View>
+                            </View>
+                        }
+                    </View>
+                    {/* Saturday */}
+                    <View style={styles.DayRow}>
+                        <TouchableOpacity onPress={() => {
+                            handleShowDayData('saturday', SaturdayShow)
+                        }}
+                            style={styles.HStack}>
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: SaturdayShow == true ? white : black,
+                                fontFamily: SEMIBOLD,
+                                backgroundColor: SaturdayShow == true ? greenPrimary : white,
+                                paddingHorizontal: SaturdayShow == true ? 20 : 0,
+                                paddingVertical: SaturdayShow == true ? 8 : 0
+                            }}>{"SATURDAY"}</Text>
+
+                            <View >
+                                <Icon name={SaturdayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
+                            </View>
+                        </TouchableOpacity>
+                        {SaturdayShow == true &&
+                            <View style={{
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                paddingBottom: 8,
+                            }}>
+                                <FlatList
+                                    data={SaturdayData}
+                                    key={Math.random()}
+                                    renderItem={({ item, index }) =>
+                                        <View style={{
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: disableColor,
+                                            paddingVertical: 8,
+                                            flex: 1,
+                                        }}>
+                                            {/* {item?.time_slot_name && */}
+                                            {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
+                                            {/* } */}
+                                            <View style={{
+                                                flex: 1,
+                                                flexDirection: "row",
+                                                alignItems: "center"
+                                            }}>
+                                                <View style={{
+                                                    flex: 0.7,
+                                                    marginRight: 10
+                                                }}>
+                                                    <View style={[styles.HStack, { marginVertical: 6 }]}>
+                                                        {item?.type == "off_hours" ?
+                                                            <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
+                                                            :
+                                                            <View style={styles.HStack}>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                            </View>
+                                                        }
+                                                    </View>
+                                                    <View style={[styles.HStack, { marginBottom: 4 }]}>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
+                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
+                                                    </View>
+                                                </View>
+                                                <EditRemoveBtn item={item}
+                                                    onEdit={() => {
+                                                        setIsFromEdit(true)
+                                                        EditTimeData(item, "saturday")
+                                                        setDay("saturday")
+                                                    }}
+                                                    onDelete={() => {
+                                                        DeleteTimeBlock(item)
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
+                                    }
+                                />
+                                <View style={[styles.HStack, { marginTop: 8 }]}>
+                                    <AddTimeBlock onPress={() => {
+                                        setModalVisible(!modalVisible)
+                                        setDay("saturday")
+                                        setIsFromEdit(false)
+                                    }} />
+                                    <View style={{ flex: 0.3 }}></View>
+                                    <MoreBtn onPress={() => {
+                                        setMoreModelVisible(!MoreModelVisible)
+                                    }} />
+                                </View>
+                            </View>
+                        }
+                    </View>
+                    {/* Sunday */}
+                    <View style={styles.DayRow}>
+                        <TouchableOpacity onPress={() => {
+                            handleShowDayData('sunday', SundayShow)
+                        }}
+                            style={styles.HStack}>
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: SundayShow == true ? white : black,
+                                fontFamily: SEMIBOLD,
+                                backgroundColor: SundayShow == true ? greenPrimary : white,
+                                paddingHorizontal: SundayShow == true ? 20 : 0,
+                                paddingVertical: SundayShow == true ? 8 : 0
+                            }}>{"SUNDAY"}</Text>
+
+                            <View >
+                                <Icon name={SundayShow == true ? 'chevron-up' : 'chevron-down'} size={22} color={black} />
+                            </View>
+                        </TouchableOpacity>
+                        {SundayShow == true &&
+                            <View style={{
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                paddingBottom: 8,
+                            }}>
+                                <FlatList
+                                    data={SundayData}
+                                    key={Math.random()}
+                                    renderItem={({ item, index }) =>
+                                        <View style={{
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: disableColor,
+                                            paddingVertical: 8,
+                                            flex: 1,
+                                        }}>
+                                            {/* {item?.time_slot_name && */}
+                                            {/* <Text style={styles.black12SemiBold}>{item?.time_slot_name}</Text> */}
+                                            {/* } */}
+                                            <View style={{
+                                                flex: 1,
+                                                flexDirection: "row",
+                                                alignItems: "center"
+                                            }}>
+                                                <View style={{
+                                                    flex: 0.7,
+                                                    marginRight: 10
+                                                }}>
+                                                    <View style={[styles.HStack, { marginVertical: 6 }]}>
+                                                        {item?.type == "off_hours" ?
+                                                            <Text style={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12, color: greenPrimary, borderWidth: 0.5, borderColor: greenPrimary, paddingHorizontal: 14, paddingVertical: 4, borderRadius: 6, flex: 1, textAlign: "center" }}>{"Off Hours"}</Text>
+                                                            :
+                                                            <View style={styles.HStack}>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{moment(item.from_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                                <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textAlign: "center" }}>{"to"}</Text>
+                                                                <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}> {moment(item.to_time, 'HH:mm').format('hh:mm A')}</Text>
+                                                            </View>
+                                                        }
+                                                    </View>
+                                                    <View style={[styles.HStack, { marginBottom: 4 }]}>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{routeType(item?.route_type)}</Text>
+                                                        <Text style={{ flex: 0.2, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", textAlign: "center" }}> {"-"}</Text>
+                                                        <Text style={{ flex: 0.4, fontFamily: MEDIUM, fontSize: FontSize.FS_11, color: black, textTransform: "capitalize", borderWidth: 0.5, borderColor: black, paddingVertical: 4, borderRadius: 6, textAlign: "center" }}>{item?.route_to_name}</Text>
+                                                    </View>
+                                                </View>
+                                                <EditRemoveBtn item={item}
+                                                    onEdit={() => {
+                                                        setIsFromEdit(true)
+                                                        EditTimeData(item, "sunday")
+                                                        setDay("sunday")
+                                                    }}
+                                                    onDelete={() => {
+                                                        DeleteTimeBlock(item)
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
+                                    }
+                                />
+                                <View style={[styles.HStack, { marginTop: 8 }]}>
+                                    <AddTimeBlock onPress={() => {
+                                        setModalVisible(!modalVisible)
+                                        setDay("sunday")
+                                        setIsFromEdit(false)
+                                    }} />
+                                    <View style={{ flex: 0.3 }}></View>
+                                    <MoreBtn onPress={() => {
+                                        setMoreModelVisible(!MoreModelVisible)
+                                    }} />
+                                </View>
+                            </View>
+                        }
+                    </View>
+                </View>
+            </View>
+
+
+
+            <RouteDestinationBottomSheet
+                data={ROUTE}
+                headerTitle={'Select Route Type'}
+                currentValue={RouteValue}
+                bottomSheetRef={RouteTobottomSheetRef}
+                selectedValue={data => {
+                    setRouteTo(data);
+                    setRouteToError("")
+                }}
+                selectedRoute={data => {
+                    setRouteValue(data)
+                    setDestinationTo("")
+                    setRouteToError("")
+                }}
+            />
+
+            <DestinationBottomSheet
+                data={DestinationList}
+                headerTitle={'Select Route'}
+                currentValue={DestinationValue}
+                bottomSheetRef={DestinationTobottomSheetRef}
+                selectedValue={data => {
+                    setDestinationTo(data);
+                    setDestinationToError("")
+                }}
+                selectedDestination={data => {
+                    setDestinationValue(data)
+                    setDestinationToError("")
+                }}
+            />
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={[styles.HStack, { marginBottom: 24 }]}>
+                            <Text style={{
+                                fontSize: FontSize.FS_16,
+                                color: black,
+                                fontFamily: SEMIBOLD,
+                                textTransform: "capitalize",
+                                flex: 1,
+                                textAlign: "center"
+                            }}>{Day}</Text>
+                            <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
+                                onPress={() => {
+                                    setModalVisible(false)
+                                    setFrom("")
+                                    setFromError("")
+                                    setTo("")
+                                    setToError("")
+                                    setRouteTo("")
+                                    setRouteToError("")
+                                    setDestinationTo("")
+                                    setDestinationToError("")
+                                    setEventName("")
+                                    setEventNameError("")
+                                    setModalVisible(!modalVisible)
+                                }
+                                }>
+                                <Icon name={"close"} size={20} color={black} />
+                            </TouchableOpacity>
+                        </View>
+                        {EditOffHours == false &&
+                            <>
+                                {/* <Text style={[styles.black12SemiBold, { marginTop: 10 }]}>{"Time Block Name"}</Text>
                                     <TextInput
                                         value={EventName}
                                         placeholder='Enter Slot Name'
@@ -1537,242 +1530,241 @@ const UserAvaliability = ({ navigation, route }) => {
                                         {EventNameError}
                                     </Text>
                                     } */}
-                                    <Text style={[styles.black12SemiBold, { marginTop: 10 }]}>{"From Time"}</Text>
-                                    <TouchableOpacity onPress={() => {
-                                        showTimePickerFrom()
-                                    }}
-                                        style={{
-                                            flexDirection: "row",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            borderWidth: 1,
-                                            borderColor: black,
-                                            paddingVertical: 6,
-                                            paddingHorizontal: 12,
-                                            marginVertical: 8,
-                                            borderRadius: 4,
-                                        }}>
-                                        <Text style={{
-                                            fontSize: FontSize.FS_12,
-                                            color: black,
-                                            fontFamily: MEDIUM,
-                                            marginTop: 4
-                                        }}>{From == "" ? "Select Time" : moment(From, 'HH:mm').format('hh:mm A')}</Text>
-                                        <Icon name={"chevron-down"} size={22} color={grey} />
-                                    </TouchableOpacity>
-                                    {FromError !== "" && <Text
-                                        style={{
-                                            fontSize: FontSize.FS_10,
-                                            color: red,
-                                            fontFamily: MEDIUM,
-                                        }}>
-                                        {FromError}
-                                    </Text>
-                                    }
-                                    <Text style={[styles.black12SemiBold, { marginTop: 10 }]}>{"To Time"}</Text>
-                                    <TouchableOpacity onPress={() => {
-                                        showTimePickerTo()
-                                    }}
-                                        style={{
-                                            flexDirection: "row",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            borderWidth: 1,
-                                            borderColor: black,
-                                            paddingVertical: 6,
-                                            paddingHorizontal: 12,
-                                            marginVertical: 10,
-                                            borderRadius: 4,
-                                        }}>
-                                        <Text style={{
-                                            fontSize: FontSize.FS_12,
-                                            color: black,
-                                            fontFamily: MEDIUM,
-                                            marginTop: 4
-                                        }}>{To == "" ? "Select Time" : moment(To, 'HH:mm').format('hh:mm A')}</Text>
-                                        <Icon name={"chevron-down"} size={22} color={grey} />
+                                <Text style={[styles.black12SemiBold, { marginTop: 10 }]}>{"From Time"}</Text>
+                                <TouchableOpacity onPress={() => {
+                                    showTimePickerFrom()
+                                }}
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        borderWidth: 1,
+                                        borderColor: black,
+                                        paddingVertical: 6,
+                                        paddingHorizontal: 12,
+                                        marginVertical: 8,
+                                        borderRadius: 4,
+                                    }}>
+                                    <Text style={{
+                                        fontSize: FontSize.FS_12,
+                                        color: black,
+                                        fontFamily: MEDIUM,
+                                        marginTop: 4
+                                    }}>{From == "" ? "Select Time" : moment(From, 'HH:mm').format('hh:mm A')}</Text>
+                                    <Icon name={"chevron-down"} size={22} color={grey} />
+                                </TouchableOpacity>
+                                {FromError !== "" && <Text
+                                    style={{
+                                        fontSize: FontSize.FS_10,
+                                        color: red,
+                                        fontFamily: MEDIUM,
+                                    }}>
+                                    {FromError}
+                                </Text>
+                                }
+                                <Text style={[styles.black12SemiBold, { marginTop: 10 }]}>{"To Time"}</Text>
+                                <TouchableOpacity onPress={() => {
+                                    showTimePickerTo()
+                                }}
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        borderWidth: 1,
+                                        borderColor: black,
+                                        paddingVertical: 6,
+                                        paddingHorizontal: 12,
+                                        marginVertical: 10,
+                                        borderRadius: 4,
+                                    }}>
+                                    <Text style={{
+                                        fontSize: FontSize.FS_12,
+                                        color: black,
+                                        fontFamily: MEDIUM,
+                                        marginTop: 4
+                                    }}>{To == "" ? "Select Time" : moment(To, 'HH:mm').format('hh:mm A')}</Text>
+                                    <Icon name={"chevron-down"} size={22} color={grey} />
 
-                                    </TouchableOpacity>
-                                    {ToError !== "" && <Text
-                                        style={{
-                                            fontSize: FontSize.FS_10,
-                                            color: red,
-                                            fontFamily: MEDIUM,
-                                        }}>
-                                        {ToError}
-                                    </Text>
-                                    }
-                                </>
-                            }
-                            <Text style={[styles.black12SemiBold, { marginTop: 10 }]}>{"Route Type"}</Text>
-                            <TouchableOpacity onPress={() => {
-                                openRouteToBottomSheet()
-                            }}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 12,
-                                    marginVertical: 10,
-                                    borderRadius: 4,
-                                }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>{RouteTo == "" ? "Select Route" : RouteTo}</Text>
-                                <Icon name={"chevron-down"} size={22} color={grey} />
+                                </TouchableOpacity>
+                                {ToError !== "" && <Text
+                                    style={{
+                                        fontSize: FontSize.FS_10,
+                                        color: red,
+                                        fontFamily: MEDIUM,
+                                    }}>
+                                    {ToError}
+                                </Text>
+                                }
+                            </>
+                        }
+                        <Text style={[styles.black12SemiBold, { marginTop: 10 }]}>{"Route Type"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openRouteToBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{RouteTo == "" ? "Select Route" : RouteTo}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
 
-                            </TouchableOpacity>
-                            {RouteToError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                }}>
-                                {RouteToError}
-                            </Text>
-                            }
-                            <Text style={[styles.black12SemiBold, { marginTop: 10 }]}>{"Route"}</Text>
-                            <TouchableOpacity onPress={() => {
-                                openDestinationToBottomSheet()
-                            }}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 12,
-                                    marginVertical: 10,
-                                    borderRadius: 4,
-                                }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>{DestinationTo == "" ? "Select Desination" : DestinationTo}</Text>
-                                <Icon name={"chevron-down"} size={22} color={grey} />
+                        </TouchableOpacity>
+                        {RouteToError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                            }}>
+                            {RouteToError}
+                        </Text>
+                        }
+                        <Text style={[styles.black12SemiBold, { marginTop: 10 }]}>{"Route"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openDestinationToBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{DestinationTo == "" ? "Select Desination" : DestinationTo}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
 
-                            </TouchableOpacity>
-                            {DestinationToError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                }}>
-                                {DestinationToError}
-                            </Text>
-                            }
-                            <TouchableOpacity onPress={() => {
-                                if (IsFromEdit == true) {
-                                    if (EditOffHours == true) {
-                                        handleUpdateTimeBlockOffHours()
-                                    }
-                                    else {
-                                        handleUpdateTimeBlock()
-                                    }
+                        </TouchableOpacity>
+                        {DestinationToError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                            }}>
+                            {DestinationToError}
+                        </Text>
+                        }
+                        <TouchableOpacity onPress={() => {
+                            if (IsFromEdit == true) {
+                                if (EditOffHours == true) {
+                                    handleUpdateTimeBlockOffHours()
                                 }
                                 else {
-                                    handleSaveTimeBlock()
+                                    handleUpdateTimeBlock()
                                 }
+                            }
+                            else {
+                                handleSaveTimeBlock()
+                            }
+                        }}
+                            style={{ backgroundColor: greenPrimary, height: 40, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_14,
+                                color: white,
+                                fontFamily: MEDIUM,
+                            }}>{IsFromEdit == true ? "UPDATE" : "SAVE"}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={MoreModelVisible}
+
+                onRequestClose={() => {
+                    setMoreModelVisible(!MoreModelVisible);
+                }}>
+
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
+                            onPress={() => setMoreModelVisible(false)}>
+                            <Icon name={"close"} size={22} color={black} />
+                        </TouchableOpacity>
+                        <View>
+                            <TouchableOpacity onPress={() => {
+                                const message = 'Are you sure to Copy All weekdays?';
+                                handleCopy("copy_all_weekdays", message)
                             }}
-                                style={{ backgroundColor: greenPrimary, height: 40, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
+                                style={{ flexDirection: "row", alignItems: "center" }}>
+                                <Icon name={"content-copy"} size={22} color={grey} />
                                 <Text style={{
                                     fontSize: FontSize.FS_14,
-                                    color: white,
-                                    fontFamily: MEDIUM,
-                                }}>{IsFromEdit == true ? "UPDATE" : "SAVE"}</Text>
+                                    color: grey,
+                                    fontFamily: SEMIBOLD,
+                                    textAlign: "center",
+                                    marginLeft: 10,
+
+
+                                }}>Copy to all weekdays</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => {
+                                const message = 'Are you sure to Copy All?';
+                                handleCopy("copy_to_all", message)
+                            }}
+                                style={{ flexDirection: "row", alignItems: "center" }}>
+                                <Icon name={"content-copy"} size={22} color={grey} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_14,
+                                    color: grey,
+                                    fontFamily: SEMIBOLD,
+                                    textAlign: "center",
+                                    marginLeft: 10,
+                                    marginVertical: 14
+
+                                }}>Copy to all</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => {
+                                const message = 'Are you sure to Copy To Weekends?';
+                                handleCopy("copy_to_weekends", message)
+                            }} style={{ flexDirection: "row", alignItems: "center" }}>
+                                <Icon name={"content-copy"} size={22} color={grey} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_14,
+                                    color: grey,
+                                    fontFamily: SEMIBOLD,
+                                    textAlign: "center",
+                                    marginLeft: 10
+
+                                }}>Copy to weekends</Text>
                             </TouchableOpacity>
                         </View>
+
                     </View>
-                </Modal>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={MoreModelVisible}
-
-                    onRequestClose={() => {
-                        setMoreModelVisible(!MoreModelVisible);
-                    }}>
-
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <TouchableOpacity style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
-                                onPress={() => setMoreModelVisible(false)}>
-                                <Icon name={"close"} size={22} color={black} />
-                            </TouchableOpacity>
-                            <View>
-                                <TouchableOpacity onPress={() => {
-                                    const message = 'Are you sure to Copy All weekdays?';
-                                    handleCopy("copy_all_weekdays", message)
-                                }}
-                                    style={{ flexDirection: "row", alignItems: "center" }}>
-                                    <Icon name={"content-copy"} size={22} color={grey} />
-                                    <Text style={{
-                                        fontSize: FontSize.FS_14,
-                                        color: grey,
-                                        fontFamily: SEMIBOLD,
-                                        textAlign: "center",
-                                        marginLeft: 10,
-
-
-                                    }}>Copy to all weekdays</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {
-                                    const message = 'Are you sure to Copy All?';
-                                    handleCopy("copy_to_all", message)
-                                }}
-                                    style={{ flexDirection: "row", alignItems: "center" }}>
-                                    <Icon name={"content-copy"} size={22} color={grey} />
-                                    <Text style={{
-                                        fontSize: FontSize.FS_14,
-                                        color: grey,
-                                        fontFamily: SEMIBOLD,
-                                        textAlign: "center",
-                                        marginLeft: 10,
-                                        marginVertical: 14
-
-                                    }}>Copy to all</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {
-                                    const message = 'Are you sure to Copy To Weekends?';
-                                    handleCopy("copy_to_weekends", message)
-                                }} style={{ flexDirection: "row", alignItems: "center" }}>
-                                    <Icon name={"content-copy"} size={22} color={grey} />
-                                    <Text style={{
-                                        fontSize: FontSize.FS_14,
-                                        color: grey,
-                                        fontFamily: SEMIBOLD,
-                                        textAlign: "center",
-                                        marginLeft: 10
-
-                                    }}>Copy to weekends</Text>
-                                </TouchableOpacity>
-                            </View>
-
-                        </View>
-                    </View>
-                </Modal>
-                <DateTimePickerModal
-                    isVisible={IsFromTimePickerShow}
-                    mode="time"
-                    onConfirm={handleConfirmFrom}
-                    onCancel={hideTimePickerFrom}
-                />
-                <DateTimePickerModal
-                    isVisible={IsToTimePickerShow}
-                    mode="time"
-                    onConfirm={handleConfirmTo}
-                    onCancel={hideTimePickerTo}
-                />
-            </HeaderView>
+                </View>
+            </Modal>
+            <DateTimePickerModal
+                isVisible={IsFromTimePickerShow}
+                mode="time"
+                onConfirm={handleConfirmFrom}
+                onCancel={hideTimePickerFrom}
+            />
+            <DateTimePickerModal
+                isVisible={IsToTimePickerShow}
+                mode="time"
+                onConfirm={handleConfirmTo}
+                onCancel={hideTimePickerTo}
+            />
             {isLoading && <LoadingView />}
         </>
     );

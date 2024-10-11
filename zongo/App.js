@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { Platform, StyleSheet, useColorScheme } from 'react-native';
+import { PermissionsAndroid, Platform, StyleSheet, useColorScheme } from 'react-native';
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
@@ -25,6 +25,8 @@ import { WEBSOCKET_URL } from './src/constants/ApiUrl';
 import { useFocusEffect } from '@react-navigation/native';
 import { navigate, resetScreen } from './src/navigation/RootNavigation';
 import { storeUserData } from './src/redux/reducers/userModuleReducer';
+import RNCallKeep from 'react-native-callkeep';
+
 let persistedStore = persistStore(store)
 window.RTCPeerConnection = window.RTCPeerConnection || RTCPeerConnection;
 window.RTCIceCandidate = window.RTCIceCandidate || RTCIceCandidate;
@@ -38,7 +40,32 @@ window.navigator.getUserMedia =
 
 function App() {
 
+  const options = {
+    ios: {
+      appName: 'My app name',
+    },
+    android: {
+      alertTitle: 'Permissions required',
+      alertDescription: 'This application needs to access your phone accounts',
+      cancelButton: 'Cancel',
+      okButton: 'ok',
+      imageName: 'phone_account_icon',
+      // additionalPermissions: [PermissionsAndroid.PERMISSIONS.example],
+      // Required to get audio in background when using Android 11
+      foregroundService: {
+        channelId: 'com.zongo',
+        channelName: 'Foreground service for my app',
+        notificationTitle: 'My app is running on background',
+        notificationIcon: 'Path to the resource icon of the notification',
+      }, 
+    }
+  };
+  
+  RNCallKeep.setup(options)
+  .then(accepted => console.log("Callkeep setup done", accepted))
+  .catch(err => console.error("Callkeep setup failed", err));
 
+RNCallKeep.setAvailable(true);
 
 
 
@@ -47,6 +74,7 @@ function App() {
       requestUserPermission();
     } else {
       getFcmToken()
+
     }
     /** Use when Tap on Notification & app is in backgroud state to foreground */
     messaging().onNotificationOpenedApp(remoteMessage => {

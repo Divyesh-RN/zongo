@@ -50,7 +50,7 @@ export const callsReducer = createSlice({
       state.error_message = '';
     });
     builder.addCase(Get_Local_Extension.fulfilled, (state, action) => {
-      Log('Get_Local_Extension fulfilled : ', JSON.stringify(action));
+      // Log('Get_Local_Extension fulfilled : ', JSON.stringify(action));
       state.apiGetCallList = STATUS_FULFILLED;
       state.isLoader = false;
       state.calls_data = action.payload?.data?.data;

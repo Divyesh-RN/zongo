@@ -3,7 +3,8 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
-import { greenPrimary } from '../../constants/Color';
+import { black, black03, black05, greenPrimary } from '../../constants/Color';
+import { FontSize, MEDIUM, SEMIBOLD } from '../../constants/Fonts';
 
 class StepIcon extends Component {
   render() {
@@ -29,9 +30,9 @@ class StepIcon extends Component {
           flexWrap: 'wrap',
           width: 100,
           paddingTop: 4,
-          fontFamily: this.props.labelFontFamily,
-          color: this.props.activeLabelColor,
-          fontSize: this.props.activeLabelFontSize || this.props.labelFontSize,
+          fontFamily: MEDIUM,
+          color: black,
+          fontSize: FontSize.FS_10 ,
         },
         leftBar: {
           position: 'absolute',
@@ -74,10 +75,10 @@ class StepIcon extends Component {
           flexWrap: 'wrap',
           width: 100,
           paddingTop: 4,
-          fontFamily: this.props.labelFontFamily,
-          color: this.props.completedLabelColor,
+          fontFamily: MEDIUM,
+          color: black05,
           marginTop: 4,
-          fontSize: this.props.labelFontSize,
+          fontSize: FontSize.FS_09,
         },
         leftBar: {
           position: 'absolute',
@@ -120,10 +121,10 @@ class StepIcon extends Component {
           flexWrap: 'wrap',
           width: 100,
           paddingTop: 4,
-          fontFamily: this.props.labelFontFamily,
-          color: this.props.labelColor,
+          fontFamily: MEDIUM,
+          color: black03,
           marginTop: 4,
-          fontSize: this.props.labelFontSize,
+          fontSize: FontSize.FS_09,
         },
         leftBar: {
           position: 'absolute',

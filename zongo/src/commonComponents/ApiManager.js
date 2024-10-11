@@ -8,6 +8,7 @@ import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 import Translate from "../translation/Translate";
 import { BASE_URL } from "../constants/ApiUrl";
 import { Log } from "./Log";
+import { navigate } from "../navigation/RootNavigation";
 
 
 const ApiManager = axios.create({
@@ -66,6 +67,9 @@ ApiManager.interceptors.response.use(response => {
 			textBody: "No Internet Connection",
 			button: 'Ok',
 		  })
+	}
+	else if (error?.response?.status == 401) {
+		navigate("Login")
 	}
 	else {
 

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { STATUS_FULFILLED, STATUS_IDLE, STATUS_PENDING, STATUS_REJECTED } from '../../constants/ConstantKey';
-import {  Check_Assign_Module, Delete_Ring_Group_Destination_List, Get_Admin_Voice_Mail, Get_Area_Code_By_State, Get_Area_Code_List, Get_Destination_List, Get_Plan_List, Get_Route_To_Destination, Get_States, Update_Ring_Group_Destination_List,  } from '../api/Api';
+import {  Check_Assign_Module, Delete_Ring_Group_Destination_List, Get_Admin_Voice_Mail, Get_Area_Code_By_State, Get_Area_Code_List, Get_Conatact_Field_List, Get_Destination_List, Get_Plan_List, Get_Route_To_Destination, Get_States, Update_Ring_Group_Destination_List,  } from '../api/Api';
 import { Log } from '../../commonComponents/Log';
 
 export const generalReducer = createSlice({
@@ -17,6 +17,7 @@ export const generalReducer = createSlice({
     area_code: null,
     state: null,
     plan_list: null,
+    contact_field_list : null,
     apiGetRouteToDestination: STATUS_IDLE,
     apiGetDestinationList: STATUS_IDLE,
     apiUpdateRingGroupDestinationList: STATUS_IDLE,
@@ -27,6 +28,7 @@ export const generalReducer = createSlice({
     apiGetAreaCodeByState: STATUS_IDLE,
     apiGetStates: STATUS_IDLE,
     apiGetAllPlanList: STATUS_IDLE,
+    apiContactFieldList: STATUS_IDLE,
   },
 
   reducers: {
@@ -44,6 +46,7 @@ export const generalReducer = createSlice({
         (state.apiGetAreaCodeByState= STATUS_IDLE);
         (state.apiGetStates= STATUS_IDLE);
         (state.apiGetAllPlanList= STATUS_IDLE);
+        (state.apiContactFieldList= STATUS_IDLE);
     },
     storeCallsData: (state, action) => {
       state.route_by_destination_list = action.payload;
@@ -268,6 +271,28 @@ export const generalReducer = createSlice({
       state.isError = true;
       state.error_message = action.payload?.message;
       state.apiGetAllPlanList = STATUS_REJECTED;
+    });
+
+    builder.addCase(Get_Conatact_Field_List.pending, (state, action) => {
+      state.apiContactFieldList = STATUS_PENDING;
+      state.isLoader = true;
+      state.isError = false;
+      state.error_message = '';
+    });
+    builder.addCase(Get_Conatact_Field_List.fulfilled, (state, action) => {
+      Log('Get_Conatact_Field_List fulfilled : ', JSON.stringify(action));
+      state.apiContactFieldList = STATUS_FULFILLED;
+      state.contact_field_list = action.payload?.data
+      state.isLoader = false;
+      state.isError = false;
+      state.error_message = '';
+    });
+    builder.addCase(Get_Conatact_Field_List.rejected, (state, action) => {
+      Log('Get_Conatact_Field_List rejected : ', JSON.stringify(action));
+      state.isLoader = false;
+      state.isError = true;
+      state.error_message = action.payload?.message;
+      state.apiContactFieldList = STATUS_REJECTED;
     });
   },
 });

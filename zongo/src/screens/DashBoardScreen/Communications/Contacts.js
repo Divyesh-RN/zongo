@@ -1,12 +1,10 @@
 import { View, Text, TouchableOpacity, StyleSheet, Alert, LayoutAnimation, UIManager, Platform, PermissionsAndroid } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
-import HeaderView from '../../../commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '../../../commonComponents/ResponsiveScreen';
+import { useEffect, useRef, useState } from 'react';
 import HeaderBackView from '../../../commonComponents/HeaderBackView';
 import CustomBottomSheet from '../../../commonComponents/CustomBottomSheet';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { black, greenPrimary, grey, light_grey, red, white } from '../../../constants/Color';
+import { black, greenPrimary, grey, light_grey, white } from '../../../constants/Color';
 import { FontSize, MEDIUM, REGULAR, SEMIBOLD } from '../../../constants/Fonts';
 import { goBack, navigate } from '../../../navigation/RootNavigation';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,7 +17,7 @@ import { getData } from '../../../commonComponents/AsyncManager';
 
 const ExpandableComponent = ({ item, onClickFunction }) => {
     const [layoutHeight, setLayoutHeight] = useState(0);
-    
+
     useEffect(() => {
         if (item.isExpanded) {
             setLayoutHeight(null);
@@ -102,25 +100,25 @@ const ExpandableComponent = ({ item, onClickFunction }) => {
                         marginLeft: 70
                     }}>Mobile {item?.work_contact_number}</Text>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 40, marginVertical: 14 }}>
-                        <TouchableOpacity  onPress={()=>{
-                            navigate("CallScreen",{item: item,from: "CONTACTS"})
+                        <TouchableOpacity onPress={() => {
+                            navigate("CallScreen", { item: item, from: "CONTACTS" })
                         }}
-                        style={{ width: 37, height: 37, backgroundColor: greenPrimary, borderRadius: 50, alignItems: "center", justifyContent: "center" }}>
+                            style={{ width: 37, height: 37, backgroundColor: greenPrimary, borderRadius: 50, alignItems: "center", justifyContent: "center" }}>
                             <Icon name="phone" size={22} color={white} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>{
-                            navigate("ChatScreen",{to_number:item?.work_contact_number,to_name :item?.first_name +" " + item?.last_name})
+                        <TouchableOpacity onPress={() => {
+                            navigate("ChatScreen", { to_number: item?.work_contact_number, to_name: item?.first_name + " " + item?.last_name })
                         }}
-                         style={{ width: 37, height: 37, backgroundColor: "#228aea", borderRadius: 50, alignItems: "center", justifyContent: "center", }}>
+                            style={{ width: 37, height: 37, backgroundColor: "#228aea", borderRadius: 50, alignItems: "center", justifyContent: "center", }}>
                             <Icon name="chat" size={22} color={white} />
                         </TouchableOpacity>
                         <TouchableOpacity style={{ width: 37, height: 37, backgroundColor: greenPrimary, borderRadius: 50, alignItems: "center", justifyContent: "center", }}>
                             <Icon name="video" size={24} color={white} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>{
-                            navigate("ContactInfo",{item:item,from:"CONTACTS"})
+                        <TouchableOpacity onPress={() => {
+                            navigate("ContactInfo", { item: item, from: "CONTACTS" })
                         }}
-                         style={{ width: 37, height: 37, backgroundColor: grey, borderRadius: 50, alignItems: "center", justifyContent: "center", }}>
+                            style={{ width: 37, height: 37, backgroundColor: grey, borderRadius: 50, alignItems: "center", justifyContent: "center", }}>
                             <Icon name="information" size={22} color={white} />
                         </TouchableOpacity>
                     </View>
@@ -130,7 +128,7 @@ const ExpandableComponent = ({ item, onClickFunction }) => {
     );
 };
 
-const Contacts = ({navigation}) => {
+const Contacts = ({ navigation }) => {
 
     const [ContactsData, setContactsData] = useState(null);
     const [FcmToken, setFcmToken] = useState(null);
@@ -236,7 +234,7 @@ const Contacts = ({navigation}) => {
         setListDataSource(array);
     };
 
-    const requestPermissions = ()=>{
+    const requestPermissions = () => {
         if (Platform.OS === 'android' && Platform.Version >= 23) {
             const permissions = [
                 PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -245,16 +243,16 @@ const Contacts = ({navigation}) => {
                 PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE,
                 PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
             ];
-        
+
             PermissionsAndroid.requestMultiple(permissions)
                 .then(granted => {
-                    Log("granted",granted)
+                    Log("granted", granted)
                     if (
                         granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED &&
                         granted[PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT] === PermissionsAndroid.RESULTS.GRANTED &&
                         granted[PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN] === PermissionsAndroid.RESULTS.GRANTED &&
                         granted[PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE] === PermissionsAndroid.RESULTS.GRANTED &&
-                        granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED 
+                        granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED
 
                     ) {
                         Log('User accepted all  permissions');
@@ -268,49 +266,37 @@ const Contacts = ({navigation}) => {
                 .catch(err => {
                     console.warn('Error in requesting permissions:', err);
                 });
-            }
+        }
     }
 
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    paddingHorizontal: pixelSizeHorizontal(-20),
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title="Contacts"
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
-                        }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
-                </View>
-                {
-                    listDataSource !== null &&
-                    <>
-                        {listDataSource.map((item, key) => (
-                            <ExpandableComponent
-                                key={item.first_name}
-                                onClickFunction={() => {
-                                    updateLayout(key);
-                                }}
-                                item={item}
-                            />
-                        ))}
-                    </>
-                }
+            <HeaderBackView
+                title="Contacts"
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+            {
+                listDataSource !== null &&
+                <>
+                    {listDataSource.map((item, key) => (
+                        <ExpandableComponent
+                            key={item.first_name}
+                            onClickFunction={() => {
+                                updateLayout(key);
+                            }}
+                            item={item}
+                        />
+                    ))}
+                </>
+            }
 
-                <CustomBottomSheet bottomSheetRef={bottomSheetRef} />
-            </HeaderView>
+            <CustomBottomSheet bottomSheetRef={bottomSheetRef} />
             {isLoading && <LoadingView />}
         </>
     );

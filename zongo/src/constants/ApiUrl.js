@@ -5,15 +5,31 @@ export const IMAGE_URL = "https://zongopbx.com/uploads/profiles/"
 export const COMMAN_IMAGE_URL = "https://zongopbx.com/uploads/comman/"
 export const INTERNAL_CHAT_IMAGE_URL = "https://zongopbx.com/uploads/internal_chat/xTce64tEYZ/"
 export const WEBSOCKET_URL = "ws://zongopbx.com/"
+
 //AUTH APIS
 export const  LOGIN = "login"
 export const GET_USER_EXTENSION = "get-user-extensions"
 export const CHECK_USER_EMAIL = "check-user-email"
+export const CHANGE_PASSWORD = "change-password"
+export const CHECK_EMAIL_CONFIG = "check-email-config"
+export const SAVE_E911_DATA = "save-e911-data" 
+export const UPDATE_E911_DATA = "update-e911-data" 
+export const UPDATE_ADMIN_COMPANY_INFO = "update-admin-company-info" 
+export const UPDATE_ADMIN_PERSONAL_INFO = "update-admin-personal-info" 
 
 //CHAT APIS
 export const SMS_CONTACT_LIST = "sms-chat/contact-list"
 export const GET_SMS_CHAT = "sms-chat/get-sms-log"
 export const SEND_SMS = "sms-chat/send-sms"
+export const GET_USER_ASSIGN_LIST = "sms-chat/get-user-assign-list"
+export const GET_SMS_TEMPLATE_LIST = "get-sms-templatelist"
+export const GET_SMS_TEMPLATE_DETAILS = "get-sms-template-details"
+export const SMS_LOG = "sms-log"
+export const GET_ALL_CONTACT_LIST = "sms-chat/get-all-contact-list"
+export const SMS_TEMPLATE_LIST = "sms-template-list"
+export const UPDATE_SMS_TEMPLATE = "update-sms-template"
+export const CREATE_SMS_TEMPLATE = "create-sms-template"
+export const DELETE_SMS_TEMPLATE = "delete-sms-template"
 
 //CONTACT APIS
 export const GET_CONTACT_LIST = "get-contact-list"
@@ -48,6 +64,7 @@ export const UPDATE_INBOUND_NUMBERS_ROUTE = "update-route"
 export const GET_PREFIX = "numbers/get-prefix"
 export const GET_DID_ROUTING = "get-did-routing"
 export const GET_NUMBER = "get-number"
+export const ONBOARDING_BUY_DID = "onboarding-buy-did"
 
 //AUTO_ATTENDANT
 
@@ -60,7 +77,6 @@ export const UPDATE_AUTO_ATTENDANT = "update-ivr"
 export const UPDATE_AUTO_ATTENDANT_OPTIONS = "update-ivr-options"
 
 //TIME BASED ROUTING
-
 export const GET_TIME_BASED_ROUTING_LIST = "get-time-condition-list"
 export const UPDATE_TIME_CONDITION = "update-time-condition"
 export const DELETE_TIME_BASED_ROUTING = "delete-time-condition"
@@ -76,7 +92,6 @@ export const GET_TIME_SLOT_EVENTS_PERTICULAR = "get-time-slot-events-particular"
 export const COPY_TIME_SLOT = "time-base-routing/copy-time-slot"
 
 //BLOCKED NUMBERS
-
 export const BLOCKED_NUMBERS_LIST = "blocked-number-list"
 export const CREATE_BLOCKED_NUMBERS = "create-blocked-number"
 export const DELETE_BLOCKED_NUMBERS = "delete-blocked-number"
@@ -136,6 +151,7 @@ export const GET_STATES = "numbers/states"
 export const GET_AREA_CODE_BY_STATE = "numbers/get-area-code"
 export const GET_PLAN_ALL_LIST = "plan/plan-all-list"
 export const GET_PERTICULAR_ROLE_PERMISSION = "permission/get-particular-role-permission"
+export const GET_CONTACT_FIELD_LIST = "get-contact-fields-list"
 
 // INTERNAL CHAT 
 export const GET_USER_LIST_CHAT = "internal-chat/get-user-list"
@@ -149,3 +165,27 @@ export const CREATE_GROUP = "internal-chat/create-group"
 export const SEND_MESSAGE = "internal-chat/send-message"
 export const SEND_CHAT_FILE = "internal-chat/send-chat-file"
 export const GET_MESSAGE_NOTIFICATION = "internal-chat/get-message-notification"
+
+//CALANDAR EVENTS
+export const GET_USER_EVENTS = "calender/user-meeting-events"
+export const MANAGE_USER_EVENTS = "calender/create-user-meeting-event"
+export const UPDATE_USER_EVENTS = "calender/update-user-meeting-event"
+export const DELETE_USER_EVENTS = "calender/delete-user-meeting-event"
+
+export const GET_MEETING_MODE = "calender/get-meeting-modes"
+export const GET_USER_MEETING_AVAILABILITY = "calender/user-meeting-availability"
+export const CREATE_USER_MEETING_AVAILABILITY = "calender/create-user-meeting-availability"
+export const UPDATE_USER_MEETING_AVAILABILITY = "calender/update-user-meeting-availability"
+export const DELETE_USER_MEETING_AVAILABILITY = "calender/delete-user-meeting-availability"
+
+export const GET_CALENDAR_ALL_TASK = "get-all-tasks"
+export const GET_CALENDAR_ALL_MEETINGS = "calender/get-calendar-meetings"
+export const GET_DROPDOWN_CONTACT_LIST = "get-dropdown-contact"
+export const GET_DROPDOWN_USER_LIST = "dropdown/get-user-list-dropdown"
+export const CREATE_CALENDAR_MEETING = "calender/create-calendar-event"
+export const CREATE_CALENDAR_TASK = "create-task"
+export const RESCHEDULE_CALENDAR_MEETING = "calender/reschedule-calendar-meeting"
+export const CANCEL_CALENDAR_MEETING = "calender/cancel-calendar-meeting"
+
+
+

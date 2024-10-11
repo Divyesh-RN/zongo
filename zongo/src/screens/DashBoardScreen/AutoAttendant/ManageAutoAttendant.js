@@ -1,8 +1,6 @@
 
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, Switch, Alert } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import HeaderView from '@commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
 import HeaderBackView from '@commonComponents/HeaderBackView';
 import { goBack } from '@navigation/RootNavigation';
 import { black05 } from '@constants/Color';
@@ -562,221 +560,136 @@ const ManageAutoAttendant = ({ navigation, route }) => {
 
   return (
     <>
-      <HeaderView
-        title={'Zongo'}
-        isProfilePic={true}
-        imgUri={
-          'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-        }
-        containerStyle={{
-          marginHorizontal: pixelSizeHorizontal(0),
-        }}>
-        <View style={{ marginHorizontal: 20 }}>
-          <HeaderBackView
-            title="Manage Auto-Attendant"
-            isBack={true}
-            onPressBack={() => {
-              goBack();
-            }}
-            onPressMenu={() => {
-              navigation.toggleDrawer();
-            }}
-          />
-          <View style={{ marginTop: 0, marginBottom: 40 }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingVertical: 16,
-                paddingHorizontal: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: disableColor,
-                marginHorizontal: -20,
-              }}>
-              <Text
-                style={{
-                  fontSize: FontSize.FS_12,
-                  color: black,
-                  fontFamily: MEDIUM,
-                }}>
-                {'Auto-Attendant ID'}
-              </Text>
-              <Text
-                style={{
-                  fontSize: FontSize.FS_12,
-                  color: black,
-                  fontFamily: SEMIBOLD,
-                }}>
-                {AutoAttendantId}
-              </Text>
-            </View>
-            <Text style={{
-              fontSize: FontSize.FS_14,
-              color: black,
-              fontFamily: SEMIBOLD,
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              marginHorizontal: -20,
-              backgroundColor: "#f0f0f0b5"
-            }}>{"General"}</Text>
-            <View style={{
+      <HeaderBackView
+        title="Manage Auto-Attendant"
+        isBack={true}
+        onPressBack={() => {
+          goBack();
+        }}
+        onPressMenu={() => {
+          navigation.toggleDrawer();
+        }}
+      />
+      <View style={{ marginHorizontal: 20 }}>
+        <View style={{ marginTop: 0, marginBottom: 40 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
               paddingVertical: 16,
               paddingHorizontal: 20,
               borderBottomWidth: 1,
               borderBottomColor: disableColor,
               marginHorizontal: -20,
             }}>
-
-              <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}>
-                <View>
-
-                  <Text style={{
-                    fontSize: FontSize.FS_12,
-                    color: black,
-                    fontFamily: MEDIUM,
-                  }}>{"Auto-Attendant Name"}</Text>
-                  <Text style={{
-                    fontSize: FontSize.FS_11,
-                    color: grey,
-                    fontFamily: MEDIUM,
-                    marginTop: 4
-                  }}>{AutoAttendantName}</Text>
-                </View>
-                {AutoAttendantNameEdit == false &&
-                  <TouchableOpacity onPress={() => {
-                    setAutoAttendantNameEdit(!AutoAttendantNameEdit)
-                  }}>
-                    <Icon name={"pencil"} size={22} color={black} />
-                  </TouchableOpacity>
-                }
-              </View>
-              {AutoAttendantNameEdit == true &&
-                <View style={{
-                  marginTop: 14,
-                  flexDirection: "row", alignItems: "center"
-                }}>
-                  <TextInput
-                    value={AutoAttendantName}
-                    placeholder='Enter Auto Attendant Name'
-                    placeholderTextColor={grey01}
-                    style={{
-                      fontFamily: MEDIUM,
-                      fontSize: FontSize.FS_12,
-                      borderWidth: 1,
-                      borderColor: grey01,
-                      height: 40,
-                      borderRadius: 6,
-                      paddingHorizontal: 14,
-                      flex: 1
-
-                    }}
-                    onChangeText={(txt) => {
-                      setAutoAttendantName(txt)
-                      setAutoAttendantNameError("")
-                    }}
-                  />
-                  <TouchableOpacity onPress={() => {
-                    setAutoAttendantNameEdit(false)
-                  }}
-                    style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
-                    <Icon name="check" size={22} color={white} />
-                  </TouchableOpacity>
-                </View>
-              }
-              {AutoAttendantNameError !== "" && <Text
-                style={{
-                  fontSize: FontSize.FS_10,
-                  color: red,
-                  fontFamily: MEDIUM,
-                  marginTop: 8
-
-                }}>
-                {AutoAttendantNameError}
-              </Text>}
-            </View>
-            <View
+            <Text
               style={{
-                paddingTop: 16,
-                paddingBottom: 16,
-                paddingHorizontal: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: disableColor,
-                marginHorizontal: -20,
+                fontSize: FontSize.FS_12,
+                color: black,
+                fontFamily: MEDIUM,
               }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}>
-                <Text
-                  style={{
-                    fontSize: FontSize.FS_12,
-                    color: black,
-                    fontFamily: MEDIUM,
-                  }}>
-                  {'Welcome Message'}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigate("ManageAudioFiles", { type: "ivr", isEdit: false })
-                  }}
-                  style={{ alignItems: 'center' }}>
-                  <Text
-                    style={{
-                      fontSize: FontSize.FS_12,
-                      color: grey,
-                      fontFamily: SEMIBOLD,
-                    }}>
-                    {'Upload'}
-                  </Text>
-                  <Icon name="cloud-upload-outline" size={22} color={grey} />
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  openAudioFileoBottomSheet();
-                }}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginTop: 14,
-                  borderWidth: 1.5,
-                  borderColor: grey,
-                  borderRadius: 4,
-                  paddingVertical: 6,
-                  paddingHorizontal: 14,
-                }}>
-                <Text
-                  style={{
-                    fontSize: FontSize.FS_11,
-                    color: grey,
-                    fontFamily: MEDIUM,
-                  }}>
-                  {MainSelectedAudioFileName == ''
-                    ? 'Choose Music On Hold file'
-                    : MainSelectedAudioFileName}
-                </Text>
-                <Icon name="chevron-down" size={22} color={grey} />
-              </TouchableOpacity>
-              {WelcomeMessageError !== "" && <Text
-                style={{
-                  fontSize: FontSize.FS_10,
-                  color: red,
-                  fontFamily: MEDIUM,
-                  marginTop: 8
-
-                }}>
-                {WelcomeMessageError}</Text>}
-            </View>
+              {'Auto-Attendant ID'}
+            </Text>
+            <Text
+              style={{
+                fontSize: FontSize.FS_12,
+                color: black,
+                fontFamily: SEMIBOLD,
+              }}>
+              {AutoAttendantId}
+            </Text>
+          </View>
+          <Text style={{
+            fontSize: FontSize.FS_14,
+            color: black,
+            fontFamily: SEMIBOLD,
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            marginHorizontal: -20,
+            backgroundColor: "#f0f0f0b5"
+          }}>{"General"}</Text>
+          <View style={{
+            paddingVertical: 16,
+            paddingHorizontal: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: disableColor,
+            marginHorizontal: -20,
+          }}>
 
             <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+              <View>
+
+                <Text style={{
+                  fontSize: FontSize.FS_12,
+                  color: black,
+                  fontFamily: MEDIUM,
+                }}>{"Auto-Attendant Name"}</Text>
+                <Text style={{
+                  fontSize: FontSize.FS_11,
+                  color: grey,
+                  fontFamily: MEDIUM,
+                  marginTop: 4
+                }}>{AutoAttendantName}</Text>
+              </View>
+              {AutoAttendantNameEdit == false &&
+                <TouchableOpacity onPress={() => {
+                  setAutoAttendantNameEdit(!AutoAttendantNameEdit)
+                }}>
+                  <Icon name={"pencil"} size={22} color={black} />
+                </TouchableOpacity>
+              }
+            </View>
+            {AutoAttendantNameEdit == true &&
+              <View style={{
+                marginTop: 14,
+                flexDirection: "row", alignItems: "center"
+              }}>
+                <TextInput
+                  value={AutoAttendantName}
+                  placeholder='Enter Auto Attendant Name'
+                  placeholderTextColor={grey01}
+                  style={{
+                    fontFamily: MEDIUM,
+                    fontSize: FontSize.FS_12,
+                    borderWidth: 1,
+                    borderColor: grey01,
+                    height: 40,
+                    borderRadius: 6,
+                    paddingHorizontal: 14,
+                    flex: 1
+
+                  }}
+                  onChangeText={(txt) => {
+                    setAutoAttendantName(txt)
+                    setAutoAttendantNameError("")
+                  }}
+                />
+                <TouchableOpacity onPress={() => {
+                  setAutoAttendantNameEdit(false)
+                }}
+                  style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
+                  <Icon name="check" size={22} color={white} />
+                </TouchableOpacity>
+              </View>
+            }
+            {AutoAttendantNameError !== "" && <Text
+              style={{
+                fontSize: FontSize.FS_10,
+                color: red,
+                fontFamily: MEDIUM,
+                marginTop: 8
+
+              }}>
+              {AutoAttendantNameError}
+            </Text>}
+          </View>
+          <View
+            style={{
               paddingTop: 16,
               paddingBottom: 16,
               paddingHorizontal: 20,
@@ -784,557 +697,632 @@ const ManageAutoAttendant = ({ navigation, route }) => {
               borderBottomColor: disableColor,
               marginHorizontal: -20,
             }}>
-              <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}>
-                <View>
-                  <Text style={{
+              <Text
+                style={{
+                  fontSize: FontSize.FS_12,
+                  color: black,
+                  fontFamily: MEDIUM,
+                }}>
+                {'Welcome Message'}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigate("ManageAudioFiles", { type: "ivr", isEdit: false })
+                }}
+                style={{ alignItems: 'center' }}>
+                <Text
+                  style={{
                     fontSize: FontSize.FS_12,
-                    color: black,
-                    fontFamily: MEDIUM,
-                  }}>{"Enable Direct Dial"}</Text>
-                  <Text style={{
-                    fontSize: FontSize.FS_10,
-                    color: black,
+                    color: grey,
                     fontFamily: SEMIBOLD,
-                    marginLeft: 1
-                  }}>{DirectDial == true ? "YES" : "NO"}</Text>
-                </View>
-                <Switch style={{ marginRight: -10 }}
-                  trackColor={{ false: '#767577', true: greenPrimary }}
-                  thumbColor={DirectDial ? white : '#f4f3f4'}
-                  ios_backgroundColor="#3e3e3e"
-                  onValueChange={(val) => {
-                    setDirectDial(val)
-                  }}
-                  value={DirectDial}
-                />
-              </View>
+                  }}>
+                  {'Upload'}
+                </Text>
+                <Icon name="cloud-upload-outline" size={22} color={grey} />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => {
-              openSelectionTimeoutBottomSheet()
-            }}
+            <TouchableOpacity
+              onPress={() => {
+                openAudioFileoBottomSheet();
+              }}
               style={{
-
-                paddingVertical: 16,
-                paddingHorizontal: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: disableColor,
-                marginHorizontal: -20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginTop: 14,
+                borderWidth: 1.5,
+                borderColor: grey,
+                borderRadius: 4,
+                paddingVertical: 6,
+                paddingHorizontal: 14,
               }}>
-              <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}>
-                <Text style={{
-                  fontSize: FontSize.FS_12,
-                  color: black,
+              <Text
+                style={{
+                  fontSize: FontSize.FS_11,
+                  color: grey,
                   fontFamily: MEDIUM,
-                }}>{"Selection Timeout"}</Text>
-                <Icon name="chevron-down" size={22} color={black} />
-              </View>
-              <Text style={{
-                fontSize: FontSize.FS_11,
-                color: grey,
-                fontFamily: MEDIUM,
-              }}>{SelectionTimeOut == null ? "Select Timeout" : SelectionTimeOut}</Text>
+                }}>
+                {MainSelectedAudioFileName == ''
+                  ? 'Choose Music On Hold file'
+                  : MainSelectedAudioFileName}
+              </Text>
+              <Icon name="chevron-down" size={22} color={grey} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {
-              openTimeoutActionBottomSheet()
-            }}
+            {WelcomeMessageError !== "" && <Text
               style={{
-
-                paddingVertical: 16,
-                paddingHorizontal: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: disableColor,
-                marginHorizontal: -20,
-              }}>
-              <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}>
-                <Text style={{
-                  fontSize: FontSize.FS_12,
-                  color: black,
-                  fontFamily: MEDIUM,
-                }}>{"Timeout Action"}</Text>
-                <Icon name="chevron-down" size={22} color={black} />
-              </View>
-              <Text style={{
-                fontSize: FontSize.FS_11,
-                color: grey,
+                fontSize: FontSize.FS_10,
+                color: red,
                 fontFamily: MEDIUM,
-              }}>{TimeoutActionName == "" ? "Select Time out Action" : TimeoutActionName}</Text>
-            </TouchableOpacity>
+                marginTop: 8
+
+              }}>
+              {WelcomeMessageError}</Text>}
+          </View>
+
+          <View style={{
+            paddingTop: 16,
+            paddingBottom: 16,
+            paddingHorizontal: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: disableColor,
+            marginHorizontal: -20,
+          }}>
             <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+              <View>
+                <Text style={{
+                  fontSize: FontSize.FS_12,
+                  color: black,
+                  fontFamily: MEDIUM,
+                }}>{"Enable Direct Dial"}</Text>
+                <Text style={{
+                  fontSize: FontSize.FS_10,
+                  color: black,
+                  fontFamily: SEMIBOLD,
+                  marginLeft: 1
+                }}>{DirectDial == true ? "YES" : "NO"}</Text>
+              </View>
+              <Switch style={{ marginRight: -10 }}
+                trackColor={{ false: '#767577', true: greenPrimary }}
+                thumbColor={DirectDial ? white : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={(val) => {
+                  setDirectDial(val)
+                }}
+                value={DirectDial}
+              />
+            </View>
+          </View>
+          <TouchableOpacity onPress={() => {
+            openSelectionTimeoutBottomSheet()
+          }}
+            style={{
+
               paddingVertical: 16,
               paddingHorizontal: 20,
               borderBottomWidth: 1,
               borderBottomColor: disableColor,
               marginHorizontal: -20,
             }}>
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+              <Text style={{
+                fontSize: FontSize.FS_12,
+                color: black,
+                fontFamily: MEDIUM,
+              }}>{"Selection Timeout"}</Text>
+              <Icon name="chevron-down" size={22} color={black} />
+            </View>
+            <Text style={{
+              fontSize: FontSize.FS_11,
+              color: grey,
+              fontFamily: MEDIUM,
+            }}>{SelectionTimeOut == null ? "Select Timeout" : SelectionTimeOut}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            openTimeoutActionBottomSheet()
+          }}
+            style={{
 
-              <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}>
-                <View>
+              paddingVertical: 16,
+              paddingHorizontal: 20,
+              borderBottomWidth: 1,
+              borderBottomColor: disableColor,
+              marginHorizontal: -20,
+            }}>
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+              <Text style={{
+                fontSize: FontSize.FS_12,
+                color: black,
+                fontFamily: MEDIUM,
+              }}>{"Timeout Action"}</Text>
+              <Icon name="chevron-down" size={22} color={black} />
+            </View>
+            <Text style={{
+              fontSize: FontSize.FS_11,
+              color: grey,
+              fontFamily: MEDIUM,
+            }}>{TimeoutActionName == "" ? "Select Time out Action" : TimeoutActionName}</Text>
+          </TouchableOpacity>
+          <View style={{
+            paddingVertical: 16,
+            paddingHorizontal: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: disableColor,
+            marginHorizontal: -20,
+          }}>
 
-                  <Text style={{
-                    fontSize: FontSize.FS_12,
-                    color: black,
-                    fontFamily: MEDIUM,
-                  }}>{"Caller ID Name Prefix"}</Text>
-                  <Text style={{
-                    fontSize: FontSize.FS_11,
-                    color: grey,
-                    fontFamily: MEDIUM,
-                    marginTop: 4
-                  }}>{CallerIdNamePrefix == "" ? "None" : CallerIdNamePrefix}</Text>
-                </View>
-                {CallerIdNameEdit == false &&
-                  <TouchableOpacity onPress={() => {
-                    setCallerIdNameEdit(!CallerIdNameEdit)
-                  }}>
-                    <Icon name={"pencil"} size={22} color={black} />
-                  </TouchableOpacity>
-                }
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+              <View>
+
+                <Text style={{
+                  fontSize: FontSize.FS_12,
+                  color: black,
+                  fontFamily: MEDIUM,
+                }}>{"Caller ID Name Prefix"}</Text>
+                <Text style={{
+                  fontSize: FontSize.FS_11,
+                  color: grey,
+                  fontFamily: MEDIUM,
+                  marginTop: 4
+                }}>{CallerIdNamePrefix == "" ? "None" : CallerIdNamePrefix}</Text>
               </View>
-              {CallerIdNameEdit == true &&
-                <View style={{
-                  marginTop: 14,
-                  flexDirection: "row", alignItems: "center"
+              {CallerIdNameEdit == false &&
+                <TouchableOpacity onPress={() => {
+                  setCallerIdNameEdit(!CallerIdNameEdit)
                 }}>
-                  <TextInput
-                    value={CallerIdNamePrefix}
-                    placeholder='Enter Caller ID Name'
-                    placeholderTextColor={grey01}
-                    style={{
-                      fontFamily: MEDIUM,
-                      fontSize: FontSize.FS_12,
-                      borderWidth: 1,
-                      borderColor: grey01,
-                      height: 40,
-                      borderRadius: 6,
-                      paddingHorizontal: 14,
-                      flex: 1
-                    }}
-                    onChangeText={(txt) => {
-                      setCallerIdNamePrefix(txt)
-                    }}
-                  />
-                  <TouchableOpacity onPress={() => {
-                    setCallerIdNameEdit(false)
-                  }}
-                    style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
-                    <Icon name="check" size={22} color={white} />
-                  </TouchableOpacity>
-                </View>
+                  <Icon name={"pencil"} size={22} color={black} />
+                </TouchableOpacity>
               }
             </View>
-            <TouchableOpacity onPress={() => {
-              openMaxAttemptsBottomSheet()
-            }}
-              style={{
+            {CallerIdNameEdit == true &&
+              <View style={{
+                marginTop: 14,
+                flexDirection: "row", alignItems: "center"
+              }}>
+                <TextInput
+                  value={CallerIdNamePrefix}
+                  placeholder='Enter Caller ID Name'
+                  placeholderTextColor={grey01}
+                  style={{
+                    fontFamily: MEDIUM,
+                    fontSize: FontSize.FS_12,
+                    borderWidth: 1,
+                    borderColor: grey01,
+                    height: 40,
+                    borderRadius: 6,
+                    paddingHorizontal: 14,
+                    flex: 1
+                  }}
+                  onChangeText={(txt) => {
+                    setCallerIdNamePrefix(txt)
+                  }}
+                />
+                <TouchableOpacity onPress={() => {
+                  setCallerIdNameEdit(false)
+                }}
+                  style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
+                  <Icon name="check" size={22} color={white} />
+                </TouchableOpacity>
+              </View>
+            }
+          </View>
+          <TouchableOpacity onPress={() => {
+            openMaxAttemptsBottomSheet()
+          }}
+            style={{
 
-                paddingVertical: 16,
-                paddingHorizontal: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: disableColor,
-                marginHorizontal: -20,
-              }}>
-              <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}>
-                <Text style={{
-                  fontSize: FontSize.FS_12,
-                  color: black,
-                  fontFamily: MEDIUM,
-                }}>{"Max Attempts"}</Text>
-                <Icon name="chevron-down" size={22} color={black} />
-              </View>
-              <Text style={{
-                fontSize: FontSize.FS_11,
-                color: grey,
-                fontFamily: MEDIUM,
-              }}>{MaxAttempts == null ? "Select Max Attempts" : MaxAttempts}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {
-              openInvalidDestinationBottomSheet()
-            }}
-              style={{
-                paddingVertical: 16,
-                paddingHorizontal: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: disableColor,
-                marginHorizontal: -20,
-              }}>
-              <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}>
-                <Text style={{
-                  fontSize: FontSize.FS_12,
-                  color: black,
-                  fontFamily: MEDIUM,
-                }}>{"Invalid Destination"}</Text>
-                <Icon name="chevron-down" size={22} color={black} />
-              </View>
-              <Text style={{
-                fontSize: FontSize.FS_11,
-                color: grey,
-                fontFamily: MEDIUM,
-              }}>{InvalidDestination == null ? "Select Invalid Destination" : InvalidDestinationType + " - " + InvalidDestination}</Text>
-            </TouchableOpacity>
-            <Text style={{
-              fontSize: FontSize.FS_14,
-              color: black,
-              fontFamily: SEMIBOLD,
-              paddingVertical: 10,
+              paddingVertical: 16,
               paddingHorizontal: 20,
+              borderBottomWidth: 1,
+              borderBottomColor: disableColor,
               marginHorizontal: -20,
-              backgroundColor: "#f0f0f0b5"
-            }}>{"Keypad Options"}</Text>
+            }}>
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+              <Text style={{
+                fontSize: FontSize.FS_12,
+                color: black,
+                fontFamily: MEDIUM,
+              }}>{"Max Attempts"}</Text>
+              <Icon name="chevron-down" size={22} color={black} />
+            </View>
+            <Text style={{
+              fontSize: FontSize.FS_11,
+              color: grey,
+              fontFamily: MEDIUM,
+            }}>{MaxAttempts == null ? "Select Max Attempts" : MaxAttempts}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            openInvalidDestinationBottomSheet()
+          }}
+            style={{
+              paddingVertical: 16,
+              paddingHorizontal: 20,
+              borderBottomWidth: 1,
+              borderBottomColor: disableColor,
+              marginHorizontal: -20,
+            }}>
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+              <Text style={{
+                fontSize: FontSize.FS_12,
+                color: black,
+                fontFamily: MEDIUM,
+              }}>{"Invalid Destination"}</Text>
+              <Icon name="chevron-down" size={22} color={black} />
+            </View>
+            <Text style={{
+              fontSize: FontSize.FS_11,
+              color: grey,
+              fontFamily: MEDIUM,
+            }}>{InvalidDestination == null ? "Select Invalid Destination" : InvalidDestinationType + " - " + InvalidDestination}</Text>
+          </TouchableOpacity>
+          <Text style={{
+            fontSize: FontSize.FS_14,
+            color: black,
+            fontFamily: SEMIBOLD,
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            marginHorizontal: -20,
+            backgroundColor: "#f0f0f0b5"
+          }}>{"Keypad Options"}</Text>
 
-            <View style={styles.container}>
-              <View style={styles.row}>
-                {[1, 2, 3].map((button) => (
-                  <TouchableOpacity
-                    key={button}
-                    style={[styles.button, activeButton === button ? styles.activeButton : { backgroundColor: buttonStyles[button]?.backgroundColor? buttonStyles[button]?.backgroundColor : grey }]}
-                    // style={[styles.button, { backgroundColor: buttonStyles[button]?.backgroundColor,color : buttonStyles[button]?.color }]}
-                    onPress={() => handleButtonClick(button)}
-                  >
-                    <Text key={button} style={[styles.KeypadText, activeButton === button ? styles.ActiveKeypadText : { color: buttonStyles[button]?.color? buttonStyles[button]?.color : white }]}>{button}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              <View style={styles.row}>
-                {[4, 5, 6].map((button) => (
-                  <TouchableOpacity
-                    key={button}
-                    style={[styles.button, activeButton === button ? styles.activeButton : { backgroundColor: buttonStyles[button]?.backgroundColor? buttonStyles[button]?.backgroundColor : grey }]}
-                    onPress={() => handleButtonClick(button)}
-                  >
-                    <Text key={button} style={[styles.KeypadText, activeButton === button ? styles.ActiveKeypadText : { color:buttonStyles[button]?.color? buttonStyles[button]?.color : white}]}>{button}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              <View style={styles.row}>
-                {[7, 8, 9].map((button) => (
-                  <TouchableOpacity
-                    key={button}
-                    style={[styles.button, activeButton === button ? styles.activeButton : { backgroundColor:buttonStyles[button]?.backgroundColor? buttonStyles[button]?.backgroundColor : grey }]}
-                    onPress={() => handleButtonClick(button)}
-                  >
-                    <Text key={button} style={[styles.KeypadText, activeButton === button ? styles.ActiveKeypadText : { color:buttonStyles[button]?.color? buttonStyles[button]?.color : white}]}>{button}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              <View style={styles.row}>
-                {['#', 0, '*'].map((button) => (
-                  <TouchableOpacity
-                    key={button}
-                    style={[styles.button, activeButton === button ? styles.activeButton : { backgroundColor: buttonStyles[button]?.backgroundColor? buttonStyles[button]?.backgroundColor : grey }]}
-                    onPress={() => handleButtonClick(button)}
-                  >
-                    <Text key={button} style={[styles.KeypadText, activeButton === button ? styles.ActiveKeypadText : { color: buttonStyles[button]?.color? buttonStyles[button]?.color : white }]}>{button}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+          <View style={styles.container}>
+            <View style={styles.row}>
+              {[1, 2, 3].map((button) => (
+                <TouchableOpacity
+                  key={button}
+                  style={[styles.button, activeButton === button ? styles.activeButton : { backgroundColor: buttonStyles[button]?.backgroundColor ? buttonStyles[button]?.backgroundColor : grey }]}
+                  // style={[styles.button, { backgroundColor: buttonStyles[button]?.backgroundColor,color : buttonStyles[button]?.color }]}
+                  onPress={() => handleButtonClick(button)}
+                >
+                  <Text key={button} style={[styles.KeypadText, activeButton === button ? styles.ActiveKeypadText : { color: buttonStyles[button]?.color ? buttonStyles[button]?.color : white }]}>{button}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
 
+            <View style={styles.row}>
+              {[4, 5, 6].map((button) => (
+                <TouchableOpacity
+                  key={button}
+                  style={[styles.button, activeButton === button ? styles.activeButton : { backgroundColor: buttonStyles[button]?.backgroundColor ? buttonStyles[button]?.backgroundColor : grey }]}
+                  onPress={() => handleButtonClick(button)}
+                >
+                  <Text key={button} style={[styles.KeypadText, activeButton === button ? styles.ActiveKeypadText : { color: buttonStyles[button]?.color ? buttonStyles[button]?.color : white }]}>{button}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={styles.row}>
+              {[7, 8, 9].map((button) => (
+                <TouchableOpacity
+                  key={button}
+                  style={[styles.button, activeButton === button ? styles.activeButton : { backgroundColor: buttonStyles[button]?.backgroundColor ? buttonStyles[button]?.backgroundColor : grey }]}
+                  onPress={() => handleButtonClick(button)}
+                >
+                  <Text key={button} style={[styles.KeypadText, activeButton === button ? styles.ActiveKeypadText : { color: buttonStyles[button]?.color ? buttonStyles[button]?.color : white }]}>{button}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={styles.row}>
+              {['#', 0, '*'].map((button) => (
+                <TouchableOpacity
+                  key={button}
+                  style={[styles.button, activeButton === button ? styles.activeButton : { backgroundColor: buttonStyles[button]?.backgroundColor ? buttonStyles[button]?.backgroundColor : grey }]}
+                  onPress={() => handleButtonClick(button)}
+                >
+                  <Text key={button} style={[styles.KeypadText, activeButton === button ? styles.ActiveKeypadText : { color: buttonStyles[button]?.color ? buttonStyles[button]?.color : white }]}>{button}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <View
+            style={{
+              paddingVertical: 16,
+              paddingHorizontal: 20,
+              borderBottomWidth: 1,
+              borderBottomColor: disableColor,
+              marginHorizontal: -20,
+            }}>
             <View
               style={{
-                paddingVertical: 16,
-                paddingHorizontal: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: disableColor,
-                marginHorizontal: -20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+
+                <View style={{ backgroundColor: greenPrimary, width: 40, borderRadius: 20, height: 40, alignItems: "center", justifyContent: "center" }}>
+                  <Text
+                    style={{
+                      fontSize: FontSize.FS_15,
+                      color: white,
+                      fontFamily: SEMIBOLD,
+                    }}>
+                    {activeButton}
+                  </Text>
+                </View>
+                <View style={{ marginLeft: 10 }}>
+                  <Text
+                    style={{
+                      fontSize: FontSize.FS_12,
+                      color: black,
+                      fontFamily: SEMIBOLD,
+                    }}>
+                    {'Destination Type - Destination'}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: FontSize.FS_11,
+                      color: grey,
+                      fontFamily: MEDIUM,
+                      marginTop: 4,
+                    }}>
+                    {EditKeyPadOption == false ? "Click to Edit" : DestinationType == "" ? 'None' : DestinationType}
+                    {EditKeyPadOption == false ? "" : ' - '}
+                    {EditKeyPadOption == false ? "" : Destination == "" ? 'None' : Destination}
+                  </Text>
+                </View>
+              </View>
+              {EditKeyPadOption == false && (
+                <TouchableOpacity
+                  onPress={() => {
+                    setEditKeyPadOption(!EditKeyPadOption);
+                  }}>
+                  <Icon name={'pencil'} size={22} color={black} />
+                </TouchableOpacity>
+              )}
+            </View>
+            {EditKeyPadOption == true && (
               <View
                 style={{
+                  marginTop: 10,
                   flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
                 }}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-
-                  <View style={{ backgroundColor: greenPrimary, width: 40, borderRadius: 20, height: 40, alignItems: "center", justifyContent: "center" }}>
-                    <Text
-                      style={{
-                        fontSize: FontSize.FS_15,
-                        color: white,
-                        fontFamily: SEMIBOLD,
-                      }}>
-                      {activeButton}
-                    </Text>
-                  </View>
-                  <View style={{ marginLeft: 10 }}>
-                    <Text
-                      style={{
-                        fontSize: FontSize.FS_12,
-                        color: black,
-                        fontFamily: SEMIBOLD,
-                      }}>
-                      {'Destination Type - Destination'}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: FontSize.FS_11,
-                        color: grey,
-                        fontFamily: MEDIUM,
-                        marginTop: 4,
-                      }}>
-                      {EditKeyPadOption == false ? "Click to Edit" : DestinationType == "" ? 'None' : DestinationType}
-                      {EditKeyPadOption == false ? "" : ' - '}
-                      {EditKeyPadOption == false ? "" : Destination == "" ? 'None' : Destination}
-                    </Text>
-                  </View>
-                </View>
-                {EditKeyPadOption == false && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setEditKeyPadOption(!EditKeyPadOption);
-                    }}>
-                    <Icon name={'pencil'} size={22} color={black} />
-                  </TouchableOpacity>
-                )}
-              </View>
-              {EditKeyPadOption == true && (
-                <View
+                <TouchableOpacity
+                  onPress={() => {
+                    openDestinationTypeBottomSheet();
+                  }}
                   style={{
-                    marginTop: 10,
                     flexDirection: 'row',
                     alignItems: 'center',
+                    justifyContent: 'space-between',
+                    borderWidth: 1,
+                    borderColor: grey,
+                    paddingVertical: 6,
+                    paddingHorizontal: 12,
+                    marginVertical: 10,
+                    borderRadius: 6,
+                    flex: 1,
                   }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      openDestinationTypeBottomSheet();
-                    }}
+                  <Text
                     style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      borderWidth: 1,
-                      borderColor: grey,
-                      paddingVertical: 6,
-                      paddingHorizontal: 12,
-                      marginVertical: 10,
-                      borderRadius: 6,
-                      flex: 1,
+                      fontSize: FontSize.FS_11,
+                      color: grey,
+                      fontFamily: MEDIUM,
                     }}>
-                    <Text
-                      style={{
-                        fontSize: FontSize.FS_11,
-                        color: grey,
-                        fontFamily: MEDIUM,
-                      }}>
-                      {DestinationType == "" || DestinationType == undefined ? 'Select Type' : DestinationType}
-                    </Text>
-                    <Icon name={'chevron-down'} size={18} color={grey} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      openDestinationBottomSheet();
-                    }}
+                    {DestinationType == "" || DestinationType == undefined ? 'Select Type' : DestinationType}
+                  </Text>
+                  <Icon name={'chevron-down'} size={18} color={grey} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    openDestinationBottomSheet();
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    borderWidth: 1,
+                    borderColor: grey,
+                    paddingVertical: 6,
+                    paddingHorizontal: 12,
+                    marginVertical: 10,
+                    marginLeft: 10,
+                    borderRadius: 6,
+                    flex: 1,
+                  }}>
+                  <Text
                     style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      borderWidth: 1,
-                      borderColor: grey,
-                      paddingVertical: 6,
-                      paddingHorizontal: 12,
-                      marginVertical: 10,
-                      marginLeft: 10,
-                      borderRadius: 6,
-                      flex: 1,
+                      fontSize: FontSize.FS_11,
+                      color: grey,
+                      fontFamily: MEDIUM,
                     }}>
-                    <Text
-                      style={{
-                        fontSize: FontSize.FS_11,
-                        color: grey,
-                        fontFamily: MEDIUM,
-                      }}>
-                      {Destination == "" ? 'Select Destination' : Destination}
-                    </Text>
-                    <Icon name={'chevron-down'} size={18} color={grey} />
-                  </TouchableOpacity>
+                    {Destination == "" ? 'Select Destination' : Destination}
+                  </Text>
+                  <Icon name={'chevron-down'} size={18} color={grey} />
+                </TouchableOpacity>
 
-                  <TouchableOpacity
-                    onPress={() => {
-                      UpdateAutoAttandantOptions()
-                    }}
-                    style={{
-                      backgroundColor: greenPrimary,
-                      height: 34,
-                      width: 34,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 6,
-                      marginLeft: 10,
-                    }}>
-                    <Icon name="check" size={22} color={white} />
-                  </TouchableOpacity>
-                </View>
-              )}
-              {DestinationError !== "" && <Text
-                style={{
-                  fontSize: FontSize.FS_10,
-                  color: red,
-                  fontFamily: MEDIUM,
-                  marginTop: 8
-
-                }}>
-                {DestinationError}
-              </Text>
-              }
-              {DestinationTypeError !== "" && <Text
-                style={{
-                  fontSize: FontSize.FS_10,
-                  color: red,
-                  fontFamily: MEDIUM,
-                  marginTop: 8
-
-                }}>
-                {DestinationTypeError}
-              </Text>
-              }
-            </View>
-
-            <TouchableOpacity onPress={() => {
-              if (route?.params?.isEdit == true) {
-                UpdateAutoAttandant()
-              }
-              else {
-                CreateAutoAttandant()
-              }
-            }}
+                <TouchableOpacity
+                  onPress={() => {
+                    UpdateAutoAttandantOptions()
+                  }}
+                  style={{
+                    backgroundColor: greenPrimary,
+                    height: 34,
+                    width: 34,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 6,
+                    marginLeft: 10,
+                  }}>
+                  <Icon name="check" size={22} color={white} />
+                </TouchableOpacity>
+              </View>
+            )}
+            {DestinationError !== "" && <Text
               style={{
-                backgroundColor: greenPrimary,
-                alignItems: "center",
-                paddingVertical: 10,
-                marginVertical: 40,
-                justifyContent: "center",
-                borderRadius: 4,
-                width: "100%"
+                fontSize: FontSize.FS_10,
+                color: red,
+                fontFamily: MEDIUM,
+                marginTop: 8
+
               }}>
-              <Text style={{
-                fontSize: FontSize.FS_14,
-                color: white,
-                fontFamily: SEMIBOLD,
-                lineHeight: 24,
-                marginLeft: 10
-              }}>{isEdit ? "Update" : "Add New Auto-Attendant"}</Text>
-            </TouchableOpacity>
+              {DestinationError}
+            </Text>
+            }
+            {DestinationTypeError !== "" && <Text
+              style={{
+                fontSize: FontSize.FS_10,
+                color: red,
+                fontFamily: MEDIUM,
+                marginTop: 8
+
+              }}>
+              {DestinationTypeError}
+            </Text>
+            }
           </View>
+
+          <TouchableOpacity onPress={() => {
+            if (route?.params?.isEdit == true) {
+              UpdateAutoAttandant()
+            }
+            else {
+              CreateAutoAttandant()
+            }
+          }}
+            style={{
+              backgroundColor: greenPrimary,
+              alignItems: "center",
+              paddingVertical: 10,
+              marginVertical: 40,
+              justifyContent: "center",
+              borderRadius: 4,
+              width: "100%"
+            }}>
+            <Text style={{
+              fontSize: FontSize.FS_14,
+              color: white,
+              fontFamily: SEMIBOLD,
+              lineHeight: 24,
+              marginLeft: 10
+            }}>{isEdit ? "Update" : "Add New Auto-Attendant"}</Text>
+          </TouchableOpacity>
         </View>
+      </View>
 
-        <AudioFileListBottomSheet
-          headerTitle={'Please select welcome message'}
-          AudioFileList={AudioFileList}
-          CurrantId={MainSelectedAudioFileId}
-          bottomSheetRef={AudioFilebottomSheetRef}
-          selectedValue={data => {
-            setMainSelectedAudioFileName(data);
-            setWelcomeMessageError("")
-          }}
-          selectedId={data => {
-            setMainSelectedAudioFileId(data);
-          }}
-        />
-        <SingleTimeoutBottomSheet
-          data={SINGLETIMEOUT}
-          headerTitle={'Selection Time Out'}
-          bottomSheetRef={SelectionTimeoutBottomSheetRef}
-          selectedValue={data => {
-            setSelectionTimeOut(data);
-          }}
-        />
+      <AudioFileListBottomSheet
+        headerTitle={'Please select welcome message'}
+        AudioFileList={AudioFileList}
+        CurrantId={MainSelectedAudioFileId}
+        bottomSheetRef={AudioFilebottomSheetRef}
+        selectedValue={data => {
+          setMainSelectedAudioFileName(data);
+          setWelcomeMessageError("")
+        }}
+        selectedId={data => {
+          setMainSelectedAudioFileId(data);
+        }}
+      />
+      <SingleTimeoutBottomSheet
+        data={SINGLETIMEOUT}
+        headerTitle={'Selection Time Out'}
+        bottomSheetRef={SelectionTimeoutBottomSheetRef}
+        selectedValue={data => {
+          setSelectionTimeOut(data);
+        }}
+      />
 
-        {destination_list !== null && <SectionBottomSheet
-          data={DestinationList}
-          headerTitle={'Timeout Action'}
-          currentValue={TimeoutAction}
-          bottomSheetRef={TimeoutActionRef}
-          selectedValue={data => {
-            setTimeoutActionName(data)
-          }}
-          selectedRoute={data => {
-            setTimeoutAction(data)
-          }}
-          selectedRouteType={data => { }}
-        />
-        }
-        <SingleTimeoutBottomSheet
-          data={MAXATTEMPTS}
-          headerTitle={'Max Attempts'}
-          bottomSheetRef={MaxAttemptsBottomSheetRef}
-          selectedValue={data => {
-            setMaxAttempts(data);
-          }}
-        />
+      {destination_list !== null && <SectionBottomSheet
+        data={DestinationList}
+        headerTitle={'Timeout Action'}
+        currentValue={TimeoutAction}
+        bottomSheetRef={TimeoutActionRef}
+        selectedValue={data => {
+          setTimeoutActionName(data)
+        }}
+        selectedRoute={data => {
+          setTimeoutAction(data)
+        }}
+        selectedRouteType={data => { }}
+      />
+      }
+      <SingleTimeoutBottomSheet
+        data={MAXATTEMPTS}
+        headerTitle={'Max Attempts'}
+        bottomSheetRef={MaxAttemptsBottomSheetRef}
+        selectedValue={data => {
+          setMaxAttempts(data);
+        }}
+      />
 
-        {destination_list !== null && <SectionBottomSheet
-          data={DestinationList}
-          headerTitle={'Invalid Destination'}
-          currentValue={InvalidDestinationValue}
-          bottomSheetRef={InvalidDestinationRef}
-          selectedValue={data => {
-            setInvalidDestination(data)
-          }}
-          selectedRoute={data => {
-            setInvalidDestinationValue(data)
-          }}
-          selectedRouteType={data => { setInvalidDestinationType(data) }}
-        />
-        }
+      {destination_list !== null && <SectionBottomSheet
+        data={DestinationList}
+        headerTitle={'Invalid Destination'}
+        currentValue={InvalidDestinationValue}
+        bottomSheetRef={InvalidDestinationRef}
+        selectedValue={data => {
+          setInvalidDestination(data)
+        }}
+        selectedRoute={data => {
+          setInvalidDestinationValue(data)
+        }}
+        selectedRouteType={data => { setInvalidDestinationType(data) }}
+      />
+      }
 
-        <RouteDestinationBottomSheet
-          data={ROUTE}
-          headerTitle={'Select Destination Type'}
-          currentValue={DestinationTypeID}
-          bottomSheetRef={DestinationTypebottomSheetRef}
-          selectedValue={data => {
-            setDestinationType(data);
-            setDestinationTypeError("")
+      <RouteDestinationBottomSheet
+        data={ROUTE}
+        headerTitle={'Select Destination Type'}
+        currentValue={DestinationTypeID}
+        bottomSheetRef={DestinationTypebottomSheetRef}
+        selectedValue={data => {
+          setDestinationType(data);
+          setDestinationTypeError("")
 
-          }}
-          selectedRoute={data => {
-            setDestinationTypeError("")
-            setDestinationTypeId(data)
-            RouteToDestination(data)
-          }}
-        />
+        }}
+        selectedRoute={data => {
+          setDestinationTypeError("")
+          setDestinationTypeId(data)
+          RouteToDestination(data)
+        }}
+      />
 
-        <DestinationBottomSheet
-          data={DestinationList}
-          headerTitle={'Select Destination'}
-          currentValue={DestinationId}
-          bottomSheetRef={DestinationobottomSheetRef}
-          selectedValue={data => {
-            setDestination(data);
-            setDestinationError("")
-          }}
-          selectedDestination={data => {
-            setDestinationId(data)
-            setDestinationError("")
-          }}
-        />
-      </HeaderView>
+      <DestinationBottomSheet
+        data={DestinationList}
+        headerTitle={'Select Destination'}
+        currentValue={DestinationId}
+        bottomSheetRef={DestinationobottomSheetRef}
+        selectedValue={data => {
+          setDestination(data);
+          setDestinationError("")
+        }}
+        selectedDestination={data => {
+          setDestinationId(data)
+          setDestinationError("")
+        }}
+      />
       {isLoading && <LoadingView />}
     </>
   );

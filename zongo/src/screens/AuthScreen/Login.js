@@ -48,13 +48,21 @@ import { Log } from '../../commonComponents/Log';
 import { AuthLogin } from '../../redux/api/Api';
 import LoadingView from '../../commonComponents/LoadingView';
 import { storeData } from '../../commonComponents/AsyncManager';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 
 const WIDTH = Dimensions.get('window').width;
 
 const Login = () => {
-  const [Email, setEmail] = useState('ipnfullfullstack@gmail.com');
-  // const [Email, setEmail] = useState('fatesing@mailinator.com');
-  const [Password, setPassword] = useState('123456');
+
+  // const [Email, setEmail] = useState('ipnfullfullstack@gmail.com');
+  // const [Password, setPassword] = useState('123456');
+
+  // const [Email, setEmail] = useState('divyeshgajera1111@gmail.com');
+  // const [Password, setPassword] = useState('Test@123');
+
+  const [Email, setEmail] = useState('');
+  const [Password, setPassword] = useState('');
+
 
   const dispatch = useDispatch();
 
@@ -73,12 +81,61 @@ const Login = () => {
   useEffect(() => {
     Log('apiLoginStatus :', apiLoginStatus);
     if (apiLoginStatus == STATUS_FULFILLED) {
-      if (user_data !== null) {
-        storeData(USER_DATA, user_data?.data, () => {
-            dispatch(storeUserData(user_data?.data));
-            resetScreen('Home');
-        });
-        storeData(TOKEN, user_data?.data?.token)
+      console.log("error_message :", error_message)
+      if (user_data?.status == 200) {
+        if (user_data !== null) {
+          console.log("user_data :", user_data?.data?.data)
+          if (user_data?.data?.data?.role == "superadmin" || user_data?.data?.data?.role == "admin") {
+            storeData(USER_DATA, user_data?.data, () => {
+              dispatch(storeUserData(user_data?.data));
+              resetScreen('Home');
+            });
+            storeData(TOKEN, user_data?.data?.token)
+          }
+          else {
+            if (user_data?.data?.data?.is_did_done == "YES" &&
+              user_data?.data?.data?.is_e911_done == "YES" &&
+              user_data?.data?.data?.is_email_config_done == "YES" &&
+              user_data?.data?.data?.is_password_done == "YES") {
+              storeData(USER_DATA, user_data?.data, () => {
+                dispatch(storeUserData(user_data?.data));
+                resetScreen('Home');
+              });
+              storeData(TOKEN, user_data?.data?.token)
+            }
+            else {
+              storeData(USER_DATA, user_data?.data, () => {
+                dispatch(storeUserData(user_data?.data));
+                // resetScreen('Home');
+              });
+              storeData(TOKEN, user_data?.data?.token)
+              var dict = {
+                is_did_done: user_data?.data?.data?.is_did_done,
+                is_e911_done: user_data?.data?.data?.is_e911_done,
+                is_email_config_done: user_data?.data?.data?.is_email_config_done,
+                is_password_done: user_data?.data?.data?.is_password_done
+              }
+              var onboarding_data = {
+                "is_did_done": "NO",
+                "is_e911_done": "NO",
+                "is_email_config_done": "NO",
+                "is_password_done": "NO",
+              }
+              navigate("UserOnBoarding", { onboarding_data: dict })
+            }
+
+          }
+        }
+
+
+      }
+      else {
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: Translate.t('alert'),
+          textBody: user_data?.message,
+          button: 'Ok',
+          })
       }
     } else if (apiLoginStatus == STATUS_REJECTED) {
       if (isError) {
@@ -88,7 +145,14 @@ const Login = () => {
   }, [apiLoginStatus]);
 
   const onLoginBtn = value => {
-
+    //     var onboarding_data = {
+    //       "is_did_done": "NO",
+    //       "is_e911_done": "NO",
+    //       "is_email_config_done": "NO",
+    //       "is_password_done": "NO",
+    //   }
+    //     navigate("UserOnBoarding", { onboarding_data: onboarding_data })
+    // return
     if (value !== '' && value !== undefined && value !== null) {
       if (
         (value?.EMAIL !== '' &&
@@ -106,6 +170,8 @@ const Login = () => {
       }
     }
   };
+
+  
 
   const LoginSchema = Yup.object().shape({
     EMAIL: Yup.string()
@@ -126,15 +192,15 @@ const Login = () => {
       />
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{flexGrow: 1}}
+        contentContainerStyle={{ flexGrow: 1 }}
         bounces={false}
         keyboardShouldPersistTaps="handled">
         <SafeAreaView style={styles.safeAreaView}>
           <View style={styles.ellipsesContainer}>
-            <Image source={ic_ellipse_big} style={styles.ellipseBig} />
+            <Image tintColor={greenPrimary} source={ic_ellipse_big} style={styles.ellipseBig} />
           </View>
           <View style={styles.ellipsesContainer}>
-            <Image source={ic_ellipse_small} style={styles.ellipseSmall} />
+            <Image tintColor={greenPrimary} source={ic_ellipse_small} style={styles.ellipseSmall} />
           </View>
           <View
             style={{
@@ -162,7 +228,7 @@ const Login = () => {
                 errors,
                 touched,
               }) => (
-                <View style={{marginTop: 20}}>
+                <View style={{ marginTop: 20 }}>
                   <TextInputView
                     imageSource={'email'}
                     onChangeText={handleChange('EMAIL')}
@@ -226,14 +292,14 @@ const Login = () => {
             <View style={styles.Hstack}>
               <View style={styles.fbSquare}>
                 <Image
-                  style={{width: 33, height: 33}}
+                  style={{ width: 33, height: 33 }}
                   resizeMode="contain"
                   source={ic_facebook}
                 />
               </View>
               <View style={styles.goggleSquare}>
                 <Image
-                  style={{width: 33, height: 33}}
+                  style={{ width: 33, height: 33 }}
                   resizeMode="contain"
                   source={ic_google}
                 />
@@ -242,7 +308,7 @@ const Login = () => {
                 <Icon name={'apple'} size={38} color={black} />
               </View>
             </View>
-            <View style={{marginVertical: 50}}>
+            <View style={{ marginVertical: 50 }}>
               <Text style={styles.doNotHaveText}>
                 {Translate.t('dont_have_account')}
                 <Text
@@ -319,10 +385,11 @@ const styles = StyleSheet.create({
   },
   ellipsesContainer: {
     position: 'absolute',
+    top:-20
   },
   ellipseBig: {
     width: WIDTH - 145,
-    height: Platform.OS == 'ios' ? WIDTH - 180 : WIDTH - 190,
+    height: Platform.OS == 'ios' ? WIDTH - 170 : WIDTH - 190,
     resizeMode: 'contain',
   },
   ellipseSmall: {

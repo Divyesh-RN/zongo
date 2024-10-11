@@ -1,11 +1,10 @@
 import { Text, Image, TouchableOpacity, StyleSheet, Alert, Platform, PermissionsAndroid } from 'react-native';
-import React, { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderView from '../../commonComponents/HeaderView';
 import { pixelSizeHorizontal } from '../../commonComponents/ResponsiveScreen';
-import HeaderBackView from '../../commonComponents/HeaderBackView';
 import CustomBottomSheet from '../../commonComponents/CustomBottomSheet';
 import { ic_calender, ic_communication, ic_crm } from '../../constants/Images';
-import { black, white } from '../../constants/Color';
+import { black, greenPrimary, white } from '../../constants/Color';
 import { FontSize, SEMIBOLD } from '../../constants/Fonts';
 import { navigate } from '../../navigation/RootNavigation';
 import { Log } from '../../commonComponents/Log';
@@ -13,13 +12,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import RegisterAccount from '../DialerScreen/Component/RegisterAccount';
 import { useFocusEffect } from '@react-navigation/native';
 import { STATUS_FULFILLED, STATUS_REJECTED } from '../../constants/ConstantKey';
-import { Get_User_Extension } from '../../redux/api/Api';
+import { Get_User_Details, Get_User_Extension } from '../../redux/api/Api';
 import LoadingView from '../../commonComponents/LoadingView';
 import DeviceInfo from 'react-native-device-info';
 import { useAppContext } from '../../commonComponents/Context/AppContext';
 import { CALENDAR, COMMUNICATIONS, CRM } from '../../constants/DATA/DrawerData';
-import Global from '../../constants/Global';
-import FloatingBtn from '../../commonComponents/FloatingBtn';
 // import WebSocket from 'ws';
 
 
@@ -38,18 +35,20 @@ const DashBoard = ({ navigation }) => {
   const [WebsoketUrl, setWebsoketUrl] = useState('wss://zongopbx.com:7443');
 
   const bottomSheetRef = useRef(null);
-  
+
   const user_data = useSelector(state => state.userRedux.user_data);
   const user_extension_data = useSelector(state => state.userRedux.user_extension_data);
   const apiGetUserExtension = useSelector(state => state.userRedux.apiGetUserExtension);
   const isLoading = useSelector(state => state.userRedux.isLoader);
   const isError = useSelector(state => state.userRedux.isError);
   const error_message = useSelector(state => state.userRedux.error_message);
+  const apiGetUserDetails = useSelector(state => state.userModuleRedux.apiGetUserDetails);
+  const user_details = useSelector(state => state.userModuleRedux.user_details);
   const tab = user_data?.data?.tab_per
   var CommunicationsStatus = true;
   var CrmStatus = true;
   var CalandarStatus = true;
- 
+
   if (user_data?.data?.role !== "admin") {
     CommunicationsStatus = tab?.find(tab => tab.tab_name === "Commumication" && tab.status === "enable");
     CrmStatus = tab?.find(tab => tab.tab_name === "Contact Management" && tab.status === "enable");
@@ -75,10 +74,9 @@ const DashBoard = ({ navigation }) => {
               (dict.PrivateIdentity = user_extension_data.data[0]?.extension),
               (dict.PublicIdentity = `sip:${user_extension_data?.data[0]?.extension}@${user_extension_data?.data[0]?.domain_name}`),
               (dict.Password = user_extension_data?.data[0]?.extension_password),
-              // (dict.Password = user_extension_data?.data[0]?.extension_password == " " ? "9656091":user_extension_data?.data[0]?.extension_password),
-              // (dict.Password = "9656091"),
               (dict.Realm = Platform.OS == "android" ? Realm : Realm),
               (dict.WebsoketUrl = WebsoketUrl)
+
             Log("REGISTER SIP DICT DASHBOARD  :", dict)
             setRegisterData(dict)
           });
@@ -100,9 +98,28 @@ const DashBoard = ({ navigation }) => {
         dict.user_uuid = user_data?.data?.user_uuid,
           dict.createdby = user_data?.data?.user_uuid
         dispatch(Get_User_Extension(dict));
+        GetUserDetails()
       }
     }, [])
   );
+  const GetUserDetails = () => {
+    if (user_data !== null) {
+        var dict = {};
+        dict.createdby = user_data?.data?.user_uuid,
+            dict.useruuid = user_data?.data?.user_uuid,
+            dispatch(Get_User_Details(dict))
+    }
+}
+
+  useEffect(() => {
+    Log('apiGetUserDetails :', apiGetUserDetails);
+    if (apiGetUserDetails == STATUS_FULFILLED) {
+    } else if (apiGetUserDetails == STATUS_REJECTED) {
+      if (isError) {
+        Alert.alert('Alert', error_message);
+      }
+    }
+  }, [apiGetUserDetails]);
 
   const Loading = val => {
     setIsLoading(val);
@@ -171,14 +188,6 @@ const DashBoard = ({ navigation }) => {
         containerStyle={{
           paddingHorizontal: pixelSizeHorizontal(20),
         }}>
-        <HeaderBackView
-          title="Dashboard"
-          isBack={false}
-          isMenu={false}
-          onPressMenu={() => {
-            navigation.toggleDrawer();
-          }}
-        />
         {CommunicationsStatus &&
           <TouchableOpacity
             onPress={() => {
@@ -187,6 +196,7 @@ const DashBoard = ({ navigation }) => {
             }}
             style={styles.dashBoardCardMainContainer}>
             <Image
+             tintColor={greenPrimary}
               style={styles.iconSize}
               resizeMode="contain"
               source={ic_communication}
@@ -202,6 +212,7 @@ const DashBoard = ({ navigation }) => {
             }}
             style={styles.dashBoardCardMainContainer}>
             <Image
+             tintColor={greenPrimary}
               style={styles.iconSize}
               resizeMode="contain"
               source={ic_crm}
@@ -213,10 +224,12 @@ const DashBoard = ({ navigation }) => {
           <TouchableOpacity
             onPress={() => {
               handleDrawerArray('Calendar')
-              navigate("Calendar")
+              navigate("CalendarScreen")
+              // navigate("SetAvailability")
             }}
             style={styles.dashBoardCardMainContainer}>
             <Image
+            tintColor={greenPrimary}
               style={styles.iconSize}
               resizeMode="contain"
               source={ic_calender}
@@ -228,7 +241,7 @@ const DashBoard = ({ navigation }) => {
         {RegisterData !== null ?
           <RegisterAccount toggleLoading={Loading} registerData={RegisterData} />
           : null}
-          {/* <FloatingBtn iconName={"message-text"} onPress={() =>{
+        {/* <FloatingBtn iconName={"message-text"} onPress={() =>{
             navigate("InternalChat")
           }}/> */}
       </HeaderView>

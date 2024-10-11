@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiManager from "../../commonComponents/ApiManager";
-import { BASE_URL, BLOCKED_NUMBERS_LIST, CHECK_ASSIGN_MODULE, CHECK_USER_EMAIL, COPY_TIME_SLOT, COPY_USER_TIME_SLOT, CREATE_AUTO_ATTENDANT, CREATE_BLOCKED_NUMBERS, CREATE_DNC_LIST, CREATE_EXTENSION, CREATE_GROUP, CREATE_RING_GROUP, CREATE_TIME_SLOT, CREATE_USER, DELETE_AUTO_ATTENDANT, DELETE_BLOCKED_NUMBERS, DELETE_DNC_LIST, DELETE_GROUP_MEMBER, DELETE_MOH_FILE, DELETE_MULTIPLE_BLOCKED_NUMBERS, DELETE_MULTIPLE_DNC_LIST, DELETE_RECORDING_FILE, DELETE_RING_GROUP, DELETE_RING_GROUP_DESTINATION_LIST, DELETE_TIME_BASED_ROUTING, DELETE_TIME_SLOT, DELETE_TIME_SLOT_EVENT, DELETE_USER_TIME_SLOT, EXTENSION_UPDATE_TIME_SLOT, GET_ADMIN_VOICE_MAIL, GET_AREA_CODE_BY_STATE, GET_AREA_CODE_LIST, GET_AUTO_ATTENDANT_DETAILS, GET_AUTO_ATTENDANT_LIST, GET_AUTO_ATTENDANT_NEXT_ID, GET_BLOCKED_NUMBERS_SETTING, GET_BUSINESS_HOURS_TIME_DETAILS, GET_CALL_CAMPAIGN_LIST, GET_CONTACT_LIST, GET_DESTINATION_LIST, GET_DID_ROUTING, GET_DNC_LIST, GET_DNC_MAPPING_FIELDS, GET_EXPORT_BLOCKED_NUMBERS, GET_EXTENSION_DETAILS, GET_EXTENSION_LIST_DROPDOWN, GET_GROUP_LIST_CHAT, GET_GROUP_USER_DETAILS, GET_INBOUND_NUMBERS_LIST, GET_INTERNAL_CHAT_LOG_USER, GET_LANGUAGE_LIST, GET_LOCAL_EXTENSION, GET_MESSAGE_NOTIFICATION, GET_MUSIC_ON_HOLD_FILE, GET_NEXT_EXTENSION, GET_NEXT_RING_GROUP_ID, GET_NUMBER, GET_NUMBERS_MAP_FIELDS, GET_NUMBER_LIST_DROPDOWN, GET_PERTICULAR_ROLE_PERMISSION, GET_PLAN_ALL_LIST, GET_PREFIX, GET_RECORDING_FILE, GET_RECORDING_LIST, GET_RING_GROUP_DETAILS, GET_RING_GROUP_LIST, GET_ROLE_LIST_DP, GET_ROUTE_TO_DESTINATION, GET_SMS_CHAT, GET_STATES, GET_TIMEZONE_LIST, GET_TIME_BASED_ROUTING_DETAILS, GET_TIME_BASED_ROUTING_LIST, GET_TIME_SLOT_DETAILS_EVENTS, GET_TIME_SLOT_EVENTS_PERTICULAR, GET_USER_AVAILABILITY_DETAILS, GET_USER_AVAILABILITY_TIME_DETAILS, GET_USER_DETAILS, GET_USER_EXTENSION, GET_USER_LIST, GET_USER_LIST_CHAT, GROUP_LIST, IMPORT_DNC_CSV, IMPORT_NUMBERS_CSV, INSERT_DNC_CSV_DATA, INSERT_NUMBER_CSV_DATA, LOGIN, SEND_CHAT_FILE, SEND_MESSAGE, SEND_SMS, SMS_CONTACT_LIST, UPDATE_AUTO_ATTENDANT, UPDATE_AUTO_ATTENDANT_OPTIONS, UPDATE_BLOCKED_NUMBERS, UPDATE_BLOCKED_NUMBERS_SETTING, UPDATE_EXTENSION, UPDATE_GROUP, UPDATE_GROUP_NAME, UPDATE_INBOUND_NUMBERS_LIST, UPDATE_INBOUND_NUMBERS_ROUTE, UPDATE_MOH_FILE, UPDATE_RECORDING_FILE, UPDATE_RING_GROUP, UPDATE_RING_GROUP_DESTINATION_LIST, UPDATE_TIME_CONDITION, UPDATE_TIME_SLOT, UPDATE_TIME_SLOT_WEEKLY, UPDATE_USER, UPDATE_USER_GROUP, UPLOAD_RECORDING_FILE, USER_CREATE_TIME_SLOT, USER_DELETE } from "../../constants/ApiUrl";
+import { BASE_URL, BLOCKED_NUMBERS_LIST, CHANGE_PASSWORD, CHECK_ASSIGN_MODULE, CHECK_EMAIL_CONFIG, CHECK_USER_EMAIL, COPY_TIME_SLOT, COPY_USER_TIME_SLOT, CREATE_AUTO_ATTENDANT, CREATE_BLOCKED_NUMBERS, CREATE_DNC_LIST, CREATE_EXTENSION, CREATE_GROUP, CREATE_RING_GROUP, CREATE_SMS_TEMPLATE, CREATE_TIME_SLOT, CREATE_USER, CREATE_USER_MEETING_AVAILABILITY, DELETE_AUTO_ATTENDANT, DELETE_BLOCKED_NUMBERS, DELETE_DNC_LIST, DELETE_GROUP_MEMBER, DELETE_MOH_FILE, DELETE_MULTIPLE_BLOCKED_NUMBERS, DELETE_MULTIPLE_DNC_LIST, DELETE_RECORDING_FILE, DELETE_RING_GROUP, DELETE_RING_GROUP_DESTINATION_LIST, DELETE_SMS_TEMPLATE, DELETE_TIME_BASED_ROUTING, DELETE_TIME_SLOT, DELETE_TIME_SLOT_EVENT, DELETE_USER_EVENTS, DELETE_USER_MEETING_AVAILABILITY, DELETE_USER_TIME_SLOT, EXTENSION_UPDATE_TIME_SLOT, GET_ADMIN_VOICE_MAIL, GET_ALL_CONTACT_LIST, GET_AREA_CODE_BY_STATE, GET_AREA_CODE_LIST, GET_AUTO_ATTENDANT_DETAILS, GET_AUTO_ATTENDANT_LIST, GET_AUTO_ATTENDANT_NEXT_ID, GET_BLOCKED_NUMBERS_SETTING, GET_BUSINESS_HOURS_TIME_DETAILS, GET_CALL_CAMPAIGN_LIST, GET_CONTACT_FIELD_LIST, GET_CONTACT_LIST, GET_DESTINATION_LIST, GET_DID_ROUTING, GET_DNC_LIST, GET_DNC_MAPPING_FIELDS, GET_EXPORT_BLOCKED_NUMBERS, GET_EXTENSION_DETAILS, GET_EXTENSION_LIST_DROPDOWN, GET_GROUP_LIST_CHAT, GET_GROUP_USER_DETAILS, GET_INBOUND_NUMBERS_LIST, GET_INTERNAL_CHAT_LOG_USER, GET_LANGUAGE_LIST, GET_LOCAL_EXTENSION, GET_MEETING_MODE, GET_MESSAGE_NOTIFICATION, GET_MUSIC_ON_HOLD_FILE, GET_NEXT_EXTENSION, GET_NEXT_RING_GROUP_ID, GET_NUMBER, GET_NUMBERS_MAP_FIELDS, GET_NUMBER_LIST_DROPDOWN, GET_PERTICULAR_ROLE_PERMISSION, GET_PLAN_ALL_LIST, GET_PREFIX, GET_RECORDING_FILE, GET_RECORDING_LIST, GET_RING_GROUP_DETAILS, GET_RING_GROUP_LIST, GET_ROLE_LIST_DP, GET_ROUTE_TO_DESTINATION, GET_SMS_CHAT, GET_SMS_TEMPLATE_DETAILS, GET_SMS_TEMPLATE_LIST, GET_STATES, GET_TIMEZONE_LIST, GET_TIME_BASED_ROUTING_DETAILS, GET_TIME_BASED_ROUTING_LIST, GET_TIME_SLOT_DETAILS_EVENTS, GET_TIME_SLOT_EVENTS_PERTICULAR, GET_USER_ASSIGN_LIST, GET_USER_AVAILABILITY_DETAILS, GET_USER_AVAILABILITY_TIME_DETAILS, GET_USER_DETAILS, GET_USER_EVENTS, GET_USER_EXTENSION, GET_USER_LIST, GET_USER_LIST_CHAT, GET_USER_MEETING_AVAILABILITY, GROUP_LIST, IMPORT_DNC_CSV, IMPORT_NUMBERS_CSV, INSERT_DNC_CSV_DATA, INSERT_NUMBER_CSV_DATA, LOGIN, MANAGE_USER_EVENTS, ONBOARDING_BUY_DID, SAVE_E911_DATA, SEND_CHAT_FILE, SEND_MESSAGE, SEND_SMS, SMS_CONTACT_LIST, SMS_LOG, SMS_TEMPLATE_LIST, UPDATE_ADMIN_COMPANY_INFO, UPDATE_ADMIN_PERSONAL_INFO, UPDATE_AUTO_ATTENDANT, UPDATE_AUTO_ATTENDANT_OPTIONS, UPDATE_BLOCKED_NUMBERS, UPDATE_BLOCKED_NUMBERS_SETTING, UPDATE_E911_DATA, UPDATE_EXTENSION, UPDATE_GROUP, UPDATE_GROUP_NAME, UPDATE_INBOUND_NUMBERS_LIST, UPDATE_INBOUND_NUMBERS_ROUTE, UPDATE_MOH_FILE, UPDATE_RECORDING_FILE, UPDATE_RING_GROUP, UPDATE_RING_GROUP_DESTINATION_LIST, UPDATE_SMS_TEMPLATE, UPDATE_TIME_CONDITION, UPDATE_TIME_SLOT, UPDATE_TIME_SLOT_WEEKLY, UPDATE_USER, UPDATE_USER_EVENTS, UPDATE_USER_GROUP, UPDATE_USER_MEETING_AVAILABILITY, UPLOAD_RECORDING_FILE, USER_CREATE_TIME_SLOT, USER_DELETE } from "../../constants/ApiUrl";
 import { Log } from "../../commonComponents/Log";
 
 
@@ -1330,7 +1330,7 @@ export const Get_User_Details = createAsyncThunk("Get_User_Details", async (body
 
         const response = await ApiManager.post(GET_USER_DETAILS, body)
 
-        Log(" ==== Get_User_Details Response ===   : ", response.data)
+        // Log(" ==== Get_User_Details Response ===   : ", response.data)
 
         return response.data
 
@@ -1346,7 +1346,7 @@ export const Get_Time_Zone_List = createAsyncThunk("Get_Time_Zone_List", async (
 
         const response = await ApiManager.post(GET_TIMEZONE_LIST, body)
 
-        Log(" ==== Get_Time_Zone_List Response ===   : ", response.data)
+        // Log(" ==== Get_Time_Zone_List Response ===   : ", response.data)
 
         return response.data
 
@@ -1748,7 +1748,7 @@ export const Get_Message_Notification = createAsyncThunk("Get_Message_Notificati
     try {
         const response = await ApiManager.post(GET_MESSAGE_NOTIFICATION, body)
 
-        Log(" ==== Get_Message_Notification Response ===   : ", response.data)
+        // Log(" ==== Get_Message_Notification Response ===   : ", response.data)
 
         return response.data
 
@@ -1758,3 +1758,426 @@ export const Get_Message_Notification = createAsyncThunk("Get_Message_Notificati
         return rejectWithValue(error)
     }
 });
+
+export const Change_Password = createAsyncThunk("Change_Password", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(CHANGE_PASSWORD, body)
+
+        Log(" ==== Change_Password Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Change_Password Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Check_Email_Config = createAsyncThunk("Check_Email_Config", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(CHECK_EMAIL_CONFIG, body)
+
+        Log(" ==== Check_Email_Config Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Check_Email_Config Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Save_E911_Data = createAsyncThunk("Save_E911_Data", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(SAVE_E911_DATA, body)
+
+        Log(" ==== Save_E911_Data Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Save_E911_Data Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Update_E911_Data = createAsyncThunk("Update_E911_Data", async (body, { rejectWithValue }) => {
+    try {
+        const response = await ApiManager.post(UPDATE_E911_DATA, body)
+
+        Log(" ==== Update_E911_Data Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Update_E911_Data Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Update_Admin_Company_Info = createAsyncThunk("Update_Admin_Company_Info", async (body, { rejectWithValue }) => {
+    try {
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+        };
+        const response = await ApiManager.post(UPDATE_ADMIN_COMPANY_INFO, body, { headers })
+
+        Log(" ==== Update_Admin_Company_Info Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Update_Admin_Company_Info Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Update_Admin_Personal_Info = createAsyncThunk("Update_Admin_Personal_Info", async (body, { rejectWithValue }) => {
+    try {
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+        };
+        const response = await ApiManager.post(UPDATE_ADMIN_PERSONAL_INFO, body, { headers })
+
+        Log(" ==== Update_Admin_Personal_Info Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Update_Admin_Personal_Info Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Onboarding_Buy_Did = createAsyncThunk("Onboarding_Buy_Did", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(ONBOARDING_BUY_DID, body)
+
+        Log(" ==== Onboarding_Buy_Did Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Onboarding_Buy_Did Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_User_Assign_List = createAsyncThunk("Get_User_Assign_List", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(GET_USER_ASSIGN_LIST, body)
+
+        Log(" ==== Get_User_Assign_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_User_Assign_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Sms_Template_List = createAsyncThunk("Get_Sms_Template_List", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(GET_SMS_TEMPLATE_LIST, body)
+
+        Log(" ==== Get_Sms_Template_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Sms_Template_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Sms_Template_Details = createAsyncThunk("Get_Sms_Template_Details", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(GET_SMS_TEMPLATE_DETAILS, body)
+
+        Log(" ==== Get_Sms_Template_Details Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Sms_Template_Details Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Sms_Log = createAsyncThunk("Sms_Log", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(SMS_LOG, body)
+
+        Log(" ==== Sms_Log Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Sms_Log Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Sms_Chat_All_Contact_List = createAsyncThunk("Sms_Chat_All_Contact_List", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(GET_ALL_CONTACT_LIST, body)
+
+        Log(" ==== Sms_Chat_All_Contact_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Sms_Chat_All_Contact_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Sms_Template_List = createAsyncThunk("Sms_Template_List", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(SMS_TEMPLATE_LIST, body)
+
+        Log(" ==== Sms_Template_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Sms_Template_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_Conatact_Field_List = createAsyncThunk("Get_Conatact_Field_List", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(GET_CONTACT_FIELD_LIST, body)
+
+        Log(" ==== Get_Conatact_Field_List Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Conatact_Field_List Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Update_Sms_Template = createAsyncThunk("Update_Sms_Template", async (body, { rejectWithValue }) => {
+    try {
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+        };
+        const response = await ApiManager.post(UPDATE_SMS_TEMPLATE, body, { headers })
+
+        Log(" ==== Update_Sms_Template Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Update_Sms_Template Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Create_Sms_Template = createAsyncThunk("Create_Sms_Template", async (body, { rejectWithValue }) => {
+    try {
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+        };
+        const response = await ApiManager.post(CREATE_SMS_TEMPLATE, body, { headers })
+
+        Log(" ==== Create_Sms_Template Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Create_Sms_Template Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Delete_Sms_Template = createAsyncThunk("Delete_Sms_Template", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(DELETE_SMS_TEMPLATE, body)
+
+        Log(" ==== Delete_Sms_Template Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Delete_Sms_Template Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_User_Events = createAsyncThunk("Get_User_Events", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(GET_USER_EVENTS, body)
+
+        Log(" ==== Get_User_Events Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_User_Events Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Manage_User_Events = createAsyncThunk("Manage_User_Events", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(MANAGE_USER_EVENTS, body)
+
+        Log(" ==== Manage_User_Events Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Manage_User_Events Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Update_User_Events = createAsyncThunk("Update_User_Events", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(UPDATE_USER_EVENTS, body)
+
+        Log(" ==== Update_User_Events Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Update_User_Events Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Delete_User_Events = createAsyncThunk("Delete_User_Events", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(DELETE_USER_EVENTS, body)
+
+        Log(" ==== Delete_User_Events Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Delete_User_Events Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+
+export const Get_Meeting_Mode = createAsyncThunk("Get_Meeting_Mode", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(GET_MEETING_MODE, body)
+
+        Log(" ==== Get_Meeting_Mode Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_Meeting_Mode Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Get_User_Meeting_Availability = createAsyncThunk("Get_User_Meeting_Availability", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(GET_USER_MEETING_AVAILABILITY, body)
+
+        Log(" ==== Get_User_Meeting_Availability Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Get_User_Meeting_Availability Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Create_User_Meeting_Availability = createAsyncThunk("Create_User_Meeting_Availability", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(CREATE_USER_MEETING_AVAILABILITY, body)
+
+        Log(" ==== Create_User_Meeting_Availability Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Create_User_Meeting_Availability Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Update_User_Meeting_Availability = createAsyncThunk("Update_User_Meeting_Availability", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(UPDATE_USER_MEETING_AVAILABILITY, body)
+
+        Log(" ==== Update_User_Meeting_Availability Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Update_User_Meeting_Availability Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+export const Delete_User_Meeting_Availability = createAsyncThunk("Delete_User_Meeting_Availability", async (body, { rejectWithValue }) => {
+    try {
+       
+        const response = await ApiManager.post(DELETE_USER_MEETING_AVAILABILITY, body)
+
+        Log(" ==== Delete_User_Meeting_Availability Response ===   : ", response.data)
+
+        return response.data
+
+    } catch (error) {
+        Log(" === Delete_User_Meeting_Availability Error ", error);
+
+        return rejectWithValue(error)
+    }
+});
+
+

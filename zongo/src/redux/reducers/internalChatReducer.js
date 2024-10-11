@@ -279,7 +279,7 @@ export const InternalChatReducer = createSlice({
         state.error_message = '';
       });
       builder.addCase(Get_Message_Notification.fulfilled, (state, action) => {
-        Log('Get_Message_Notification fulfilled : ', JSON.stringify(action?.payload?.data));
+        // Log('Get_Message_Notification fulfilled : ', JSON.stringify(action?.payload?.data));
         state.apiGetMessageNotification = STATUS_FULFILLED;
         state.isLoader = false;
         state.message_notification = action?.payload?.data !== "" ? action.payload?.data : 0;

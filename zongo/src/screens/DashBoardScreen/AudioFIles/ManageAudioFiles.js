@@ -165,7 +165,7 @@ const ManageAudioFiles = ({ navigation, route }) => {
                         body.append('file', SelectedAudioFile[0])
                         body.append('fileName', SelectedAudioFileName)
                     }
-                } 
+                }
                 dispatch(Update_Audio_File(body));
             }
         }
@@ -200,7 +200,7 @@ const ManageAudioFiles = ({ navigation, route }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => {}, style: 'cancel'
+                    onPress: () => { }, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -269,96 +269,146 @@ const ManageAudioFiles = ({ navigation, route }) => {
     }
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title="Manage Audio File"
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
-                        }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
-                    <View style={{ marginTop: 0, marginBottom: 40 }}>
+            <HeaderBackView
+                title="Manage Audio File"
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+                <View style={{ marginTop: 0, marginBottom: 40, marginHorizontal: 20, }}>
+                    <View style={{
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+
                         <View style={{
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
                         }}>
+                            <View>
 
+                                <Text style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>{"Recording Name"}</Text>
+                                {AudioFileName && <Text style={{
+                                    fontSize: FontSize.FS_11,
+                                    color: grey,
+                                    fontFamily: MEDIUM,
+                                    marginTop: 4
+                                }}>{AudioFileName}</Text>}
+                            </View>
+                            {AudioFileNameEdit == false &&
+                                <TouchableOpacity onPress={() => {
+                                    setAudioFileNameEdit(!AudioFileNameEdit)
+                                }}>
+                                    <Icon name={"pencil"} size={22} color={black} />
+                                </TouchableOpacity>
+                            }
+                        </View>
+                        {AudioFileNameEdit == true &&
                             <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
+                                marginTop: 14,
+                                flexDirection: "row", alignItems: "center"
                             }}>
-                                <View>
+                                <TextInput
+                                    value={AudioFileName}
+                                    placeholder='Enter Recording Name ...'
+                                    placeholderTextColor={grey01}
+                                    style={{
+                                        borderWidth: 1,
+                                        borderColor: grey01,
+                                        height: 40,
+                                        borderRadius: 6,
+                                        paddingHorizontal: 14,
+                                        flex: 1
 
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>{"Recording Name"}</Text>
-                                    {AudioFileName && <Text style={{
-                                        fontSize: FontSize.FS_11,
-                                        color: grey,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 4
-                                    }}>{AudioFileName}</Text>}
-                                </View>
-                                {AudioFileNameEdit == false &&
-                                    <TouchableOpacity onPress={() => {
-                                        setAudioFileNameEdit(!AudioFileNameEdit)
-                                    }}>
-                                        <Icon name={"pencil"} size={22} color={black} />
-                                    </TouchableOpacity>
+                                    }}
+                                    onChangeText={(txt) => {
+                                        setAudioFileName(txt)
+                                        if (txt.length > 0) {
+                                            setAudioFileNameError("")
+                                        }
+                                    }}
+                                />
+                                <TouchableOpacity onPress={() => {
+                                    setAudioFileNameEdit(false)
+                                }}
+                                    style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
+                                    <Icon name="check" size={22} color={white} />
+                                </TouchableOpacity>
+                            </View>
+                        }
+                        {AudioFileNameError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                                marginTop: 8
+
+                            }}>
+                            {AudioFileNameError}
+                        </Text>
+                        }
+                    </View>
+                    {route?.params?.type == "moh" ?
+                        <>
+                            <Text
+                                style={{
+                                    fontSize: FontSize.FS_10,
+                                    color: grey,
+                                    fontFamily: REGULAR,
+                                    marginVertical: 10
+                                }}>
+                                {" * Note : Allow only mp3, wav, m4a file and file size shoud be \n   less then 10 MB."}
+                            </Text>
+                            <View
+                                style={{
+                                    backgroundColor: light_grey,
+                                    borderRadius: 4,
+                                    marginTop: 10,
+                                    padding: 14
+                                }}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        UploadMusinOnHold();
+                                    }}
+                                    style={{ alignItems: 'center', }}>
+                                    <Icon name="cloud-upload-outline" size={22} color={grey} />
+                                    <Text
+                                        style={{
+                                            fontSize: FontSize.FS_12,
+                                            color: grey,
+                                            fontFamily: SEMIBOLD,
+                                        }}>
+                                        {route?.params?.isEdit == true ? "Upload New File" : 'Upload'}
+                                    </Text>
+                                </TouchableOpacity>
+                                {SelectedAudioFile !== null &&
+                                    <View style={{ marginVertical: 24 }}>
+                                        <Text
+                                            style={{
+                                                fontSize: FontSize.FS_12,
+                                                color: grey,
+                                                fontFamily: SEMIBOLD,
+                                                textAlign: 'center',
+
+                                            }}>
+                                            {SelectedAudioFile[0]?.uri}
+                                        </Text>
+                                    </View>
                                 }
                             </View>
-                            {AudioFileNameEdit == true &&
-                                <View style={{
-                                    marginTop: 14,
-                                    flexDirection: "row", alignItems: "center"
-                                }}>
-                                    <TextInput
-                                        value={AudioFileName}
-                                        placeholder='Enter Recording Name ...'
-                                        placeholderTextColor={grey01}
-                                        style={{
-                                            borderWidth: 1,
-                                            borderColor: grey01,
-                                            height: 40,
-                                            borderRadius: 6,
-                                            paddingHorizontal: 14,
-                                            flex: 1
-
-                                        }}
-                                        onChangeText={(txt) => {
-                                            setAudioFileName(txt)
-                                            if (txt.length > 0) {
-                                                setAudioFileNameError("")
-                                            }
-                                        }}
-                                    />
-                                    <TouchableOpacity onPress={() => {
-                                        setAudioFileNameEdit(false)
-                                    }}
-                                        style={{ backgroundColor: greenPrimary, height: 40, width: 40, alignItems: "center", justifyContent: "center", borderRadius: 6, marginLeft: 10 }}>
-                                        <Icon name="check" size={22} color={white} />
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                            {AudioFileNameError !== "" && <Text
+                            {SelectedAudioFileError !== "" && <Text
                                 style={{
                                     fontSize: FontSize.FS_10,
                                     color: red,
@@ -366,382 +416,319 @@ const ManageAudioFiles = ({ navigation, route }) => {
                                     marginTop: 8
 
                                 }}>
-                                {AudioFileNameError}
+                                {SelectedAudioFileError}
                             </Text>
                             }
-                        </View>
-                        {route?.params?.type == "moh" ?
-                            <>
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: grey,
-                                        fontFamily: REGULAR,
-                                        marginVertical: 10
-                                    }}>
-                                    {" * Note : Allow only mp3, wav, m4a file and file size shoud be \n   less then 10 MB."}
-                                </Text>
-                                <View
-                                    style={{
-                                        backgroundColor: light_grey,
-                                        borderRadius: 4,
-                                        marginTop: 10,
-                                        padding: 14
-                                    }}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            UploadMusinOnHold();
-                                        }}
-                                        style={{ alignItems: 'center', }}>
-                                        <Icon name="cloud-upload-outline" size={22} color={grey} />
-                                        <Text
-                                            style={{
-                                                fontSize: FontSize.FS_12,
-                                                color: grey,
-                                                fontFamily: SEMIBOLD,
-                                            }}>
-                                            {route?.params?.isEdit == true ? "Upload New File" : 'Upload'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {SelectedAudioFile !== null &&
-                                        <View style={{ marginVertical: 24 }}>
-                                            <Text
-                                                style={{
-                                                    fontSize: FontSize.FS_12,
-                                                    color: grey,
-                                                    fontFamily: SEMIBOLD,
-                                                    textAlign: 'center',
+                            <ScrollView style={{ marginHorizontal: -20, marginVertical: 14 }} horizontal={true}>
+                                <View >
+                                    {MohList?.length > 0 &&
+                                        <View style={[
+                                            styles.rowItem,
+                                            {
+                                                backgroundColor: greenPrimary,
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                padding: 6,
+                                                marginTop: 5,
+                                            },
+                                        ]}>
+                                            <View style={{ flexDirection: 'column', width: 40, alignItems: "center", }}>
+                                                <Icon name="chevron-up" size={20} color={white} />
+                                                <Icon name="chevron-down" size={20} color={white} />
+                                            </View>
+                                            <Text style={[styles.TableHaderText, {
+                                                width: 70, textAlign: "center",
+                                            }]}>SEQ.</Text>
+                                            <Text style={[styles.TableHaderText, {
+                                                width: 220, textAlign: "center",
+                                            }]}>RECORDING FILE</Text>
+                                            <Text style={[styles.TableHaderText, {
+                                                width: 90, textAlign: "center",
+                                            }]}>FILE TYPE</Text>
+                                            <Text style={[styles.TableHaderText, {
+                                                width: 115, textAlign: "center",
+                                            }]}>PLAY</Text>
+                                            <Text style={[styles.TableHaderText, {
+                                                width: 100, textAlign: "center",
+                                            }]}>ACTION</Text>
+                                            {/* <View style={{ width: 60, alignItems: "center" }}></View> */}
 
-                                                }}>
-                                                {SelectedAudioFile[0]?.uri}
-                                            </Text>
                                         </View>
                                     }
-                                </View>
-                                {SelectedAudioFileError !== "" && <Text
-                                    style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: red,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 8
-
-                                    }}>
-                                    {SelectedAudioFileError}
-                                </Text>
-                                }
-                                <ScrollView style={{ marginHorizontal: -20, marginVertical: 14 }} horizontal={true}>
-                                    <View >
-                                        {MohList?.length > 0 &&
-                                            <View style={[
-                                                styles.rowItem,
-                                                {
-                                                    backgroundColor: greenPrimary,
-                                                    flexDirection: 'row',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'space-between',
-                                                    padding: 6,
-                                                    marginTop: 5,
-                                                },
-                                            ]}>
-                                                <View style={{ flexDirection: 'column', width: 40, alignItems: "center", }}>
-                                                    <Icon name="chevron-up" size={20} color={white} />
-                                                    <Icon name="chevron-down" size={20} color={white} />
-                                                </View>
-                                                <Text style={[styles.TableHaderText, {
-                                                    width: 70, textAlign: "center",
-                                                }]}>SEQ.</Text>
-                                                <Text style={[styles.TableHaderText, {
-                                                    width: 220, textAlign: "center",
-                                                }]}>RECORDING FILE</Text>
-                                                <Text style={[styles.TableHaderText, {
-                                                    width: 90, textAlign: "center",
-                                                }]}>FILE TYPE</Text>
-                                                <Text style={[styles.TableHaderText, {
-                                                    width: 115, textAlign: "center",
-                                                }]}>PLAY</Text>
-                                                <Text style={[styles.TableHaderText, {
-                                                    width: 100, textAlign: "center",
-                                                }]}>ACTION</Text>
-                                                {/* <View style={{ width: 60, alignItems: "center" }}></View> */}
-
-                                            </View>
-                                        }
-                                        <View style={{ flex: 1 }}>
-                                            <FlatList
-                                                style={{ width: '100%', backgroundColor: white, }}
-                                                data={MohList}
-                                                keyExtractor={(item) => item?.music_on_hold_files_uuid}
-                                                renderItem={({ item, drag, isActive, index }) => {
-                                                    const isFirstRow = index === 0;
-                                                    const isLastRow = index === MohList.length - 1;
-                                                    return (
-                                                        <View
-                                                            style={[
-                                                                styles.rowItem,
-                                                                {
-                                                                    backgroundColor: paleGreen,
-                                                                    flexDirection: "row", alignItems: "center",
-                                                                    justifyContent: "space-between",
-                                                                    padding: 6,
-                                                                    marginVertical: 2,
-                                                                },
-                                                            ]}
-                                                        >
-                                                            <View style={{
-                                                                width: 40,
+                                    <View style={{ flex: 1 }}>
+                                        <FlatList
+                                            style={{ width: '100%', backgroundColor: white, }}
+                                            data={MohList}
+                                            keyExtractor={(item) => item?.music_on_hold_files_uuid}
+                                            renderItem={({ item, drag, isActive, index }) => {
+                                                const isFirstRow = index === 0;
+                                                const isLastRow = index === MohList.length - 1;
+                                                return (
+                                                    <View
+                                                        style={[
+                                                            styles.rowItem,
+                                                            {
+                                                                backgroundColor: paleGreen,
+                                                                flexDirection: "row", alignItems: "center",
+                                                                justifyContent: "space-between",
+                                                                padding: 6,
+                                                                marginVertical: 2,
+                                                            },
+                                                        ]}
+                                                    >
+                                                        <View style={{
+                                                            width: 40,
+                                                            alignItems: "center",
+                                                        }}>
+                                                            {isFirstRow ? null : (
+                                                                <TouchableOpacity
+                                                                    style={{
+                                                                        borderRadius: 4,
+                                                                    }}
+                                                                    onPress={() => {
+                                                                        updateMohOrderFile(item, false, index);
+                                                                    }}
+                                                                >
+                                                                    <Icon name="chevron-up" size={20} color={greenPrimary} />
+                                                                </TouchableOpacity>
+                                                            )}
+                                                            {isLastRow ? null : (
+                                                                <TouchableOpacity
+                                                                    style={{
+                                                                        borderRadius: 4,
+                                                                    }}
+                                                                    onPress={() => {
+                                                                        updateMohOrderFile(item, true, index);
+                                                                    }}
+                                                                >
+                                                                    <Icon name="chevron-down" size={20} color={greenPrimary} />
+                                                                </TouchableOpacity>
+                                                            )}
+                                                        </View>
+                                                        <Text style={[styles.TableRowText, {
+                                                            width: 70, textAlign: "center",
+                                                        }]}>{item.file_order}</Text>
+                                                        <Text style={[styles.TableRowText, {
+                                                            width: 220, textAlign: "center",
+                                                        }]}>{item.recording_filename}</Text>
+                                                        <Text style={[styles.TableRowText, {
+                                                            width: 90, textAlign: "center",
+                                                        }]}>{item.recording_file_type}</Text>
+                                                        <View style={{ width: 115, alignItems: "center" }}>
+                                                            <TouchableOpacity style={{
+                                                                height: 30,
+                                                                width: 30,
                                                                 alignItems: "center",
-                                                            }}>
-                                                                {isFirstRow ? null : (
-                                                                    <TouchableOpacity
-                                                                        style={{
-                                                                            borderRadius: 4,
-                                                                        }}
-                                                                        onPress={() => {
-                                                                            updateMohOrderFile(item, false, index);
-                                                                        }}
-                                                                    >
-                                                                        <Icon name="chevron-up" size={20} color={greenPrimary} />
-                                                                    </TouchableOpacity>
-                                                                )}
-                                                                {isLastRow ? null : (
-                                                                    <TouchableOpacity
-                                                                        style={{
-                                                                            borderRadius: 4,
-                                                                        }}
-                                                                        onPress={() => {
-                                                                            updateMohOrderFile(item, true, index);
-                                                                        }}
-                                                                    >
-                                                                        <Icon name="chevron-down" size={20} color={greenPrimary} />
-                                                                    </TouchableOpacity>
-                                                                )}
-                                                            </View>
-                                                            <Text style={[styles.TableRowText, {
-                                                                width: 70, textAlign: "center",
-                                                            }]}>{item.file_order}</Text>
-                                                            <Text style={[styles.TableRowText, {
-                                                                width: 220, textAlign: "center",
-                                                            }]}>{item.recording_filename}</Text>
-                                                            <Text style={[styles.TableRowText, {
-                                                                width: 90, textAlign: "center",
-                                                            }]}>{item.recording_file_type}</Text>
-                                                            <View style={{ width: 115, alignItems: "center" }}>
-                                                                <TouchableOpacity style={{
+                                                                justifyContent: "center"
+                                                            }}
+                                                                onPress={() => {
+                                                                    openAudioModal(AUDIO_URL + route.params.item.type + "/" + item?.recording_filename)
+                                                                }}>
+                                                                <Icon name="play-circle-outline" size={26} color={greenPrimary} />
+
+                                                            </TouchableOpacity>
+                                                        </View>
+                                                        <View style={{ width: 100, alignItems: "center" }}>
+                                                            <TouchableOpacity
+                                                                style={{
                                                                     height: 30,
                                                                     width: 30,
                                                                     alignItems: "center",
                                                                     justifyContent: "center"
                                                                 }}
-                                                                    onPress={() => {
-                                                                        openAudioModal(AUDIO_URL + route.params.item.type + "/" + item?.recording_filename)
-                                                                    }}>
-                                                                    <Icon name="play-circle-outline" size={26} color={greenPrimary} />
+                                                                onPress={() => {
+                                                                    onDelete(item)
+                                                                }}>
+                                                                <Icon name="trash-can" size={25} color={red} />
 
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            <View style={{ width: 100, alignItems: "center" }}>
-                                                                <TouchableOpacity
-                                                                    style={{
-                                                                        height: 30,
-                                                                        width: 30,
-                                                                        alignItems: "center",
-                                                                        justifyContent: "center"
-                                                                    }}
-                                                                    onPress={() => {
-                                                                        onDelete(item)
-                                                                    }}>
-                                                                    <Icon name="trash-can" size={25} color={red} />
-
-                                                                </TouchableOpacity>
-                                                            </View>
-
+                                                            </TouchableOpacity>
                                                         </View>
-                                                    );
-                                                }}
 
-                                            />
-                                        </View>
+                                                    </View>
+                                                );
+                                            }}
+
+                                        />
                                     </View>
-                                </ScrollView>
-                            </>
+                                </View>
+                            </ScrollView>
+                        </>
 
-                            :
+                        :
+                        <View
+                            style={{
+                                paddingTop: 16,
+                                paddingBottom: 16,
+                                paddingHorizontal: 20,
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                marginHorizontal: -20,
+                            }}>
                             <View
                                 style={{
-                                    paddingTop: 16,
-                                    paddingBottom: 16,
-                                    paddingHorizontal: 20,
-                                    borderBottomWidth: 1,
-                                    borderBottomColor: disableColor,
-                                    marginHorizontal: -20,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
                                 }}>
+                                <Text
+                                    style={{
+                                        fontSize: FontSize.FS_12,
+                                        color: black,
+                                        fontFamily: MEDIUM,
+                                    }}>
+                                    {'Recording File'}
+                                </Text>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Linking.openURL(AUDIO_URL + route.params.item.type + "/" + route?.params?.item?.recording_filename)
+                                    }}
+                                    style={{ alignItems: 'center', backgroundColor: grey, padding: 6, borderRadius: 4 }}>
+                                    <Icon name={"arrow-down"} size={22} color={white} />
+                                </TouchableOpacity>
+
+                            </View>
+                            {route?.params?.isEdit == true && IsNewFile == false &&
                                 <View
                                     style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
+                                        backgroundColor: grey,
+                                        justifyContent: 'center',
+                                        marginTop: 20,
+                                        paddingTop: 20,
+                                        borderRadius: 4
                                     }}>
+                                    <AudioPlayer
+                                        url={AUDIO_URL + route.params.item.type + "/" + route?.params?.item?.recording_filename}
+                                    />
+                                </View>
+                            }
+                            <Text
+                                style={{
+                                    fontSize: FontSize.FS_10,
+                                    color: grey,
+                                    fontFamily: REGULAR,
+                                    marginVertical: 10
+                                }}>
+                                {" * Note : Allow only mp3, wav, m4a file and file size shoud be \n   less then 10 MB."}
+                            </Text>
+                            <View
+                                style={{
+                                    backgroundColor: light_grey,
+                                    borderRadius: 4,
+                                    marginTop: 10,
+                                    padding: 14
+                                }}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        UploadMusinOnHold();
+                                    }}
+                                    style={{ alignItems: 'center', }}>
+                                    <Icon name="cloud-upload-outline" size={22} color={grey} />
                                     <Text
                                         style={{
                                             fontSize: FontSize.FS_12,
-                                            color: black,
-                                            fontFamily: MEDIUM,
+                                            color: grey,
+                                            fontFamily: SEMIBOLD,
                                         }}>
-                                        {'Recording File'}
+                                        {route?.params?.isEdit == true ? "Upload New File" : 'Upload'}
                                     </Text>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            Linking.openURL(AUDIO_URL + route.params.item.type + "/" + route?.params?.item?.recording_filename)
-                                        }}
-                                        style={{ alignItems: 'center', backgroundColor: grey, padding: 6, borderRadius: 4 }}>
-                                        <Icon name={"arrow-down"} size={22} color={white} />
-                                    </TouchableOpacity>
-
-                                </View>
-                                {route?.params?.isEdit == true && IsNewFile == false &&
-                                    <View
-                                        style={{
-                                            flex: 1,
-                                            backgroundColor: grey,
-                                            justifyContent: 'center',
-                                            marginTop: 20,
-                                            paddingTop: 20,
-                                            borderRadius: 4
-                                        }}>
-                                        <AudioPlayer
-                                            url={AUDIO_URL + route.params.item.type + "/" + route?.params?.item?.recording_filename}
-                                        />
-                                    </View>
-                                }
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: grey,
-                                        fontFamily: REGULAR,
-                                        marginVertical: 10
-                                    }}>
-                                    {" * Note : Allow only mp3, wav, m4a file and file size shoud be \n   less then 10 MB."}
-                                </Text>
-                                <View
-                                    style={{
-                                        backgroundColor: light_grey,
-                                        borderRadius: 4,
-                                        marginTop: 10,
-                                        padding: 14
-                                    }}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            UploadMusinOnHold();
-                                        }}
-                                        style={{ alignItems: 'center', }}>
-                                        <Icon name="cloud-upload-outline" size={22} color={grey} />
+                                </TouchableOpacity>
+                                {SelectedAudioFile !== null &&
+                                    <View style={{ marginVertical: 24 }}>
                                         <Text
                                             style={{
                                                 fontSize: FontSize.FS_12,
                                                 color: grey,
                                                 fontFamily: SEMIBOLD,
+                                                textAlign: 'center',
+
                                             }}>
-                                            {route?.params?.isEdit == true ? "Upload New File" : 'Upload'}
+                                            {SelectedAudioFile[0]?.uri}
                                         </Text>
-                                    </TouchableOpacity>
-                                    {SelectedAudioFile !== null &&
-                                        <View style={{ marginVertical: 24 }}>
-                                            <Text
-                                                style={{
-                                                    fontSize: FontSize.FS_12,
-                                                    color: grey,
-                                                    fontFamily: SEMIBOLD,
-                                                    textAlign: 'center',
-
-                                                }}>
-                                                {SelectedAudioFile[0]?.uri}
-                                            </Text>
-                                        </View>
-                                    }
-                                </View>
-                                {SelectedAudioFileError !== "" && <Text
-                                    style={{
-                                        fontSize: FontSize.FS_10,
-                                        color: red,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 8
-
-                                    }}>
-                                    {SelectedAudioFileError}
-                                </Text>
+                                    </View>
                                 }
-                            </View>}
-                        <TouchableOpacity onPress={() => {
-                            if (route?.params?.isEdit == true) {
-                                HandleUpdateAudio()
-                            }
-                            else {
-                                HandleUploadAudio()
-
-                            }
-                        }}
-                            style={{
-                                backgroundColor: greenPrimary,
-                                alignItems: "center",
-                                paddingVertical: 10,
-                                marginVertical: 40,
-                                justifyContent: "center",
-                                borderRadius: 4,
-                                width: "100%"
-                            }}>
-                            <Text style={{
-                                fontSize: FontSize.FS_14,
-                                color: white,
-                                fontFamily: SEMIBOLD,
-                                lineHeight: 24,
-                                marginLeft: 10
-                            }}>{isEdit ? "Update" : "Upload"}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
-                        setModalVisible(!modalVisible);
-                    }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-
-                            <View
+                            </View>
+                            {SelectedAudioFileError !== "" && <Text
                                 style={{
-                                    backgroundColor: grey,
-                                    // marginVertical: 20,
-                                    paddingTop: 20,
-                                    margin: 0,
-                                    marginHorizontal: -1.5
-                                    // borderRadius:8,
+                                    fontSize: FontSize.FS_10,
+                                    color: red,
+                                    fontFamily: MEDIUM,
+                                    marginTop: 8
+
                                 }}>
-                                <TouchableOpacity style={{
-                                    alignSelf: "flex-end",
-                                    position: "absolute",
-                                    right: 8,
-                                    top: 8,
-                                }}
-                                    onPress={() => {
-                                        setModalVisible(false)
-                                        setAudioUrl("")
-                                    }
-                                    }>
-                                    <Icon name={"close"} size={24} color={white} />
-                                </TouchableOpacity>
-                                <View style={{ marginTop: 40 }}>
-                                    <AudioPlayer
-                                        url={AudioUrl}
-                                    />
-                                </View>
+                                {SelectedAudioFileError}
+                            </Text>
+                            }
+                        </View>}
+                    <TouchableOpacity onPress={() => {
+                        if (route?.params?.isEdit == true) {
+                            HandleUpdateAudio()
+                        }
+                        else {
+                            HandleUploadAudio()
+
+                        }
+                    }}
+                        style={{
+                            backgroundColor: greenPrimary,
+                            alignItems: "center",
+                            paddingVertical: 10,
+                            marginVertical: 40,
+                            justifyContent: "center",
+                            borderRadius: 4,
+                            width: "100%"
+                        }}>
+                        <Text style={{
+                            fontSize: FontSize.FS_14,
+                            color: white,
+                            fontFamily: SEMIBOLD,
+                            lineHeight: 24,
+                            marginLeft: 10
+                        }}>{isEdit ? "Update" : "Upload"}</Text>
+                    </TouchableOpacity>
+                </View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setModalVisible(!modalVisible);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+
+                        <View
+                            style={{
+                                backgroundColor: grey,
+                                // marginVertical: 20,
+                                paddingTop: 20,
+                                margin: 0,
+                                marginHorizontal: -1.5
+                                // borderRadius:8,
+                            }}>
+                            <TouchableOpacity style={{
+                                alignSelf: "flex-end",
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                            }}
+                                onPress={() => {
+                                    setModalVisible(false)
+                                    setAudioUrl("")
+                                }
+                                }>
+                                <Icon name={"close"} size={24} color={white} />
+                            </TouchableOpacity>
+                            <View style={{ marginTop: 40 }}>
+                                <AudioPlayer
+                                    url={AudioUrl}
+                                />
                             </View>
                         </View>
                     </View>
-                </Modal>
-            </HeaderView>
+                </View>
+            </Modal>
             {isLoading && <LoadingView />}
         </>
     );

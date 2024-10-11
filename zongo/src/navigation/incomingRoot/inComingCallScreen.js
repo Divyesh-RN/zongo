@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, Platform, TextInput, ScrollView, Modal, Alert, Pressable, PermissionsAndroid, ToastAndroid } from 'react-native';
 import { FontSize, REGULAR, SEMIBOLD ,MEDIUM} from '../../constants/Fonts';
-import { black, black03, greenPrimary, grey, red, white } from "../../constants/Color";
+import { black, black03, greenPrimary, grey, paleGreen, red, white } from "../../constants/Color";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from 'react-redux';
 import { mediaDevices } from 'react-native-webrtc';
@@ -12,9 +12,9 @@ import { Log } from '../../commonComponents/Log';
 import { goBack } from '../RootNavigation';
 import { ic_call_bg } from '../../constants/Images';
 import { HEIGHT,WIDTH } from '../../constants/ConstantKey';
-import Global from '../../constants/Global';
+import global from '../../constants/Global';
 
-let session = Global.session;
+// let session = global.session;
 var interval = null;
 let startTime = null;
 let endTime = null;
@@ -50,7 +50,7 @@ const InComingCallScreen = ({ route }) => {
   const user_extension_data = useSelector(state => state.userRedux.user_extension_data);
 
   useEffect(() => {
-    if(session !== null ){
+    if(global.session !== null ){
         AcceptCall()
     }
     Log("GET USER FROM SCREEN", route?.params?.from)
@@ -64,7 +64,7 @@ const InComingCallScreen = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    if (session !== null) {
+    if (global.session !== null) {
       toggleSpeaker()
     }
     return () => {
@@ -80,14 +80,14 @@ const InComingCallScreen = ({ route }) => {
     }, 1000);
     startTime = new Date();
 
-    console.log('session', session);
+   
 
-    session.on('ended', (res) => {
+    global.session.on('ended', (res) => {
       console.log('Call ended', res);
       setCallStatus('Ended');
     });
 
-    session.on('failed', response => {
+    global.session.on('failed', response => {
       console.log('Session failed');
       console.log('Call failed with response: ', response);
       ToastAndroid.show(response?.cause, ToastAndroid.SHORT);
@@ -97,15 +97,15 @@ const InComingCallScreen = ({ route }) => {
       }, 1000);
     });
 
-    session.on('newRefer', (referRequest) => {
+    global.session.on('newRefer', (referRequest) => {
       console.log("referRequest",referRequest)
     })
 
-    session.on('accepted', () => {
+    global.session.on('accepted', () => {
       console.log('Session accepted');
     });
 
-    session.on('ended', (res) => {
+    global.session.on('ended', (res) => {
       console.log('Session ended', res);
       setCallStatus('Ended');
       setConnected(false)
@@ -145,14 +145,14 @@ const InComingCallScreen = ({ route }) => {
   };
   const handleMute = () => {
     if (isMuted == true) {
-      if (session) {
-        session.unmute();
+      if (global.session) {
+        global.session.unmute();
         setMuted(false);
       }
     }
     else {
-      if (session) {
-        session.mute();
+      if (global.session) {
+        global.session.mute();
         console.log("Mute")
         setMuted(true);
       }
@@ -163,14 +163,14 @@ const InComingCallScreen = ({ route }) => {
 
     if (isHold == true) {
       console.log("if")
-      if (session) {
-        session.unhold();
+      if (global.session) {
+        global.session.unhold();
         setHold(false)
       }
     }
     else {
       console.log("else")
-      session.hold();
+      global.session.hold();
       setHold(true)
     }
 
@@ -196,9 +196,11 @@ const InComingCallScreen = ({ route }) => {
 
 
   const endCall = () => {
-    if (session) {
+    console.log("session",global.session)
+    if (global.session) {
       console.log("terminate")
-      session.terminate();
+      global.session.terminate();
+      // goBack()
     }
   };
 
@@ -252,7 +254,7 @@ const InComingCallScreen = ({ route }) => {
 
     }
     Log("newTarget :",newTarget)
-    session.refer(newTarget, {});
+    global.session.refer(newTarget, {});
   }
 
   const handleTransferModel = () => {
@@ -266,7 +268,7 @@ const InComingCallScreen = ({ route }) => {
       },
     };
 
-    session.renegotiate(options)
+    global.session.renegotiate(options)
       .then(() => {
         console.log('Call upgraded to video');
         // Handle UI changes - e.g., show video stream, toggle audio/video elements
@@ -314,14 +316,14 @@ const InComingCallScreen = ({ route }) => {
                       color: black,
                       fontFamily: MEDIUM,
                     }}>
-                      {session?._remote_identity?._display_name}
+                      {global.session?._remote_identity?._display_name ?  global.session?._remote_identity?._display_name : global.session?._remote_identity?._uri?._user }
                     </Text>
                     <Text style={{
                       fontSize: FontSize.FS_14,
                       color: black,
                       fontFamily: REGULAR,
                     }}>
-                   {route?.params?.from == "INCOMING" ? "Incoming " + session?._remote_identity?._uri?._user: ""} 
+                   {route?.params?.from == "INCOMING" ? "Incoming from " + global.session?._remote_identity?._uri?._user: ""} 
                     </Text>
                   </View>
                   <View style={{
@@ -603,8 +605,7 @@ const InComingCallScreen = ({ route }) => {
 
                   </View>
                   <TouchableOpacity onPress={() => {
-                    console.log("",session)
-                    if (session !== null) {
+                    if (global.session !== null) {
                       endCall()
                     }
                     else {
@@ -728,7 +729,6 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-      backgroundColor: 'red',
     padding: 15,
     borderRadius: 10,
   },

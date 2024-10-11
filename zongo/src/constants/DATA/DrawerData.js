@@ -14,5 +14,6 @@ export const COMMUNICATIONS = [
   ];
   
   export  const CALENDAR = [
-    { id: 1, title: 'Calendar',  name: 'Calendar' },
+    { id: 13, title: 'Events',  name: 'Events' },
+    { id: 24, title: 'Set Availability',  name: 'Set Availability' },
   ];

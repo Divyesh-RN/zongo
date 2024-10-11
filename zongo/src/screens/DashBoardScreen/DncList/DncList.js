@@ -1,7 +1,14 @@
-import { Alert, StyleSheet, TouchableOpacity, Text, View, LayoutAnimation, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import HeaderView from '@commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
+import {
+    Alert,
+    StyleSheet,
+    TouchableOpacity,
+    Text,
+    View,
+    LayoutAnimation,
+    TextInput,
+    Modal,
+} from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import HeaderBackView from '@commonComponents/HeaderBackView';
 import { black, white } from '@constants/Color';
 import { FontSize, SEMIBOLD } from '@constants/Fonts';
@@ -13,22 +20,28 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import { MEDIUM, REGULAR } from '@constants/Fonts';
-import { black05, darkGrey, disableColor, grey, grey01, midGreen, red, yellow } from '@constants/Color';
+import { black05, darkGrey, disableColor, grey, midGreen, red, yellow } from '@constants/Color';
 import { navigate } from '@navigation/RootNavigation';
 import LoadingView from '@commonComponents/LoadingView';
-import { Blocked_Numbers_List, Create_Blocked_Numbers, Create_Dnc_List, Delete_Blocked_Numbers, Delete_Dnc_List, Delete_Multiple_Blocked_Numbers, Delete_Multiple_Dnc_List, Get_Area_Code_By_State, Get_Area_Code_List, Get_Dnc_List, Get_Export_Blocked_Numbers, Get_States, Update_Blocked_Numbers } from '../../../redux/api/Api';
+import {
+    Create_Dnc_List,
+    Delete_Dnc_List,
+    Delete_Multiple_Dnc_List,
+    Get_Area_Code_By_State,
+    Get_Area_Code_List,
+    Get_Dnc_List,
+    Get_Export_Blocked_Numbers,
+    Get_States,
+} from '../../../redux/api/Api';
 import { useFocusEffect } from '@react-navigation/native';
-import { resetBlockNumbersApiStatus } from '../../../redux/reducers/blockNumberReducer';
 import { Dropdown } from 'react-native-element-dropdown';
 import { greenPrimary, paleGreen } from '../../../constants/Color';
 import RNFS from 'react-native-fs';
-import RNFetchBlob from 'rn-fetch-blob'
 import Share from 'react-native-share';
 import { resetDncListApiStatus } from '../../../redux/reducers/DncListReducer';
 import BottomSheet from './components/BottomSheet';
 import PermissionCheck from '../../../commonComponents/RolePermission/PermissionCheck';
 import CheckModulePermisson from '../../../commonComponents/RolePermission/CheckModulePermisson';
-import Error from '../Error/Error';
 import DoNotAccess from '../../../commonComponents/DoNotAccess';
 
 
@@ -522,7 +535,7 @@ const DncLists = ({ navigation }) => {
             [
                 {
                     text: 'No',
-                    onPress: () =>{}, style: 'cancel'
+                    onPress: () => { }, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -667,7 +680,7 @@ const DncLists = ({ navigation }) => {
                 [
                     {
                         text: 'Ok',
-                        onPress: () => {}, style: 'cancel'
+                        onPress: () => { }, style: 'cancel'
                     },
                     {
                         text: 'Yes',
@@ -690,7 +703,7 @@ const DncLists = ({ navigation }) => {
                 [
                     {
                         text: 'Ok',
-                        onPress: () => {}, style: 'cancel'
+                        onPress: () => { }, style: 'cancel'
                     },
                 ],
                 { cancelable: true },
@@ -750,278 +763,267 @@ const DncLists = ({ navigation }) => {
 
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
-                }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title="DNC List"
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
-                        }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
-                </View>
-                {isPermission == true ?
-                    <>
-                        <View style={{ marginHorizontal: 20, marginVertical: 22, flexDirection: "row", alignItems: "center", }}>
-                            {DncList.length > 0 && <Dropdown
-                                itemTextStyle={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12 }}
-                                itemContainerStyle={{ marginVertical: -6 }}
-                                ref={ref}
-                                style={styles.dropdown}
-                                containerStyle={styles.containerStyle}
-                                iconStyle={styles.iconStyle}
-                                data={data}
-                                maxHeight={300}
-                                labelField="label"
-                                valueField="value"
-                                value={value}
-                                onChange={(item) => {
-                                    setValue(item.value);
-                                    if (item.value == "all") {
-                                        setSelection(true)
-                                        setSelectedItems(DncList)
-                                        setIsSelectAll(true)
-                                    }
-                                    else if (item.value == "clear") {
-                                        setSelection(false)
-                                        setSelectedItems([])
-                                        setIsSelectAll(false)
-                                    }
-                                    else {
-                                        handleExportList()
+            <HeaderBackView
+                title="DNC List"
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+            {isPermission == true ?
+                <>
+                    <View style={{ marginHorizontal: 20, marginVertical: 22, flexDirection: "row", alignItems: "center", }}>
+                        {DncList.length > 0 && <Dropdown
+                            itemTextStyle={{ fontFamily: MEDIUM, fontSize: FontSize.FS_12 }}
+                            itemContainerStyle={{ marginVertical: -6 }}
+                            ref={ref}
+                            style={styles.dropdown}
+                            containerStyle={styles.containerStyle}
+                            iconStyle={styles.iconStyle}
+                            data={data}
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            value={value}
+                            onChange={(item) => {
+                                setValue(item.value);
+                                if (item.value == "all") {
+                                    setSelection(true)
+                                    setSelectedItems(DncList)
+                                    setIsSelectAll(true)
+                                }
+                                else if (item.value == "clear") {
+                                    setSelection(false)
+                                    setSelectedItems([])
+                                    setIsSelectAll(false)
+                                }
+                                else {
+                                    handleExportList()
+                                }
+                            }}
+                            onChangeText={() => { }} // Keep search keyword
+                            renderRightIcon={renderIcon}
+                        />
+                        }
+                        <View style={{
+                            flexDirection: "row", alignItems: "center", borderWidth: 1,
+                            borderColor: greenPrimary,
+                            height: 36,
+                            flex: 1,
+                            borderRadius: 4,
+                        }}>
+                            <TouchableOpacity style={{ paddingLeft: 14 }}>
+                                <Icon name="magnify" size={20} color={greenPrimary} />
+                            </TouchableOpacity>
+                            <TextInput
+                                value={SearchText}
+                                placeholder='Search Here...'
+                                placeholderTextColor={greenPrimary}
+                                style={{
+                                    // marginVertical:4,
+                                    fontFamily: MEDIUM,
+                                    fontSize: FontSize.FS_11,
+                                    color: black,
+                                    flex: 1,
+                                    paddingHorizontal: 14,
+
+                                }}
+                                onChangeText={(txt) => {
+                                    handleSearchText(txt)
+                                    if (Search == true) {
+                                        setSearch(false)
                                     }
                                 }}
-                                onChangeText={() => { }} // Keep search keyword
-                                renderRightIcon={renderIcon}
                             />
-                            }
-                            <View style={{
-                                flexDirection: "row", alignItems: "center", borderWidth: 1,
-                                borderColor: greenPrimary,
-                                height: 36,
-                                flex: 1,
-                                borderRadius: 4,
-                            }}>
-                                <TouchableOpacity style={{ paddingLeft: 14 }}>
-                                    <Icon name="magnify" size={20} color={greenPrimary} />
+                            {Search == true ?
+                                <TouchableOpacity onPress={() => {
+                                    setDncList(listDataSource)
+                                    setSearchText("")
+                                    setSearch(false)
+                                    setDncList([])
+                                }}
+                                    style={{ paddingRight: 14 }}>
+                                    <Icon name="close" size={18} color={black} />
                                 </TouchableOpacity>
-                                <TextInput
-                                    value={SearchText}
-                                    placeholder='Search Here...'
-                                    placeholderTextColor={greenPrimary}
-                                    style={{
-                                        // marginVertical:4,
-                                        fontFamily: MEDIUM,
-                                        fontSize: FontSize.FS_11,
-                                        color: black,
-                                        flex: 1,
-                                        paddingHorizontal: 14,
+                                :
+                                <TouchableOpacity onPress={() => {
+                                    GetDncList()
+                                    setSearch(true)
+                                    resetFilter()
+                                }}
+                                    style={{ backgroundColor: greenPrimary, height: 36, justifyContent: "center", paddingHorizontal: 8, borderTopRightRadius: 4, borderBottomRightRadius: 4, marginRight: -1 }}>
+                                    <Text style={{
+                                        fontSize: FontSize.FS_12,
+                                        color: white,
+                                        fontFamily: SEMIBOLD,
+                                    }}>{"Search"}</Text>
+                                </TouchableOpacity>
+                            }
 
-                                    }}
-                                    onChangeText={(txt) => {
-                                        handleSearchText(txt)
-                                        if (Search == true) {
-                                            setSearch(false)
-                                        }
-                                    }}
-                                />
-                                {Search == true ?
-                                    <TouchableOpacity onPress={() => {
-                                        setDncList(listDataSource)
-                                        setSearchText("")
-                                        setSearch(false)
-                                        setDncList([])
-                                    }}
-                                        style={{ paddingRight: 14 }}>
-                                        <Icon name="close" size={18} color={black} />
-                                    </TouchableOpacity>
-                                    :
-                                    <TouchableOpacity onPress={() => {
-                                        GetDncList()
-                                        setSearch(true)
-                                        resetFilter()
-                                    }}
-                                        style={{ backgroundColor: greenPrimary, height: 36, justifyContent: "center", paddingHorizontal: 8, borderTopRightRadius: 4, borderBottomRightRadius: 4, marginRight: -1 }}>
-                                        <Text style={{
-                                            fontSize: FontSize.FS_12,
-                                            color: white,
-                                            fontFamily: SEMIBOLD,
-                                        }}>{"Search"}</Text>
-                                    </TouchableOpacity>
-                                }
-
-                            </View>
-                            <TouchableOpacity onPress={() => { setFilterModalOpen(true) }}
-                                style={{ width: 34, height: 34, backgroundColor: grey, marginLeft: 8, borderRadius: 4, alignItems: "center", justifyContent: "center" }}>
-                                <Icon name={'filter-variant'} size={22} color={white} />
-
-                            </TouchableOpacity>
                         </View>
-                        {selectedItems?.length > 0 &&
-                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 20 }}>
+                        <TouchableOpacity onPress={() => { setFilterModalOpen(true) }}
+                            style={{ width: 34, height: 34, backgroundColor: grey, marginLeft: 8, borderRadius: 4, alignItems: "center", justifyContent: "center" }}>
+                            <Icon name={'filter-variant'} size={22} color={white} />
+
+                        </TouchableOpacity>
+                    </View>
+                    {selectedItems?.length > 0 &&
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 20 }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: SEMIBOLD,
+                                textAlign: "left",
+                                marginBottom: 8
+                            }}>{"Total Select : " + selectedItems?.length}</Text>
+                            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
                                 <Text style={{
                                     fontSize: FontSize.FS_12,
                                     color: black,
                                     fontFamily: SEMIBOLD,
                                     textAlign: "left",
-                                    marginBottom: 8
-                                }}>{"Total Select : " + selectedItems?.length}</Text>
-                                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        textAlign: "left",
-                                    }}>{"All"}</Text>
-                                    <TouchableOpacity onPress={() => {
-                                        if (Selection == true && isSelectAll == false) {
-                                            setSelectedItems(DncList)
-                                            setIsSelectAll(true)
-                                        }
-                                        else {
-                                            setSelectedItems([])
-                                            setIsSelectAll(false)
-                                            setSelection(false)
+                                }}>{"All"}</Text>
+                                <TouchableOpacity onPress={() => {
+                                    if (Selection == true && isSelectAll == false) {
+                                        setSelectedItems(DncList)
+                                        setIsSelectAll(true)
+                                    }
+                                    else {
+                                        setSelectedItems([])
+                                        setIsSelectAll(false)
+                                        setSelection(false)
 
-                                        }
-                                    }}
-                                        style={{ marginLeft: 5 }}>
-                                        <Icon name={isSelectAll ? "checkbox-marked" : 'checkbox-blank-outline'} size={19} color={greenPrimary} />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        }
-                        {
-                            DncList.length > 0 ?
-                                <>
-                                    {DncList.map((item, key) => (
-                                        <ExpandableComponent
-                                            key={item.dnc_list_uuid}
-                                            onClickFunction={() => {
-                                                updateLayout(key);
-                                            }}
-                                            onDelete={() => {
-                                                handleDeleteBtn(item)
-                                            }}
-                                            onEdit={() => {
-                                                handleEdit(item)
-                                            }}
-                                            onAction={() => {
-                                            }}
-                                            item={item}
-                                            isSelection={Selection}
-                                            isSelected={selectedItems.some((selectedItem) => selectedItem.dnc_list_uuid === item.dnc_list_uuid)}
-                                            onLongPress={handleLongPress}
-                                            onSelect={handleRegularPress}
-                                            selectedListLength={selectedItems.length}
-                                        />
-                                    ))}
-                                </>
-                                :
-                                <View style={{
-                                    justifyContent: "flex-end",
-                                    marginTop: "40%"
-
-                                }}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_14,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                        textAlign: "center",
-                                        alignItems: "center",
-                                    }}>{Search == true ? "No data found" : "Search to get DNC list ..."}</Text>
-                                </View>
-
-                        }
-                        {Selection == false ?
-                            <View style={{
-                                flexDirection: "row", alignItems: "center", position: "absolute",
-                                bottom: 0,
-                            }}>
-                                {add_per === "yes" && <TouchableOpacity onPress={() => {
-                                    handleAddToList()
+                                    }
                                 }}
-                                    style={{
-                                        backgroundColor: midGreen,
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        paddingVertical: 14,
-                                        justifyContent: "center",
-                                        width: "48%",
-                                    }}>
-                                    <Icon name="plus" size={25} color={white} />
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: white,
-                                        fontFamily: SEMIBOLD,
-                                        lineHeight: 24,
-                                        marginLeft: 10
-                                    }}>{"Add to list"}</Text>
+                                    style={{ marginLeft: 5 }}>
+                                    <Icon name={isSelectAll ? "checkbox-marked" : 'checkbox-blank-outline'} size={19} color={greenPrimary} />
                                 </TouchableOpacity>
-                                }
-                                <View style={{ width: "4%" }}></View>
-                                {add_per === "yes" && <TouchableOpacity onPress={() => {
-                                    navigate("DncBulkImport")
-                                }}
-                                    style={{
-                                        backgroundColor: midGreen,
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        paddingVertical: 14,
-
-                                        justifyContent: "center",
-                                        width: "48%",
-
-                                    }}>
-                                    <Icon name="plus" size={25} color={white} />
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: white,
-                                        fontFamily: SEMIBOLD,
-                                        lineHeight: 24,
-                                        marginLeft: 10
-                                    }}>{"Bulk Import"}</Text>
-                                </TouchableOpacity>
-                                }
                             </View>
+                        </View>
+                    }
+                    {
+                        DncList.length > 0 ?
+                            <>
+                                {DncList.map((item, key) => (
+                                    <ExpandableComponent
+                                        key={item.dnc_list_uuid}
+                                        onClickFunction={() => {
+                                            updateLayout(key);
+                                        }}
+                                        onDelete={() => {
+                                            handleDeleteBtn(item)
+                                        }}
+                                        onEdit={() => {
+                                            handleEdit(item)
+                                        }}
+                                        onAction={() => {
+                                        }}
+                                        item={item}
+                                        isSelection={Selection}
+                                        isSelected={selectedItems.some((selectedItem) => selectedItem.dnc_list_uuid === item.dnc_list_uuid)}
+                                        onLongPress={handleLongPress}
+                                        onSelect={handleRegularPress}
+                                        selectedListLength={selectedItems.length}
+                                    />
+                                ))}
+                            </>
                             :
                             <View style={{
-                                flexDirection: "row", alignItems: "center", position: "absolute",
-                                bottom: 0,
+                                justifyContent: "flex-end",
+                                marginTop: "40%"
+
                             }}>
-                                {delete_per != "none" && <TouchableOpacity onPress={() => {
-                                    handleSelectedDelete()
-                                }}
-                                    style={{
-                                        backgroundColor: red,
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        paddingVertical: 14,
-                                        justifyContent: "center",
-                                        width: "100%",
-                                    }}>
-                                    <Icon name="trash-can" size={22} color={white} />
-                                    <Text style={{
-                                        fontSize: FontSize.FS_13,
-                                        color: white,
-                                        fontFamily: SEMIBOLD,
-                                        lineHeight: 24,
-                                        marginLeft: 10
-                                    }}>{"Delete"}</Text>
-                                </TouchableOpacity>
-                                }
-                                {/* <View style={{ width: "4%" }}></View>
+                                <Text style={{
+                                    fontSize: FontSize.FS_14,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                    textAlign: "center",
+                                    alignItems: "center",
+                                }}>{Search == true ? "No data found" : "Search to get DNC list ..."}</Text>
+                            </View>
+
+                    }
+                    {Selection == false ?
+                        <View style={{
+                            flexDirection: "row", alignItems: "center", position: "absolute",
+                            bottom: 0,
+                        }}>
+                            {add_per === "yes" && <TouchableOpacity onPress={() => {
+                                handleAddToList()
+                            }}
+                                style={{
+                                    backgroundColor: midGreen,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    paddingVertical: 14,
+                                    justifyContent: "center",
+                                    width: "48%",
+                                }}>
+                                <Icon name="plus" size={25} color={white} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_13,
+                                    color: white,
+                                    fontFamily: SEMIBOLD,
+                                    lineHeight: 24,
+                                    marginLeft: 10
+                                }}>{"Add to list"}</Text>
+                            </TouchableOpacity>
+                            }
+                            <View style={{ width: "4%" }}></View>
+                            {add_per === "yes" && <TouchableOpacity onPress={() => {
+                                navigate("DncBulkImport")
+                            }}
+                                style={{
+                                    backgroundColor: midGreen,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    paddingVertical: 14,
+
+                                    justifyContent: "center",
+                                    width: "48%",
+
+                                }}>
+                                <Icon name="plus" size={25} color={white} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_13,
+                                    color: white,
+                                    fontFamily: SEMIBOLD,
+                                    lineHeight: 24,
+                                    marginLeft: 10
+                                }}>{"Bulk Import"}</Text>
+                            </TouchableOpacity>
+                            }
+                        </View>
+                        :
+                        <View style={{
+                            flexDirection: "row", alignItems: "center", position: "absolute",
+                            bottom: 0,
+                        }}>
+                            {delete_per != "none" && <TouchableOpacity onPress={() => {
+                                handleSelectedDelete()
+                            }}
+                                style={{
+                                    backgroundColor: red,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    paddingVertical: 14,
+                                    justifyContent: "center",
+                                    width: "100%",
+                                }}>
+                                <Icon name="trash-can" size={22} color={white} />
+                                <Text style={{
+                                    fontSize: FontSize.FS_13,
+                                    color: white,
+                                    fontFamily: SEMIBOLD,
+                                    lineHeight: 24,
+                                    marginLeft: 10
+                                }}>{"Delete"}</Text>
+                            </TouchableOpacity>
+                            }
+                            {/* <View style={{ width: "4%" }}></View>
                         <TouchableOpacity onPress={() => {
                             handleExportList()
                         }}
@@ -1043,351 +1045,350 @@ const DncLists = ({ navigation }) => {
                                 lineHeight: 24,
                                 marginLeft: 10
                             }}>{"Export List"}</Text> */}
-                                {/* </TouchableOpacity> */}
-                            </View>}
-                    </>
-                    :
-                    <DoNotAccess />
-                }
-                {/* Add /Update list Modal */}
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={IsModalVisible}
-                    onRequestClose={() => {
-                        setIsModalVisible(!IsModalVisible);
-                    }}
-                >
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+                            {/* </TouchableOpacity> */}
+                        </View>}
+                </>
+                :
+                <DoNotAccess />
+            }
+            {/* Add /Update list Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={IsModalVisible}
+                onRequestClose={() => {
+                    setIsModalVisible(!IsModalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: black,
+                                fontFamily: SEMIBOLD,
+                                textAlign: "center",
+                                flex: 1
+                            }}>{isEditModal == true ? "Update DNC List" : "Add DNC List"}</Text>
+                            <TouchableOpacity style={{ justifyContent: "flex-end", alignSelf: "flex-end", alignItems: "flex-end" }}
+                                onPress={() => handleCloseModal()}>
+
+                                <Icon name={"close"} size={30} color={black} />
+                            </TouchableOpacity>
+                        </View>
+
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Number"}</Text>
+                        <TextInput
+                            value={ModalNumber}
+                            placeholder='Enter number'
+                            placeholderTextColor={black}
+                            style={{
+                                borderWidth: 1,
+                                borderColor: black,
+                                height: 40,
+                                borderRadius: 4,
+                                paddingHorizontal: 14,
+                                marginVertical: 10,
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+
+                            }}
+                            onChangeText={(txt) => {
+                                setModalNumber(txt)
+                                setModalNumberError("")
+                            }}
+                        />
+                        {ModalNumberError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                            }}>
+                            {ModalNumberError}
+                        </Text>
+                        }
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Account Name"}</Text>
+                        <TextInput
+                            value={ModalAccountName}
+                            placeholder='Enter account name'
+                            placeholderTextColor={black}
+                            style={{
+                                borderWidth: 1,
+                                borderColor: black,
+                                height: 40,
+                                borderRadius: 4,
+                                paddingHorizontal: 14,
+                                marginVertical: 10,
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+
+                            }}
+                            onChangeText={(txt) => {
+                                setModalAccountName(txt)
+                                setModalAccountNameError("")
+                            }}
+                        />
+                        {ModalAccountNameError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                            }}>
+                            {ModalAccountNameError}
+                        </Text>
+                        }
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Description"}</Text>
+                        <TextInput
+                            value={ModalDescription}
+                            placeholder='Enter description...'
+                            placeholderTextColor={black}
+                            style={{
+                                borderWidth: 1,
+                                borderColor: black,
+                                height: 100,
+                                borderRadius: 4,
+                                paddingHorizontal: 14,
+                                marginVertical: 10,
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+
+                            }}
+                            onChangeText={(txt) => {
+                                setModalDescription(txt)
+                                setModalDescriptionError("")
+                            }}
+                        />
+                        {ModalDescriptionError !== "" && <Text
+                            style={{
+                                fontSize: FontSize.FS_10,
+                                color: red,
+                                fontFamily: MEDIUM,
+                            }}>
+                            {ModalDescriptionError}
+                        </Text>
+                        }
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                            <TouchableOpacity onPress={() => {
+                                handleCloseModal()
+                            }}
+                                style={{ backgroundColor: grey, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18, marginBottom: 20 }}>
                                 <Text style={{
-                                    fontSize: FontSize.FS_13,
-                                    color: black,
+                                    fontSize: FontSize.FS_12,
+                                    color: white,
                                     fontFamily: SEMIBOLD,
-                                    textAlign: "center",
-                                    flex: 1
-                                }}>{isEditModal == true ? "Update DNC List" : "Add DNC List"}</Text>
-                                <TouchableOpacity style={{ justifyContent: "flex-end", alignSelf: "flex-end", alignItems: "flex-end" }}
-                                    onPress={() => handleCloseModal()}>
-
-                                    <Icon name={"close"} size={30} color={black} />
-                                </TouchableOpacity>
-                            </View>
-
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Number"}</Text>
-                            <TextInput
-                                value={ModalNumber}
-                                placeholder='Enter number'
-                                placeholderTextColor={black}
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    height: 40,
-                                    borderRadius: 4,
-                                    paddingHorizontal: 14,
-                                    marginVertical: 10,
+                                }}>{"Close"}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => {
+                                if (isEditModal == true) {
+                                    handleUpdateNumber()
+                                }
+                                else {
+                                    handleAddNumber()
+                                }
+                            }}
+                                style={{ backgroundColor: greenPrimary, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18, marginBottom: 20 }}>
+                                <Text style={{
                                     fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-
-                                }}
-                                onChangeText={(txt) => {
-                                    setModalNumber(txt)
-                                    setModalNumberError("")
-                                }}
-                            />
-                            {ModalNumberError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                }}>
-                                {ModalNumberError}
-                            </Text>
-                            }
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Account Name"}</Text>
-                            <TextInput
-                                value={ModalAccountName}
-                                placeholder='Enter account name'
-                                placeholderTextColor={black}
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    height: 40,
-                                    borderRadius: 4,
-                                    paddingHorizontal: 14,
-                                    marginVertical: 10,
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-
-                                }}
-                                onChangeText={(txt) => {
-                                    setModalAccountName(txt)
-                                    setModalAccountNameError("")
-                                }}
-                            />
-                            {ModalAccountNameError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                }}>
-                                {ModalAccountNameError}
-                            </Text>
-                            }
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Description"}</Text>
-                            <TextInput
-                                value={ModalDescription}
-                                placeholder='Enter description...'
-                                placeholderTextColor={black}
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    height: 100,
-                                    borderRadius: 4,
-                                    paddingHorizontal: 14,
-                                    marginVertical: 10,
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-
-                                }}
-                                onChangeText={(txt) => {
-                                    setModalDescription(txt)
-                                    setModalDescriptionError("")
-                                }}
-                            />
-                            {ModalDescriptionError !== "" && <Text
-                                style={{
-                                    fontSize: FontSize.FS_10,
-                                    color: red,
-                                    fontFamily: MEDIUM,
-                                }}>
-                                {ModalDescriptionError}
-                            </Text>
-                            }
-                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                <TouchableOpacity onPress={() => {
-                                    handleCloseModal()
-                                }}
-                                    style={{ backgroundColor: grey, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18, marginBottom: 20 }}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: white,
-                                        fontFamily: SEMIBOLD,
-                                    }}>{"Close"}</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {
-                                    if (isEditModal == true) {
-                                        handleUpdateNumber()
-                                    }
-                                    else {
-                                        handleAddNumber()
-                                    }
-                                }}
-                                    style={{ backgroundColor: greenPrimary, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18, marginBottom: 20 }}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: white,
-                                        fontFamily: SEMIBOLD,
-                                    }}>{isEditModal == true ? "Update" : "Add"}</Text>
-                                </TouchableOpacity>
-                            </View>
+                                    color: white,
+                                    fontFamily: SEMIBOLD,
+                                }}>{isEditModal == true ? "Update" : "Add"}</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                </Modal>
-                {/* FIlter Modal */}
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={FilterModalOpen}
-                    onRequestClose={() => {
-                        setFilterModalOpen(!FilterModalOpen);
-                    }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 18 }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_16,
-                                    color: black,
-                                    fontFamily: SEMIBOLD,
-                                    textAlign: "center",
-                                    flex: 1
-                                }}>{"Filter"}</Text>
-                                <TouchableOpacity style={{}}
-                                    onPress={() => resetFilter()}>
-                                    <Icon name={"close"} size={24} color={black} />
-                                </TouchableOpacity>
-                            </View>
+                </View>
+            </Modal>
+            {/* FIlter Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={FilterModalOpen}
+                onRequestClose={() => {
+                    setFilterModalOpen(!FilterModalOpen);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 18 }}>
                             <Text style={{
-                                fontSize: FontSize.FS_13,
+                                fontSize: FontSize.FS_16,
                                 color: black,
                                 fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Select State"}</Text>
-                            <TouchableOpacity onPress={() => {
-                                openStateBottomSheet()
-                            }}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 12,
-                                    marginVertical: 10,
-                                    borderRadius: 4,
-                                }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>{FilterState == null ? "Select State" : FilterState?.state_name}</Text>
-                                <Icon name={"chevron-down"} size={22} color={grey} />
-
+                                textAlign: "center",
+                                flex: 1
+                            }}>{"Filter"}</Text>
+                            <TouchableOpacity style={{}}
+                                onPress={() => resetFilter()}>
+                                <Icon name={"close"} size={24} color={black} />
                             </TouchableOpacity>
+                        </View>
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Select State"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openStateBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
                             <Text style={{
-                                fontSize: FontSize.FS_13,
+                                fontSize: FontSize.FS_12,
                                 color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Select Area Code"}</Text>
-                            <TouchableOpacity onPress={() => {
-                                openAreaCodeBottomSheet()
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{FilterState == null ? "Select State" : FilterState?.state_name}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
+
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Select Area Code"}</Text>
+                        <TouchableOpacity onPress={() => {
+                            openAreaCodeBottomSheet()
+                        }}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                borderWidth: 1,
+                                borderColor: black,
+                                paddingVertical: 6,
+                                paddingHorizontal: 12,
+                                marginVertical: 10,
+                                borderRadius: 4,
+                            }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: black,
+                                fontFamily: MEDIUM,
+                                marginTop: 4
+                            }}>{FilterAreaCode == null ? "Select Area Code" : FilterAreaCode?.area_code}</Text>
+                            <Icon name={"chevron-down"} size={22} color={grey} />
+
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Account Name"}</Text>
+                        <TextInput
+                            value={FilterAccountName}
+                            placeholder='Enter Account Name'
+                            placeholderTextColor={grey}
+                            style={{
+                                borderWidth: 1,
+                                borderColor: black,
+                                height: 38,
+                                borderRadius: 4,
+                                paddingHorizontal: 14,
+                                marginVertical: 10,
+                                fontFamily: MEDIUM,
+                                fontSize: FontSize.FS_12,
+                                color: black
                             }}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    paddingVertical: 6,
-                                    paddingHorizontal: 12,
-                                    marginVertical: 10,
-                                    borderRadius: 4,
-                                }}>
+                            onChangeText={(txt) => {
+                                setFilterAccountName(txt)
+                            }}
+                        />
+                        <Text style={{
+                            fontSize: FontSize.FS_13,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 10
+                        }}>{"Description Word"}</Text>
+                        <TextInput
+                            value={FilterDescriptiion}
+                            placeholder='Enter Description....'
+                            placeholderTextColor={grey}
+                            style={{
+                                borderWidth: 1,
+                                borderColor: black,
+                                height: 38,
+                                borderRadius: 4,
+                                paddingHorizontal: 14,
+                                marginVertical: 10,
+                                fontFamily: MEDIUM,
+                                fontSize: FontSize.FS_12,
+                                color: black
+                            }}
+                            onChangeText={(txt) => {
+                                setFilterDescriptiion(txt)
+                            }}
+                        />
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+
+                            <TouchableOpacity onPress={() => {
+                                resetFilter()
+                            }}
+                                style={{ backgroundColor: grey, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
                                 <Text style={{
                                     fontSize: FontSize.FS_12,
-                                    color: black,
+                                    color: white,
                                     fontFamily: MEDIUM,
-                                    marginTop: 4
-                                }}>{FilterAreaCode == null ? "Select Area Code" : FilterAreaCode?.area_code}</Text>
-                                <Icon name={"chevron-down"} size={22} color={grey} />
-
+                                }}>{"Reset"}</Text>
                             </TouchableOpacity>
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Account Name"}</Text>
-                            <TextInput
-                                value={FilterAccountName}
-                                placeholder='Enter Account Name'
-                                placeholderTextColor={grey}
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    height: 38,
-                                    borderRadius: 4,
-                                    paddingHorizontal: 14,
-                                    marginVertical: 10,
-                                    fontFamily: MEDIUM,
+                            <TouchableOpacity onPress={() => {
+                                handleFilter()
+                            }}
+                                style={{ backgroundColor: greenPrimary, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
+                                <Text style={{
                                     fontSize: FontSize.FS_12,
-                                    color: black
-                                }}
-                                onChangeText={(txt) => {
-                                    setFilterAccountName(txt)
-                                }}
-                            />
-                            <Text style={{
-                                fontSize: FontSize.FS_13,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 10
-                            }}>{"Description Word"}</Text>
-                            <TextInput
-                                value={FilterDescriptiion}
-                                placeholder='Enter Description....'
-                                placeholderTextColor={grey}
-                                style={{
-                                    borderWidth: 1,
-                                    borderColor: black,
-                                    height: 38,
-                                    borderRadius: 4,
-                                    paddingHorizontal: 14,
-                                    marginVertical: 10,
+                                    color: white,
                                     fontFamily: MEDIUM,
-                                    fontSize: FontSize.FS_12,
-                                    color: black
-                                }}
-                                onChangeText={(txt) => {
-                                    setFilterDescriptiion(txt)
-                                }}
-                            />
-                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-
-                                <TouchableOpacity onPress={() => {
-                                    resetFilter()
-                                }}
-                                    style={{ backgroundColor: grey, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: white,
-                                        fontFamily: MEDIUM,
-                                    }}>{"Reset"}</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {
-                                    handleFilter()
-                                }}
-                                    style={{ backgroundColor: greenPrimary, height: 40, width: "40%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 18 }}>
-                                    <Text style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: white,
-                                        fontFamily: MEDIUM,
-                                    }}>{"Apply Filter"}</Text>
-                                </TouchableOpacity>
-                            </View>
+                                }}>{"Apply Filter"}</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                </Modal>
-                <BottomSheet
-                    type={"area_code"}
-                    title={"Select Area Code"}
-                    Data={area_code}
-                    bottomSheetRef={areaCodeBottomSheetRef}
-                    selectedValue={(data) => {
-                        setFilterAreaCode(data)
-                    }} />
-                <BottomSheet
-                    type={"state"}
-                    title={"Select State"}
-                    Data={state}
-                    bottomSheetRef={stateBottomSheetRef}
-                    selectedValue={(data) => {
-                        setFilterState(data)
-                        setFilterAreaCode(null)
-                    }} />
-            </HeaderView>
+                </View>
+            </Modal>
+            <BottomSheet
+                type={"area_code"}
+                title={"Select Area Code"}
+                Data={area_code}
+                bottomSheetRef={areaCodeBottomSheetRef}
+                selectedValue={(data) => {
+                    setFilterAreaCode(data)
+                }} />
+            <BottomSheet
+                type={"state"}
+                title={"Select State"}
+                Data={state}
+                bottomSheetRef={stateBottomSheetRef}
+                selectedValue={(data) => {
+                    setFilterState(data)
+                    setFilterAreaCode(null)
+                }} />
             {isLoading && <LoadingView />}
         </>
     );

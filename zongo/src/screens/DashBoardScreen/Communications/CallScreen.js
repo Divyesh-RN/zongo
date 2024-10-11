@@ -1,7 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, ToastAndroid, Platform, DeviceEventEmitter, NativeModules, NativeEventEmitter, PermissionsAndroid, TextInput, ScrollView, Modal, Alert, Pressable } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ImageBackground,
+  StyleSheet,
+  ToastAndroid,
+  Platform,
+  TextInput,
+  ScrollView,
+} from 'react-native';
 import { FontSize, MEDIUM, REGULAR, SEMIBOLD } from '../../../constants/Fonts';
-import { black, black03, greenPrimary, grey, red, white } from '../../../constants/Color';
+import { black, black03, greenPrimary, grey, paleGreen, red, white } from '../../../constants/Color';
 import { HEIGHT, WIDTH } from '../../../constants/ConstantKey';
 import { ic_call_bg } from '../../../constants/Images';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -9,9 +19,9 @@ import { goBack } from '../../../navigation/RootNavigation';
 import { useSelector } from 'react-redux';
 import global from '../../../constants/Global';
 import { Log } from '../../../commonComponents/Log';
-import { MediaStreamTrack, mediaDevices } from 'react-native-webrtc';
+import { mediaDevices } from 'react-native-webrtc';
 import InCallManager from 'react-native-incall-manager';
-import DeviceInfo, { useIsHeadphonesConnected } from 'react-native-device-info';
+import DeviceInfo from 'react-native-device-info';
 import BlutoothDevice from '../components/BlutoothDevice';
 
 let session = null;
@@ -33,7 +43,6 @@ const CallScreen = ({ route }) => {
   const [TotalTime, setTotalTime] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [User, setUserData] = useState(route?.params?.item || '');
-  const [isDemo, setIsDemo] = useState(false);
   const [IsFrom, setIsFrom] = useState(false);
   const [DomainName, setDomainName] = useState("");
   const [ShowAudioTypeModel, setShowAudioTypeModel] = useState(false);
@@ -45,50 +54,45 @@ const CallScreen = ({ route }) => {
   const [AudioTypeIcon, setAudioTypeIcon] = useState(null);
   const [AudioTypeName, setAudioTypeName] = useState(null);
   const [ShowBlutoothName, setShowBlutoothName] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
 
   const user_extension_data = useSelector(state => state.userRedux.user_extension_data);
 
   useEffect(() => {
-    mediaDevices.getUserMedia({video :false, audio :true}).then((stream)=>{
-    //   const localVideo = document.getElementById('localVideo'); // Assuming a video element in the HTML with id 'localVideo'
-    // localVideo.srcObject = stream;
-    })
-    .catch((error) => {
-      console.error("Error accessing the camera: " + error);
-    });
+
     Log("GET USER FROM SCREEN", route?.params?.from)
-    var number = route?.params?.item?.work_contact_number
-    var extension = route?.params?.item?.extension
-    var from = route?.params?.from
+
+    mediaDevices.getUserMedia({ video: false, audio: true }).then((stream) => { })
+      .catch((error) => {
+        console.error("Error accessing the microphone: " + error);
+      });
+
     var domainName = user_extension_data?.data[0]?.domain_name
     setDomainName(domainName)
-    setIsFrom(from)
-    // return
-    Log("GET USER NUMBER FROM ROUTE", number)
-    Log("GET USER FROM EXTENSION", extension)
-    if (route?.params?.from == "CALLS") {
-      inviteCall(extension, from, domainName)
+
+    if (route?.params?.from !== "DIALER") {
+      var number = route?.params?.item?.work_contact_number
+      var extension = route?.params?.item?.extension
+      var from = route?.params?.from
+      setIsFrom(from)
+
+      if (route?.params?.from == "CALLS") {
+        inviteCall(extension, from, domainName)
+      }
+      else {
+        inviteCall(number, from, domainName)
+      }
     }
     else {
-      inviteCall(number, from, domainName)
+      var dial_number = route?.params?.number;
+      var from = route?.params?.from;
+      setIsFrom(from)
+      inviteCall(dial_number, from, domainName)
     }
-  }, [])
-
-  useEffect(() => {
     return () => {
       InCallManager.stop();
       clearInterval(interval);
     }
-  }, []);
-
-  useEffect(() => {
-    if (session !== null) {
-      toggleSpeaker()
-    }
-    return () => {
-    }
-  }, [isSpecker])
+  }, [])
 
   const updateCallDuration = () => {
     setCallDuration(prevDuration => prevDuration + 1);
@@ -100,13 +104,9 @@ const CallScreen = ({ route }) => {
       const minutes = Math.floor((callDuration % 3600) / 60);
       const seconds = callDuration % 60;
       return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      // return `${hours.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-
     }
-
-
   };
+
   const handleMute = () => {
     if (isMuted == true) {
       if (session) {
@@ -120,11 +120,11 @@ const CallScreen = ({ route }) => {
         setMuted(true);
       }
     }
-
   };
-  const handleHold = () => {
 
+  const handleHold = () => {
     if (isHold == true) {
+      console.log("session", session)
       if (session) {
         session.unhold();
         setHold(false)
@@ -134,30 +134,34 @@ const CallScreen = ({ route }) => {
       session.hold();
       setHold(true)
     }
-
   };
+
   const handleNumberPress = (number) => {
     setPhoneNumber(phoneNumber + number);
   };
-  const toggleDialpad = () => {
-    setDialpadVisible(!isDialpadVisible);
-  };
-  const toggleSpeaker = () => {
 
+  useEffect(() => {
+    if (session !== null) {
+      toggleSpeaker()
+    }
+    return () => {
+    }
+  }, [isSpecker])
+
+  const toggleSpeaker = () => {
+    console.log("isSpecker",isSpecker)
     if (isSpecker == true) {
       InCallManager.setSpeakerphoneOn(true);
-      // InCallManager.start({ media: 'audio' }); // Start InCallManager
-
     }
     else {
       InCallManager.setSpeakerphoneOn(false);
-      // InCallManager.start({ media: 'audio' });
     }
   };
 
   const inviteCall = (User, from, domainName) => {
-    Log("CALL USER NUMBER ", User)
-    Log("CALL USER FROM ", from)
+    Log("=== Outgoing User  === ", User)
+    Log("=== Outgoing from  === ", from)
+    Log("=== Outgoing domainName  === ", domainName)
     const options = {
       mediaConstraints: {
         audio: {
@@ -177,11 +181,6 @@ const CallScreen = ({ route }) => {
         offerToReceiveVideo: false,
       },
       sessionTimersExpires: 120,
-      // rtcConfiguration: {
-      //   iceServers: [
-      //     { urls: 'stun:stun.l.google.com:19302' },
-      //   ]
-      // },
       pcConfig: {
         iceServers: [
           {
@@ -193,27 +192,35 @@ const CallScreen = ({ route }) => {
         ],
       },
     };
+
     if (from == "CALLS") {
       session = global.userAgent.call(`sip:8${User}@${domainName}`, options);
-
+    }
+    else if (from == "DIALER") {
+      if (User?.length == 4) {
+        console.log("step 4")
+        session = global.userAgent.call(`sip:${User}@${domainName}`, options);
+        // session = global.userAgent.call(`sip:8${User}@${domainName}`, options);
+      }
+      else {
+        console.log("step 3")
+        // session = global.userAgent.call(`sip:9${User}@default`, options);
+        session = global.userAgent.call(`sip:${User}@${domainName}`, options);
+      }
     }
     else {
-      // session = global.userAgent.call(`sip:9${User}@${domainName}`, options);
       session = global.userAgent.call(`sip:9${User}@default`, options);
-
     }
-
-    console.log('session', session);
 
     session.on('connecting', () => {
       setCallStatus('Connecting');
       console.log('Session connecting');
     });
+
     session.on('progress', response => {
       console.log('Call is in progress');
       setCallStatus('Ringing');
     });
-
 
     session.on('confirmed', response => {
       console.log('Call is established', response)
@@ -232,7 +239,14 @@ const CallScreen = ({ route }) => {
     });
 
     session.on('failed', response => {
-      console.log('Session failed');
+      console.log('Call failed with response: ', response);
+      ToastAndroid.show(response?.cause, ToastAndroid.SHORT);
+      setCallStatus('Call Failed');
+      setTimeout(() => {
+        goBack()
+      }, 1000);
+    });
+    session.on('bye', response => {
       console.log('Call failed with response: ', response);
       ToastAndroid.show(response?.cause, ToastAndroid.SHORT);
       setCallStatus('Call Failed');
@@ -242,7 +256,7 @@ const CallScreen = ({ route }) => {
     });
 
     session.on('newRefer', (referRequest) => {
-      console.log("referRequest",referRequest)
+      console.log("referRequest", referRequest)
     })
 
     session.on('accepted', () => {
@@ -250,26 +264,20 @@ const CallScreen = ({ route }) => {
     });
 
     session.on('ended', (res) => {
-      console.log('Session ended', res);
       setCallStatus('Ended');
       setConnected(false)
       endTime = new Date();
-      const callDurationSeconds = Math.floor((endTime - startTime) / 1000); // Duration in seconds
-
+      const callDurationSeconds = Math.floor((endTime - startTime) / 1000);
       const hours = Math.floor(callDurationSeconds / 3600);
       const remainingSeconds = callDurationSeconds % 3600;
       const minutes = Math.floor(remainingSeconds / 60);
-
       const formattedDuration = `${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')}`;
-      console.log('Total Call Duration:', formattedDuration);
       setTotalTime(formattedDuration);
-      setTimeout(() => {
-        goBack()
-      }, 2000);
+      goBack()
     });
   };
 
-  const endCall = () => {
+  const handleEndCall = () => {
     if (session) {
       console.log("terminate")
       session.terminate();
@@ -277,15 +285,12 @@ const CallScreen = ({ route }) => {
   };
 
   const handleSelectType = async (item) => {
-    // const data = await InCallManager.getIsWiredHeadsetPluggedIn()
-
     if (item == "Phone") {
       InCallManager.chooseAudioRoute('EARPIECE');
       setAudioTypeIcon("phone-in-talk")
       setAudioTypeName("Phone")
       setShowBlutoothName(false)
       setSpecker(false)
-
     }
     else if (item == "Speaker") {
       InCallManager.chooseAudioRoute('SPEAKER');
@@ -306,96 +311,75 @@ const CallScreen = ({ route }) => {
     setShowAudioTypeModel(!ShowAudioTypeModel)
 
   };
+
   const handleBlutooth = () => {
     console.log("connectedDevices", connectedDevices)
     if (connectedDevices.length !== 0) {
       setShowAudioTypeModel(!ShowAudioTypeModel)
-
     }
   }
+
   const handleTransferCall = () => {
     setShowTransferModel(false)
     setShowTransfer("Transfering...")
     var newTarget = null;
-    if(IsFrom == "CALLS"){
-       newTarget = `sip:${TransferCallText}@${DomainName}`;
+    if (IsFrom == "CALLS") {
+      newTarget = `sip:${TransferCallText}@${DomainName}`;
     }
-    else{
-      //  newTarget = `sip:9${TransferCallText}@${DomainName}`
-       newTarget = `sip:9${TransferCallText}@default`
-
+    else if (IsFrom == "DIALER") {
+      if (TransferCallText?.length == 4) {
+        newTarget = `sip:${TransferCallText}@${DomainName}`;
+      }
+      else {
+        newTarget = `sip:9${TransferCallText}@default`
+      }
     }
-    Log("newTarget :",newTarget)
+    else {
+      newTarget = `sip:9${TransferCallText}@default`
+    }
     session.refer(newTarget, {});
   }
 
-  const handleTransferModel = () => {
-    setShowTransferModel(!ShowTransferModel)
-  }
   const upgradeToVideoCall = () => {
+    return
     const options = {
       mediaConstraints: {
         audio: true,
         video: true, // Set video to true for video call
       },
     };
-
     session.renegotiate(options)
       .then(() => {
         console.log('Call upgraded to video');
-        // Handle UI changes - e.g., show video stream, toggle audio/video elements
       })
       .catch((error) => {
         console.error('Error upgrading to video call:', error);
       });
   };
+
   return (
     <>
-      {isDemo !== false ?
-        <View></View>
-        :
-        <ImageBackground source={ic_call_bg} style={{ flex: 1 }}>
+        <ImageBackground  source={ic_call_bg} style={styles.imageBg}>
           <ScrollView>
             <View style={{ flex: 1 }}>
-              <View style={{
-                //  flex: 1,
-                //  alignItems: 'center',
-                //  justifyContent: 'center',
-              }}>
-
-
+              <View>
                 <View style={{ alignItems: 'center', marginTop: "20%", flex: 1, height: HEIGHT }}>
                   {Connected == true ?
-                    <Text style={{
-                      fontSize: FontSize.FS_14,
-                      color: black,
-                      fontFamily: MEDIUM,
-                      marginTop: 20
-                    }}> {formatCallDuration()}</Text>
-
-                    : <Text style={{
-                      fontSize: FontSize.FS_14,
-                      color: black,
-                      fontFamily: MEDIUM,
-                      marginTop: 20
-                    }}>
-                      {CallStatus}
-                    </Text>
+                    <Text style={styles.callDurationText}> {formatCallDuration()}</Text>
+                    : <Text style={styles.callStatusText}>{CallStatus}</Text>
                   }
-                  <View style={{ marginTop: "10%", alignItems: "center", }}>
-                    <Text style={{
-                      fontSize: FontSize.FS_30,
-                      color: black,
-                      fontFamily: MEDIUM,
-                    }}>
-                      {User?.first_name}
-                    </Text>
-                    <Text style={{
-                      fontSize: FontSize.FS_14,
-                      color: black,
-                      fontFamily: REGULAR,
-                    }}>
-                   {route?.params?.from == "CALLS" ?"Extension " + route?.params?.item?.extension  : "Mobile " + User?.work_contact_number} 
+                  <View style={{ marginTop: "6%", alignItems: "center", }}>
+                    {User?.first_name !== undefined ? <Text style={styles.black30Medium}>{User?.first_name}</Text>
+                      : <Text style={styles.black30Medium}>{route?.params?.number} </Text>
+                    }
+                    <Text style={styles.black14Medium}>
+                      {
+                        route?.params?.from == "CALLS"
+                          ? "Extension " + route?.params?.item?.extension
+                          : route?.params?.from == "DIALER"
+                            ? route?.params?.number
+                            : "Mobile " + User?.work_contact_number
+                      }
                     </Text>
                   </View>
                   <View style={{
@@ -404,7 +388,7 @@ const CallScreen = ({ route }) => {
                     backgroundColor: "#e5f3e16e",
                     borderRadius: 10,
                     position: "absolute",
-                    bottom: Platform.OS == "android"? "26%" : "30%",
+                    bottom: Platform.OS == "android" ? "26%" : "30%",
                   }}>
                     {isDialpadVisible == true ? (
                       <>
@@ -465,23 +449,16 @@ const CallScreen = ({ route }) => {
                             margin: 20,
                             marginBottom: 40,
                             marginTop: -20,
-
                           }}>
                             <TouchableOpacity onPress={() => handleSelectType('Phone')}
                               style={{
                                 flexDirection: "row", alignItems: "center",
                                 justifyContent: "space-between",
                                 paddingVertical: 8
-
                               }}>
                               <View style={{ flexDirection: "row", alignItems: "center", }}>
                                 <Icon name="phone-in-talk" size={20} color={black} />
-                                <Text style={{
-                                  fontSize: FontSize.FS_12,
-                                  color: black,
-                                  fontFamily: MEDIUM,
-                                  marginLeft: 10
-                                }}>Phone</Text>
+                                <Text style={styles.phoneText}>{"Phone"}</Text>
                               </View>
                               {AudioTypeName === 'Phone' && <Icon name="check" size={20} color={black} />}
                             </TouchableOpacity>
@@ -490,21 +467,10 @@ const CallScreen = ({ route }) => {
                                 flexDirection: "row", alignItems: "center",
                                 justifyContent: "space-between",
                                 paddingVertical: 8
-
                               }}>
                               <View style={{ flexDirection: "row", alignItems: "center", }}>
                                 <Icon name="bluetooth-audio" size={20} color={black} />
-                                <Text style={{
-                                  fontSize: FontSize.FS_12,
-                                  color: black,
-                                  fontFamily: MEDIUM,
-                                  marginLeft: 10
-                                }}>Blutooth <Text style={{
-                                  fontSize: FontSize.FS_12,
-                                  color: grey,
-                                  fontFamily: REGULAR,
-                                  marginLeft: 10
-                                }}>{`( ${connectedDeviceName} )`}</Text></Text>
+                                <Text style={styles.blutoothText}>{"Blutooth "}<Text style={styles.blutoothText}>{`( ${connectedDeviceName} )`}</Text></Text>
                               </View>
                               {AudioTypeName === 'Bluetooth' && <Icon name="check" size={20} color={black} />}
                             </TouchableOpacity>
@@ -517,12 +483,7 @@ const CallScreen = ({ route }) => {
                               }}>
                               <View style={{ flexDirection: "row", alignItems: "center", }}>
                                 <Icon name="volume-high" size={20} color={black} />
-                                <Text style={{
-                                  fontSize: FontSize.FS_12,
-                                  color: black,
-                                  fontFamily: MEDIUM,
-                                  marginLeft: 10
-                                }}>Speaker</Text>
+                                <Text style={styles.speakerText}>{"Speaker"}</Text>
                               </View>
                               {AudioTypeName === 'Speaker' && <Icon name="check" size={20} color={black} />}
                             </TouchableOpacity>
@@ -531,16 +492,16 @@ const CallScreen = ({ route }) => {
                         {ShowTransferModel == true &&
                           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 20, marginBottom: 30 }}>
                             <TextInput
-                              style={{ color: black, fontSize: FontSize.FS_14, fontFamily: MEDIUM, backgroundColor: white, flex: 1, paddingHorizontal: 15, borderRadius: 6 ,height:44}}
+                              style={{ color: black, fontSize: FontSize.FS_14, fontFamily: MEDIUM, backgroundColor: white, flex: 1, paddingHorizontal: 15, borderRadius: 6, height: 44 }}
                               placeholder="Type a number...."
                               value={TransferCallText}
                               onChangeText={(text) => { setTransferCallText(text) }}
                             />
                             <TouchableOpacity onPress={() => {
-                              if(TransferCallText !== ""){
+                              if (TransferCallText !== "") {
                                 handleTransferCall()
                               }
-                              else{
+                              else {
                                 alert("Please enter a number")
                               }
                             }}
@@ -550,20 +511,12 @@ const CallScreen = ({ route }) => {
                           </View>
                         }
                         {ShowTransfer !== "" &&
-                                                    <Text style={{ color: black, fontSize: FontSize.FS_14, fontFamily: SEMIBOLD,textAlign:"center",marginBottom:30 }}>{ShowTransfer}</Text>
-
+                          <Text style={{ color: black, fontSize: FontSize.FS_14, fontFamily: SEMIBOLD, textAlign: "center", marginBottom: 30 }}>{ShowTransfer}</Text>
                         }
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 20, marginBottom: 25, }}>
                           <TouchableOpacity style={{ alignItems: "center", flex: 1 }}>
                             <Icon name="plus" size={35} color={black} />
-                            <Text style={{
-                              fontSize: FontSize.FS_10,
-                              color: black,
-                              fontFamily: REGULAR,
-                              marginTop: 6
-                            }}>
-                              Add call
-                            </Text>
+                            <Text style={styles.addCallText}>{"Add call"}</Text>
                           </TouchableOpacity>
                           <TouchableOpacity onPress={() => {
                             if (Connected) {
@@ -572,28 +525,12 @@ const CallScreen = ({ route }) => {
                           }}
                             style={{ alignItems: "center", flex: 1 }}>
                             <Icon name="pause-circle-outline" size={35} color={Connected ? isHold ? greenPrimary : black : black03} />
-                            <Text style={{
-                              fontSize: FontSize.FS_10,
-                              color: Connected ? isHold ? greenPrimary : black : black03,
-                              fontFamily: REGULAR,
-                              marginTop: 6
-                            }}>
-                              Hold
-                            </Text>
+                            <Text style={[styles.holdText, { color: Connected ? isHold ? greenPrimary : black : black03, }]}>{"Hold"}</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity onPress={()=>{
-                            // upgradeToVideoCall()
-                          }}
-                           style={{ alignItems: "center", flex: 1 }}>
+                          <TouchableOpacity onPress={() => { upgradeToVideoCall() }}
+                            style={{ alignItems: "center", flex: 1 }}>
                             <Icon name="video-outline" size={35} color={black} />
-                            <Text style={{
-                              fontSize: FontSize.FS_10,
-                              color: black,
-                              fontFamily: REGULAR,
-                              marginTop: 6
-                            }}>
-                              Video call
-                            </Text>
+                            <Text style={styles.videoCallText}>{"Video call"}</Text>
                           </TouchableOpacity>
                           <TouchableOpacity onPress={() => handleBlutooth()}
                             style={{ alignItems: "center", flex: 1 }}>
@@ -609,39 +546,23 @@ const CallScreen = ({ route }) => {
                           </TouchableOpacity>
                         </View>
                       </>
-
                     }
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginHorizontal: 20, }}>
                       <TouchableOpacity onPress={() => {
                         setSpecker(!isSpecker)
                       }}
-
                         style={{ alignItems: "center", flex: 1 }}>
                         <Icon name="volume-high" size={35} color={isSpecker ? greenPrimary : black} />
-                        <Text style={{
-                          fontSize: FontSize.FS_10,
-                          color: isSpecker ? greenPrimary : black,
-                          fontFamily: REGULAR,
-                          marginTop: 6
-                        }}>
-                          Speaker
-                        </Text>
+                        <Text style={[styles.speakerText, { color: isSpecker ? greenPrimary : black, }]}>{"Speaker"}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => {
-                        if(Connected){
-                          handleTransferModel()
+                        if (Connected) {
+                          setShowTransferModel(!ShowTransferModel)
                         }
                       }}
                         style={{ alignItems: "center", flex: 1 }}>
-                        <Icon name="swap-horizontal" size={35} color={ Connected ? ShowTransferModel ? greenPrimary :  black : black03} />
-                        <Text style={{
-                          fontSize: FontSize.FS_10,
-                          color: Connected ? ShowTransferModel ? greenPrimary :  black : black03,
-                          fontFamily: REGULAR,
-                          marginTop: 6
-                        }}>
-                          Transfer
-                        </Text>
+                        <Icon name="swap-horizontal" size={35} color={Connected ? ShowTransferModel ? greenPrimary : black : black03} />
+                        <Text style={[styles.transferText, { color: Connected ? ShowTransferModel ? greenPrimary : black : black03, }]}> {"Transfer"}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => {
                         if (Connected) {
@@ -650,49 +571,26 @@ const CallScreen = ({ route }) => {
                       }}
                         style={{ alignItems: "center", flex: 1 }}>
                         <Icon name={isMuted ? "microphone-outline" : "microphone-outline"} size={35} color={Connected ? isMuted ? greenPrimary : black : black03} />
-                        <Text style={{
-                          fontSize: FontSize.FS_10,
-                          color: Connected ? isMuted ? greenPrimary : black : black03,
-                          fontFamily: REGULAR,
-                          marginTop: 6,
-                        }}>
-                          {"Mute"}
-                        </Text>
+                        <Text style={[styles.muteText, { color: Connected ? isMuted ? greenPrimary : black : black03, }]}>{"Mute"}</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={toggleDialpad}
+                      <TouchableOpacity onPress={() => { setDialpadVisible(!isDialpadVisible); }}
                         style={{ alignItems: "center", flex: 1 }}>
                         <Icon name="dialpad" size={33} color={isDialpadVisible ? greenPrimary : black} />
-                        <Text style={{
-                          fontSize: FontSize.FS_10,
-                          color: isDialpadVisible ? greenPrimary : black,
-                          fontFamily: REGULAR,
-                          marginTop: 6
-                        }}>
-                          Keypad
-                        </Text>
+                        <Text style={[styles.keypadText, { color: isDialpadVisible ? greenPrimary : black, }]}>{"Keypad"}</Text>
                       </TouchableOpacity>
                     </View>
 
                   </View>
-                  <TouchableOpacity onPress={() => {
-                    if (session !== null) {
-                      endCall()
-                    }
-                    else {
-                      goBack()
-                    }
-                  }}
-                    style={{
-                      width: 60,
-                      height: 60,
-                      backgroundColor: red,
-                      borderRadius: 100,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      alignSelf: "center",
-                      position: "absolute",
-                      bottom: Platform.OS == "android"? "12%" : "20%",
-                    }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (session !== null) {
+                        handleEndCall()
+                      }
+                      else {
+                        goBack()
+                      }
+                    }}
+                    style={styles.hangupBtn}>
                     <Icon name="phone-hangup" size={40} color={white} />
                   </TouchableOpacity>
                 </View>
@@ -700,8 +598,6 @@ const CallScreen = ({ route }) => {
             </View>
           </ScrollView>
         </ImageBackground>
-      }
-
       <BlutoothDevice blutoothData={(results) => {
         DeviceInfo.isHeadphonesConnected().then((enabled) => {
           if (enabled == true && results.length !== 0) {
@@ -716,7 +612,6 @@ const CallScreen = ({ route }) => {
               peripheral.connected = true;
               peripherals.set(peripheral.id, peripheral);
               setConnectedDevices(Array.from(peripherals.values()));
-
             }
           }
           else {
@@ -728,50 +623,109 @@ const CallScreen = ({ route }) => {
             setShowBlutoothName(false)
           }
         });
-        // if (results.length === 0) {
-        //   setConnectedDevices([])
-        //   setConnectedDeviceName("")
-        //   setAudioTypeName("Phone")
-        //   setAudioTypeIcon("phone-in-talk")
-        // } else {
-        //   const names = results.map(item => item.name);
-        //   const firstObjectName = results[0].name;
-
-        //   setConnectedDeviceName(firstObjectName)
-        //   setAudioTypeName("Bluetooth")
-        //   setAudioTypeIcon("bluetooth-audio")
-        //   for (let i = 0; i < results.length; i++) {
-        //     let peripheral = results[i];
-        //     peripheral.connected = true;
-        //     peripherals.set(peripheral.id, peripheral);
-        //     setConnectedDevices(Array.from(peripherals.values()));
-
-        //   }
-        // }
       }} />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
     </>
   );
 };
 const styles = StyleSheet.create({
+  black14Medium: {fontSize: FontSize.FS_14,
+                           color: black,
+                           fontFamily: MEDIUM,  },
+  black30Medium: {
+    fontSize: FontSize.FS_30,
+    color: black,
+    fontFamily: MEDIUM,
+  },
+  imageBg: { flex: 1, },
+  callDurationText: {
+    fontSize: FontSize.FS_14,
+    color: black,
+    fontFamily: MEDIUM,
+    marginTop: 20
+    ,
+  },
+  callStatusText: {
+    fontSize: FontSize.FS_14,
+    color: black,
+    fontFamily: MEDIUM,
+    marginTop: 20
+    ,
+  },
+  phoneText: {
+    fontSize: FontSize.FS_12,
+    color: black,
+    fontFamily: MEDIUM,
+    marginLeft: 10
+    ,
+  },
+  blutoothText: {
+    fontSize: FontSize.FS_12,
+    color: grey,
+    fontFamily: REGULAR,
+    marginLeft: 10
+    ,
+  },
+  speakerText: {
+    fontSize: FontSize.FS_12,
+    color: black,
+    fontFamily: MEDIUM,
+    marginLeft: 10
+    ,
+  },
+  addCallText: {
+    fontSize: FontSize.FS_10,
+    color: black,
+    fontFamily: REGULAR,
+    marginTop: 6
+    ,
+  },
+  holdText: {
+    fontSize: FontSize.FS_10,
+    fontFamily: REGULAR,
+    marginTop: 6
+    ,
+  },
+  videoCallText: {
+    fontSize: FontSize.FS_10,
+    color: black,
+    fontFamily: REGULAR,
+    marginTop: 6
+    ,
+  },
+  speakerText: {
+    fontSize: FontSize.FS_10,
+    fontFamily: REGULAR,
+    marginTop: 6
+    ,
+  },
+  transferText: {
+    fontSize: FontSize.FS_10,
+    fontFamily: REGULAR,
+    marginTop: 6
+    ,
+  },
+  muteText: {
+    fontSize: FontSize.FS_10,
+    fontFamily: REGULAR,
+    marginTop: 6,
+  },
+  keypadText: {
+    fontSize: FontSize.FS_10,
+    fontFamily: REGULAR,
+    marginTop: 6
+    ,
+  },
+  hangupBtn: {
+    width: 60,
+    height: 60,
+    backgroundColor: red,
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    position: "absolute",
+    bottom: Platform.OS == "android" ? "12%" : "20%",
+  },
   container: {
   },
   display: {
@@ -798,45 +752,8 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-      backgroundColor: 'red',
     padding: 15,
     borderRadius: 10,
-  },
-  modalView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    marginTop: HEIGHT / 3,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    padding: 10,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
   },
 });
 export default CallScreen;

@@ -7,10 +7,8 @@ import {
     Switch,
     Alert,
 } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import HeaderView from '../../../commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '../../../commonComponents/ResponsiveScreen';
 import HeaderBackView from '../../../commonComponents/HeaderBackView';
 import {
     black,
@@ -156,7 +154,7 @@ const EditExtension = ({ navigation, route }) => {
             var dict = {};
             dict.main_admin_uuid = user_data?.data?.main_uuid;
             (dict.createdby = user_data?.data?.user_uuid),
-            dispatch(Get_Next_Extension(dict));
+                dispatch(Get_Next_Extension(dict));
         }
     }, [route?.params?.isEdit]);
 
@@ -183,7 +181,7 @@ const EditExtension = ({ navigation, route }) => {
             var dict = {};
             dict.extuuid = route.params.item?.extension_uuid;
             (dict.createdby = user_data?.data?.user_uuid),
-            dispatch(Get_Extension_Details(dict));
+                dispatch(Get_Extension_Details(dict));
         }
     }
 
@@ -372,7 +370,7 @@ const EditExtension = ({ navigation, route }) => {
                 dnd_enabled: Dnd == true ? 'YES' : 'NO',
                 // created_at: ExtensionData[0]?.created_at,
                 // created_by: ExtensionData[0]?.created_by,
-                createdby:user_data?.data?.user_uuid,
+                createdby: user_data?.data?.user_uuid,
                 main_admin_uuid: user_data?.data?.main_uuid,
                 user_uuid: user_data?.data?.user_uuid,
 
@@ -461,64 +459,143 @@ const EditExtension = ({ navigation, route }) => {
 
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(20),
-                }}>
-                <HeaderBackView
-                    title={isEdit ? ExtensionData[0]?.extension : 'Add Extension'}
-                    isBack={true}
-                    onPressBack={() => {
-                        goBack();
-                    }}
-                    onPressMenu={() => {
-                        navigation.toggleDrawer();
-                    }}
-                />
+            <HeaderBackView
+                title={isEdit ? ExtensionData[0]?.extension : 'Add Extension'}
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
 
-                <View style={{ marginTop: 0, marginBottom: 40 }}>
-                    <View
+            <View style={{ marginHorizontal: 20, marginBottom: 40 }}>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                    <Text
                         style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
+                            fontSize: FontSize.FS_12,
+                            color: black,
+                            fontFamily: MEDIUM,
                         }}>
+                        {'Extension'}
+                    </Text>
+                    <Text
+                        style={{
+                            fontSize: FontSize.FS_12,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                        }}>
+                        {isEdit == true ? ExtensionData[0]?.extension : NewExtension}
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingTop: 16,
+                        paddingBottom: 16,
+                        paddingHorizontal: 20,
+                        marginHorizontal: -20,
+                    }}>
+                    <View>
                         <Text
                             style={{
                                 fontSize: FontSize.FS_12,
                                 color: black,
                                 fontFamily: MEDIUM,
                             }}>
+                            {'Caller ID'}
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: FontSize.FS_11,
+                                color: grey,
+                                fontFamily: MEDIUM,
+                                marginTop: 4,
+                            }}>
                             {'Extension'}
                         </Text>
+                    </View>
+
+                    <Text
+                        style={{
+                            fontSize: FontSize.FS_12,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 4,
+                        }}>
+                        {CallerId == "" ? "-" : CallerId}
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingTop: 16,
+                        paddingBottom: 16,
+                        paddingHorizontal: 20,
+                        marginHorizontal: -20,
+                    }}>
+                    <View>
                         <Text
                             style={{
                                 fontSize: FontSize.FS_12,
                                 color: black,
-                                fontFamily: SEMIBOLD,
+                                fontFamily: MEDIUM,
                             }}>
-                            {isEdit == true ? ExtensionData[0]?.extension : NewExtension}
+                            {'Name'}
                         </Text>
                     </View>
+
+                    <Text
+                        style={{
+                            fontSize: FontSize.FS_12,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                            marginTop: 4,
+                        }}>
+                        {CallerName == "" ? "-" : CallerName}
+                    </Text>
+                </View>
+                {/* general */}
+                <Text
+                    style={{
+                        fontSize: FontSize.FS_14,
+                        color: black,
+                        fontFamily: SEMIBOLD,
+                        paddingVertical: 10,
+                        paddingHorizontal: 20,
+                        marginHorizontal: -20,
+                        backgroundColor: '#f0f0f0b5',
+                    }}>
+                    {'General'}
+                </Text>
+                <View
+                    style={{
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
                     <View
                         style={{
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-between',
-                            paddingTop: 16,
-                            paddingBottom: 16,
-                            paddingHorizontal: 20,
-                            marginHorizontal: -20,
                         }}>
                         <View>
                             <Text
@@ -527,7 +604,7 @@ const EditExtension = ({ navigation, route }) => {
                                     color: black,
                                     fontFamily: MEDIUM,
                                 }}>
-                                {'Caller ID'}
+                                {'Do not disturb (DND)'}
                             </Text>
                             <Text
                                 style={{
@@ -536,29 +613,34 @@ const EditExtension = ({ navigation, route }) => {
                                     fontFamily: MEDIUM,
                                     marginTop: 4,
                                 }}>
-                                {'Extension'}
+                                {Dnd == true ? 'Enabled' : 'Disabled'}
                             </Text>
                         </View>
-
-                        <Text
-                            style={{
-                                fontSize: FontSize.FS_12,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 4,
-                            }}>
-                            {CallerId == "" ? "-" : CallerId}
-                        </Text>
+                        <Switch
+                            style={{ marginRight: -10 }}
+                            trackColor={{ false: '#767577', true: greenPrimary }}
+                            thumbColor={Dnd ? white : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={Dnd => {
+                                setDnd(Dnd);
+                            }}
+                            value={Dnd}
+                        />
                     </View>
+                </View>
+                <View
+                    style={{
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
                     <View
                         style={{
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-between',
-                            paddingTop: 16,
-                            paddingBottom: 16,
-                            paddingHorizontal: 20,
-                            marginHorizontal: -20,
                         }}>
                         <View>
                             <Text
@@ -567,790 +649,27 @@ const EditExtension = ({ navigation, route }) => {
                                     color: black,
                                     fontFamily: MEDIUM,
                                 }}>
-                                {'Name'}
+                                {'Call waiting'}
                             </Text>
-                        </View>
-
-                        <Text
-                            style={{
-                                fontSize: FontSize.FS_12,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                                marginTop: 4,
-                            }}>
-                            {CallerName == "" ? "-" : CallerName}
-                        </Text>
-                    </View>
-                    {/* general */}
-                    <Text
-                        style={{
-                            fontSize: FontSize.FS_14,
-                            color: black,
-                            fontFamily: SEMIBOLD,
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                            marginHorizontal: -20,
-                            backgroundColor: '#f0f0f0b5',
-                        }}>
-                        {'General'}
-                    </Text>
-                    <View
-                        style={{
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                            }}>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>
-                                    {'Do not disturb (DND)'}
-                                </Text>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    marginTop: 4,
+                                }}>
                                 <Text
                                     style={{
                                         fontSize: FontSize.FS_11,
                                         color: grey,
                                         fontFamily: MEDIUM,
-                                        marginTop: 4,
+                                        marginRight: 10,
                                     }}>
-                                    {Dnd == true ? 'Enabled' : 'Disabled'}
+                                    {CallWaiting == true ? WaitingTime + ' second' : 'Disabled'}
                                 </Text>
-                            </View>
-                            <Switch
-                                style={{ marginRight: -10 }}
-                                trackColor={{ false: '#767577', true: greenPrimary }}
-                                thumbColor={Dnd ? white : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={Dnd => {
-                                    setDnd(Dnd);
-                                }}
-                                value={Dnd}
-                            />
-                        </View>
-                    </View>
-                    <View
-                        style={{
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                            }}>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>
-                                    {'Call waiting'}
-                                </Text>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        marginTop: 4,
-                                    }}>
-                                    <Text
-                                        style={{
-                                            fontSize: FontSize.FS_11,
-                                            color: grey,
-                                            fontFamily: MEDIUM,
-                                            marginRight: 10,
-                                        }}>
-                                        {CallWaiting == true ? WaitingTime + ' second' : 'Disabled'}
-                                    </Text>
-                                    {CallWaiting == true && (
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                setShowCallWaiting(!ShowCallWaiting);
-                                            }}
-                                            style={{
-                                                backgroundColor: greenPrimary,
-                                                padding: 4,
-                                                borderRadius: 50,
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                marginTop: 4,
-                                            }}>
-                                            <Icon name={'pencil'} size={14} color={white} />
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
-                            </View>
-                            <Switch
-                                style={{ marginRight: -10 }}
-                                trackColor={{ false: '#767577', true: greenPrimary }}
-                                thumbColor={CallWaiting ? white : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={val => {
-                                    setCallWaiting(val);
-                                    setShowCallWaiting(val);
-                                }}
-                                value={CallWaiting}
-                            />
-                        </View>
-                        {ShowCallWaiting == true && (
-                            <View
-                                style={{
-                                    marginTop: 14,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                }}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        openWaitingTimeBottomSheet();
-                                    }}
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        borderWidth: 1,
-                                        borderColor: grey,
-                                        paddingVertical: 6,
-                                        paddingHorizontal: 12,
-                                        marginVertical: 10,
-                                        borderRadius: 6,
-                                        flex: 1,
-                                    }}>
-                                    <Text
-                                        style={{
-                                            fontSize: FontSize.FS_12,
-                                            color: grey,
-                                            fontFamily: MEDIUM,
-                                            marginTop: 4,
-                                        }}>
-                                        {WaitingTime}
-                                    </Text>
-                                    <Icon name={'chevron-down'} size={22} color={grey} />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setShowCallWaiting(false);
-                                    }}
-                                    style={{
-                                        backgroundColor: greenPrimary,
-                                        height: 40,
-                                        width: 40,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        borderRadius: 6,
-                                        marginLeft: 10,
-                                    }}>
-                                    <Icon name="check" size={22} color={white} />
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                    </View>
-                    <View
-                        style={{
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                            }}>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>
-                                    {'Password'}
-                                </Text>
-                                {Password !== '' && (
-                                    <Text
-                                        style={{
-                                            fontSize: FontSize.FS_11,
-                                            color: grey,
-                                            fontFamily: MEDIUM,
-                                            marginTop: 4,
-                                        }}>
-                                        {IsPasswordEdit == true ? Password : '*******'}
-                                    </Text>
-                                )}
-                            </View>
-
-                            <TouchableOpacity
-                                style={{ paddingVertical: 8, paddingLeft: 8 }}
-                                onPress={() => {
-                                    setIsPasswordEdit(!IsPasswordEdit);
-                                }}>
-                                <Icon
-                                    name={IsPasswordEdit == true ? 'eye-off' : 'eye-off-outline'}
-                                    size={22}
-                                    color={black}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        {IsPasswordEdit == true && (
-                            <View
-                                style={{
-                                    marginTop: 14,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                }}>
-                                <TextInput
-
-                                    value={Password}
-                                    placeholder="12345"
-                                    placeholderTextColor={grey01}
-                                    style={{
-                                        borderWidth: 1,
-                                        borderColor: grey01,
-                                        height: 40,
-                                        borderRadius: 6,
-                                        paddingHorizontal: 14,
-                                        flex: 1,
-                                    }}
-                                    onChangeText={txt => {
-                                        setPassword(txt);
-                                        setPasswordError("")
-                                    }}
-                                />
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setIsPasswordEdit(false);
-                                    }}
-                                    style={{
-                                        backgroundColor: greenPrimary,
-                                        height: 40,
-                                        width: 40,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        borderRadius: 6,
-                                        marginLeft: 10,
-                                    }}>
-                                    <Icon name="check" size={22} color={white} />
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                        {PasswordError !== "" && <Text
-                            style={{
-                                fontSize: FontSize.FS_10,
-                                color: red,
-                                fontFamily: MEDIUM,
-                                marginTop: 8
-
-                            }}>
-                            {PasswordError}
-                        </Text>
-                        }
-                    </View>
-                    {/* voicemail */}
-                    <View
-                        style={{
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                            marginHorizontal: -20,
-                            backgroundColor: '#f0f0f0b5',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                        }}>
-                        <Text
-                            style={{
-                                fontSize: FontSize.FS_14,
-                                color: black,
-                                fontFamily: SEMIBOLD,
-                            }}>
-                            {'Voicemail'}
-                        </Text>
-                        <Switch
-                            style={{ marginRight: -10 }}
-                            trackColor={{ false: '#767577', true: greenPrimary }}
-                            thumbColor={VMSetting ? white : '#f4f3f4'}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={Dnd => {
-                                setVMSetting(Dnd);
-                            }}
-                            value={VMSetting}
-                        />
-                    </View>
-                    <View
-                        style={{
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                            }}>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>
-                                    {'Voicemail Password'}
-                                </Text>
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_11,
-                                        color: grey,
-                                        fontFamily: MEDIUM,
-                                        marginTop: 4,
-                                    }}>
-                                    {IsVMPasswordEdit == true ? VMPassword : '*******'}
-                                </Text>
-                            </View>
-
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setIsVMPasswordEdit(!IsVMPasswordEdit);
-                                }}>
-                                <Icon
-                                    name={
-                                        IsVMPasswordEdit == true ? 'eye-outline' : 'eye-off-outline'
-                                    }
-                                    size={22}
-                                    color={black}
-                                />
-                            </TouchableOpacity>
-                        </View>
-
-
-                        {IsVMPasswordEdit == true && (
-                            <View
-                                style={{
-                                    marginTop: 14,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                }}>
-                                <TextInput
-                                    value={VMPassword}
-                                    placeholder="12345"
-                                    placeholderTextColor={grey01}
-                                    style={{
-                                        borderWidth: 1,
-                                        borderColor: grey01,
-                                        height: 40,
-                                        borderRadius: 6,
-                                        paddingHorizontal: 14,
-                                        flex: 1,
-                                    }}
-                                    onChangeText={txt => {
-                                        setVMPassword(txt);
-                                        setVMPasswordError("")
-                                    }}
-                                />
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setIsVMPasswordEdit(false);
-                                    }}
-                                    style={{
-                                        backgroundColor: greenPrimary,
-                                        height: 40,
-                                        width: 40,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        borderRadius: 6,
-                                        marginLeft: 10,
-                                    }}>
-                                    <Icon name="check" size={22} color={white} />
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                        {VMPasswordError !== "" && <Text
-                            style={{
-                                fontSize: FontSize.FS_10,
-                                color: red,
-                                fontFamily: MEDIUM,
-                                marginTop: 8
-
-                            }}>
-                            {VMPasswordError}
-                        </Text>
-                        }
-                    </View>
-                    {VMSetting == true && (
-                        <View>
-                            <View
-                                style={{
-                                    paddingVertical: 16,
-                                    paddingHorizontal: 20,
-                                    borderBottomWidth: 1,
-                                    borderBottomColor: disableColor,
-                                    marginHorizontal: -20,
-                                }}>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                    }}>
-                                    <View>
-                                        <Text
-                                            style={{
-                                                fontSize: FontSize.FS_12,
-                                                color: black,
-                                                fontFamily: MEDIUM,
-                                            }}>
-                                            {'Voicemail To Email'}
-                                        </Text>
-                                        <View
-                                            style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center',
-                                                marginTop: 5,
-                                            }}>
-                                            <Text
-                                                style={{
-                                                    fontSize: FontSize.FS_11,
-                                                    color: grey,
-                                                    fontFamily: MEDIUM,
-                                                    marginTop: 4,
-                                                    marginRight: 10,
-                                                }}>
-                                                {IsVMToMailSwitch == true ? VmToMail == '' || VmToMail == null ? 'None' : VmToMail : "Disabled"}
-                                            </Text>
-                                            {IsVMToMailSwitch == true &&
-                                                <TouchableOpacity
-                                                    onPress={() => {
-                                                        setIsVMToMailShow(!IsVMToMailShow);
-                                                    }}
-                                                    style={{
-                                                        backgroundColor: greenPrimary,
-                                                        padding: 4,
-                                                        borderRadius: 50,
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        marginTop: 4,
-                                                    }}>
-                                                    <Icon name={'pencil'} size={14} color={white} />
-                                                </TouchableOpacity>
-                                            }
-                                        </View>
-                                    </View>
-                                    <Switch
-                                        style={{ marginRight: -10 }}
-                                        trackColor={{ false: '#767577', true: greenPrimary }}
-                                        thumbColor={IsVMToMailSwitch ? white : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={Dnd => {
-                                            setIsVMToMailShow(Dnd);
-                                            setIsVMToMailSwitch(Dnd);
-                                        }}
-                                        value={IsVMToMailSwitch}
-                                    />
-                                </View>
-                                {IsVMToMailShow == true && (
-                                    <View
-                                        style={{
-                                            marginTop: 14,
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                        }}>
-                                        <TextInput
-                                            value={VmToMail}
-                                            placeholder="mail@mail.com"
-                                            placeholderTextColor={grey01}
-                                            style={{
-                                                borderWidth: 1,
-                                                borderColor: grey01,
-                                                height: 40,
-                                                borderRadius: 6,
-                                                paddingHorizontal: 14,
-                                                flex: 1,
-                                            }}
-                                            onChangeText={txt => {
-                                                setVmToMail(txt);
-                                            }}
-                                        />
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                setIsVMToMailShow(false);
-                                            }}
-                                            style={{
-                                                backgroundColor: greenPrimary,
-                                                height: 40,
-                                                width: 40,
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                borderRadius: 6,
-                                                marginLeft: 10,
-                                            }}>
-                                            <Icon name="check" size={22} color={white} />
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-                            </View>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    openRingTimeoutBottomSheet();
-                                }}
-                                style={{
-                                    paddingVertical: 16,
-                                    paddingHorizontal: 20,
-                                    borderBottomWidth: 1,
-                                    borderBottomColor: disableColor,
-                                    marginHorizontal: -20,
-                                }}>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                    }}>
-                                    <View>
-                                        <Text
-                                            style={{
-                                                fontSize: FontSize.FS_12,
-                                                color: black,
-                                                fontFamily: MEDIUM,
-                                            }}>
-                                            {'Ring Time Out'}
-                                        </Text>
-
-                                        <Text
-                                            style={{
-                                                fontSize: FontSize.FS_12,
-                                                color: grey,
-                                                fontFamily: SEMIBOLD,
-                                                marginTop: 4,
-                                            }}>
-                                            {RingTimoutTime == "" || RingTimoutTime == null ? "None" : RingTimoutTime + ' second'}
-                                        </Text>
-                                    </View>
-                                    <Icon name="chevron-down" size={22} color={black} />
-                                </View>
-                            </TouchableOpacity>
-
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    paddingTop: 16,
-                                    paddingBottom: 16,
-                                    paddingHorizontal: 20,
-                                    borderBottomWidth: 1,
-                                    borderBottomColor: disableColor,
-                                    marginHorizontal: -20,
-                                }}>
-                                <View>
-                                    <Text
-                                        style={{
-                                            fontSize: FontSize.FS_12,
-                                            color: black,
-                                            fontFamily: MEDIUM,
-                                        }}>
-                                        {'VM Greeting'}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            fontSize: FontSize.FS_11,
-                                            color: grey,
-                                            fontFamily: MEDIUM,
-                                            marginTop: 4,
-                                        }}>
-                                        {'Access code'}
-                                    </Text>
-                                </View>
-
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 4,
-                                    }}>
-                                    {'*97'}
-                                </Text>
-                            </View>
-                            <View
-                                style={{
-                                    paddingTop: 16,
-                                    paddingBottom: 16,
-                                    paddingHorizontal: 20,
-                                    borderBottomWidth: 1,
-                                    borderBottomColor: disableColor,
-                                    marginHorizontal: -20,
-                                }}>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                    }}>
-                                    <Text
-                                        style={{
-                                            fontSize: FontSize.FS_12,
-                                            color: black,
-                                            fontFamily: MEDIUM,
-                                        }}>
-                                        {'VM Greeting'}
-                                    </Text>
+                                {CallWaiting == true && (
                                     <TouchableOpacity
                                         onPress={() => {
-                                            navigate("ManageAudioFiles", { type: "vm_greeting", isEdit: false })
-                                        }}
-                                        style={{ alignItems: 'center' }}>
-                                        <Text
-                                            style={{
-                                                fontSize: FontSize.FS_12,
-                                                color: grey,
-                                                fontFamily: SEMIBOLD,
-                                            }}>
-                                            {'Upload'}
-                                        </Text>
-                                        <Icon name="cloud-upload-outline" size={22} color={grey} />
-                                    </TouchableOpacity>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        openAudioFileListBottomSheet();
-                                    }}
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        marginTop: 14,
-                                        borderWidth: 1.5,
-                                        borderColor: grey,
-                                        borderRadius: 4,
-                                        paddingVertical: 6,
-                                        paddingHorizontal: 14,
-                                    }}>
-                                    <Text
-                                        style={{
-                                            fontSize: FontSize.FS_11,
-                                            color: grey,
-                                            fontFamily: MEDIUM,
-                                        }}>
-                                        {MainSelectedAudioFileName == ''
-                                            ? 'Choose Audio file'
-                                            : MainSelectedAudioFileName}
-                                    </Text>
-                                    <Icon name="chevron-down" size={22} color={grey} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    )}
-                    <Text
-                        style={{
-                            fontSize: FontSize.FS_14,
-                            color: black,
-                            fontFamily: SEMIBOLD,
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                            marginHorizontal: -20,
-                            backgroundColor: '#f0f0f0b5',
-                        }}>
-                        {'Forwarding'}
-                    </Text>
-
-                    <TouchableOpacity
-                        onPress={() => {
-                            openExtensionRingTimeoutBottomSheet();
-                        }}
-                        style={{
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                            }}>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>
-                                    {'Initial Extension Ringtime'}
-                                </Text>
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: grey,
-                                        fontFamily: SEMIBOLD,
-                                        marginTop: 4,
-                                    }}>
-                                    {ExtensionRingTIme == "" || ExtensionRingTIme == null ? "None" : ExtensionRingTIme + ' second'}
-                                </Text>
-                            </View>
-                            <Icon name="chevron-down" size={22} color={black} />
-                        </View>
-                    </TouchableOpacity>
-
-                    <View
-                        style={{
-                            paddingVertical: 16,
-                            paddingHorizontal: 20,
-                            borderBottomWidth: 1,
-                            borderBottomColor: disableColor,
-                            marginHorizontal: -20,
-                        }}>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                            }}>
-                            <View>
-                                <Text
-                                    style={{
-                                        fontSize: FontSize.FS_12,
-                                        color: black,
-                                        fontFamily: MEDIUM,
-                                    }}>
-                                    {'Forward Destination'}
-                                </Text>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        marginTop: 4,
-                                    }}>
-                                    <Text
-                                        style={{
-                                            fontSize: FontSize.FS_11,
-                                            color: grey,
-                                            fontFamily: MEDIUM,
-                                            marginRight: 10,
-                                        }}>
-                                        {ForwardDesSwitch == false ? "Disabled" : 'Forward Route and Destination'}
-                                    </Text>
-                                    {ForwardDesSwitch == true && <TouchableOpacity
-                                        onPress={() => {
-                                            setShowForwardDes(!ShowForwardDes);
+                                            setShowCallWaiting(!ShowCallWaiting);
                                         }}
                                         style={{
                                             backgroundColor: greenPrimary,
@@ -1362,110 +681,780 @@ const EditExtension = ({ navigation, route }) => {
                                         }}>
                                         <Icon name={'pencil'} size={14} color={white} />
                                     </TouchableOpacity>
-                                    }
-                                </View>
+                                )}
                             </View>
-                            <Switch
-                                style={{ marginRight: -10 }}
-                                trackColor={{ false: '#767577', true: greenPrimary }}
-                                thumbColor={ForwardDesSwitch ? white : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={val => {
-                                    setForwardDesSwitch(val);
-                                }}
-                                value={ForwardDesSwitch}
-                            />
                         </View>
-                        {ShowForwardDes == true && (
-                            <View
+                        <Switch
+                            style={{ marginRight: -10 }}
+                            trackColor={{ false: '#767577', true: greenPrimary }}
+                            thumbColor={CallWaiting ? white : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={val => {
+                                setCallWaiting(val);
+                                setShowCallWaiting(val);
+                            }}
+                            value={CallWaiting}
+                        />
+                    </View>
+                    {ShowCallWaiting == true && (
+                        <View
+                            style={{
+                                marginTop: 14,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    openWaitingTimeBottomSheet();
+                                }}
                                 style={{
-                                    marginTop: 14,
                                     flexDirection: 'row',
                                     alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    borderWidth: 1,
+                                    borderColor: grey,
+                                    paddingVertical: 6,
+                                    paddingHorizontal: 12,
+                                    marginVertical: 10,
+                                    borderRadius: 6,
+                                    flex: 1,
                                 }}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        openRouteToBottomSheet();
-                                    }}
+                                <Text
                                     style={{
+                                        fontSize: FontSize.FS_12,
+                                        color: grey,
+                                        fontFamily: MEDIUM,
+                                        marginTop: 4,
+                                    }}>
+                                    {WaitingTime}
+                                </Text>
+                                <Icon name={'chevron-down'} size={22} color={grey} />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setShowCallWaiting(false);
+                                }}
+                                style={{
+                                    backgroundColor: greenPrimary,
+                                    height: 40,
+                                    width: 40,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 6,
+                                    marginLeft: 10,
+                                }}>
+                                <Icon name="check" size={22} color={white} />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </View>
+                <View
+                    style={{
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}>
+                        <View>
+                            <Text
+                                style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>
+                                {'Password'}
+                            </Text>
+                            {Password !== '' && (
+                                <Text
+                                    style={{
+                                        fontSize: FontSize.FS_11,
+                                        color: grey,
+                                        fontFamily: MEDIUM,
+                                        marginTop: 4,
+                                    }}>
+                                    {IsPasswordEdit == true ? Password : '*******'}
+                                </Text>
+                            )}
+                        </View>
+
+                        <TouchableOpacity
+                            style={{ paddingVertical: 8, paddingLeft: 8 }}
+                            onPress={() => {
+                                setIsPasswordEdit(!IsPasswordEdit);
+                            }}>
+                            <Icon
+                                name={IsPasswordEdit == true ? 'eye-off' : 'eye-off-outline'}
+                                size={22}
+                                color={black}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    {IsPasswordEdit == true && (
+                        <View
+                            style={{
+                                marginTop: 14,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}>
+                            <TextInput
+
+                                value={Password}
+                                placeholder="12345"
+                                placeholderTextColor={grey01}
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: grey01,
+                                    height: 40,
+                                    borderRadius: 6,
+                                    paddingHorizontal: 14,
+                                    flex: 1,
+                                }}
+                                onChangeText={txt => {
+                                    setPassword(txt);
+                                    setPasswordError("")
+                                }}
+                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setIsPasswordEdit(false);
+                                }}
+                                style={{
+                                    backgroundColor: greenPrimary,
+                                    height: 40,
+                                    width: 40,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 6,
+                                    marginLeft: 10,
+                                }}>
+                                <Icon name="check" size={22} color={white} />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    {PasswordError !== "" && <Text
+                        style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: MEDIUM,
+                            marginTop: 8
+
+                        }}>
+                        {PasswordError}
+                    </Text>
+                    }
+                </View>
+                {/* voicemail */}
+                <View
+                    style={{
+                        paddingVertical: 10,
+                        paddingHorizontal: 20,
+                        marginHorizontal: -20,
+                        backgroundColor: '#f0f0f0b5',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}>
+                    <Text
+                        style={{
+                            fontSize: FontSize.FS_14,
+                            color: black,
+                            fontFamily: SEMIBOLD,
+                        }}>
+                        {'Voicemail'}
+                    </Text>
+                    <Switch
+                        style={{ marginRight: -10 }}
+                        trackColor={{ false: '#767577', true: greenPrimary }}
+                        thumbColor={VMSetting ? white : '#f4f3f4'}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={Dnd => {
+                            setVMSetting(Dnd);
+                        }}
+                        value={VMSetting}
+                    />
+                </View>
+                <View
+                    style={{
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}>
+                        <View>
+                            <Text
+                                style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>
+                                {'Voicemail Password'}
+                            </Text>
+                            <Text
+                                style={{
+                                    fontSize: FontSize.FS_11,
+                                    color: grey,
+                                    fontFamily: MEDIUM,
+                                    marginTop: 4,
+                                }}>
+                                {IsVMPasswordEdit == true ? VMPassword : '*******'}
+                            </Text>
+                        </View>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                                setIsVMPasswordEdit(!IsVMPasswordEdit);
+                            }}>
+                            <Icon
+                                name={
+                                    IsVMPasswordEdit == true ? 'eye-outline' : 'eye-off-outline'
+                                }
+                                size={22}
+                                color={black}
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+
+                    {IsVMPasswordEdit == true && (
+                        <View
+                            style={{
+                                marginTop: 14,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}>
+                            <TextInput
+                                value={VMPassword}
+                                placeholder="12345"
+                                placeholderTextColor={grey01}
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: grey01,
+                                    height: 40,
+                                    borderRadius: 6,
+                                    paddingHorizontal: 14,
+                                    flex: 1,
+                                }}
+                                onChangeText={txt => {
+                                    setVMPassword(txt);
+                                    setVMPasswordError("")
+                                }}
+                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setIsVMPasswordEdit(false);
+                                }}
+                                style={{
+                                    backgroundColor: greenPrimary,
+                                    height: 40,
+                                    width: 40,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 6,
+                                    marginLeft: 10,
+                                }}>
+                                <Icon name="check" size={22} color={white} />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    {VMPasswordError !== "" && <Text
+                        style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: MEDIUM,
+                            marginTop: 8
+
+                        }}>
+                        {VMPasswordError}
+                    </Text>
+                    }
+                </View>
+                {VMSetting == true && (
+                    <View>
+                        <View
+                            style={{
+                                paddingVertical: 16,
+                                paddingHorizontal: 20,
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                marginHorizontal: -20,
+                            }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                }}>
+                                <View>
+                                    <Text
+                                        style={{
+                                            fontSize: FontSize.FS_12,
+                                            color: black,
+                                            fontFamily: MEDIUM,
+                                        }}>
+                                        {'Voicemail To Email'}
+                                    </Text>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            marginTop: 5,
+                                        }}>
+                                        <Text
+                                            style={{
+                                                fontSize: FontSize.FS_11,
+                                                color: grey,
+                                                fontFamily: MEDIUM,
+                                                marginTop: 4,
+                                                marginRight: 10,
+                                            }}>
+                                            {IsVMToMailSwitch == true ? VmToMail == '' || VmToMail == null ? 'None' : VmToMail : "Disabled"}
+                                        </Text>
+                                        {IsVMToMailSwitch == true &&
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setIsVMToMailShow(!IsVMToMailShow);
+                                                }}
+                                                style={{
+                                                    backgroundColor: greenPrimary,
+                                                    padding: 4,
+                                                    borderRadius: 50,
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    marginTop: 4,
+                                                }}>
+                                                <Icon name={'pencil'} size={14} color={white} />
+                                            </TouchableOpacity>
+                                        }
+                                    </View>
+                                </View>
+                                <Switch
+                                    style={{ marginRight: -10 }}
+                                    trackColor={{ false: '#767577', true: greenPrimary }}
+                                    thumbColor={IsVMToMailSwitch ? white : '#f4f3f4'}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={Dnd => {
+                                        setIsVMToMailShow(Dnd);
+                                        setIsVMToMailSwitch(Dnd);
+                                    }}
+                                    value={IsVMToMailSwitch}
+                                />
+                            </View>
+                            {IsVMToMailShow == true && (
+                                <View
+                                    style={{
+                                        marginTop: 14,
                                         flexDirection: 'row',
                                         alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        borderWidth: 1,
-                                        borderColor: grey,
-                                        paddingVertical: 6,
-                                        paddingHorizontal: 12,
-                                        marginVertical: 10,
-                                        borderRadius: 6,
-                                        flex: 1,
                                     }}>
+                                    <TextInput
+                                        value={VmToMail}
+                                        placeholder="mail@mail.com"
+                                        placeholderTextColor={grey01}
+                                        style={{
+                                            borderWidth: 1,
+                                            borderColor: grey01,
+                                            height: 40,
+                                            borderRadius: 6,
+                                            paddingHorizontal: 14,
+                                            flex: 1,
+                                        }}
+                                        onChangeText={txt => {
+                                            setVmToMail(txt);
+                                        }}
+                                    />
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setIsVMToMailShow(false);
+                                        }}
+                                        style={{
+                                            backgroundColor: greenPrimary,
+                                            height: 40,
+                                            width: 40,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            borderRadius: 6,
+                                            marginLeft: 10,
+                                        }}>
+                                        <Icon name="check" size={22} color={white} />
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        </View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                openRingTimeoutBottomSheet();
+                            }}
+                            style={{
+                                paddingVertical: 16,
+                                paddingHorizontal: 20,
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                marginHorizontal: -20,
+                            }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                }}>
+                                <View>
+                                    <Text
+                                        style={{
+                                            fontSize: FontSize.FS_12,
+                                            color: black,
+                                            fontFamily: MEDIUM,
+                                        }}>
+                                        {'Ring Time Out'}
+                                    </Text>
+
                                     <Text
                                         style={{
                                             fontSize: FontSize.FS_12,
                                             color: grey,
-                                            fontFamily: MEDIUM,
+                                            fontFamily: SEMIBOLD,
+                                            marginTop: 4,
                                         }}>
-                                        {RouteTo == "" || RouteTo == null ? "Select Route" : RouteTo}
+                                        {RingTimoutTime == "" || RingTimoutTime == null ? "None" : RingTimoutTime + ' second'}
                                     </Text>
-                                    <Icon name={'chevron-down'} size={22} color={grey} />
-                                </TouchableOpacity>
+                                </View>
+                                <Icon name="chevron-down" size={22} color={black} />
+                            </View>
+                        </TouchableOpacity>
+
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                paddingTop: 16,
+                                paddingBottom: 16,
+                                paddingHorizontal: 20,
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                marginHorizontal: -20,
+                            }}>
+                            <View>
+                                <Text
+                                    style={{
+                                        fontSize: FontSize.FS_12,
+                                        color: black,
+                                        fontFamily: MEDIUM,
+                                    }}>
+                                    {'VM Greeting'}
+                                </Text>
+                                <Text
+                                    style={{
+                                        fontSize: FontSize.FS_11,
+                                        color: grey,
+                                        fontFamily: MEDIUM,
+                                        marginTop: 4,
+                                    }}>
+                                    {'Access code'}
+                                </Text>
+                            </View>
+
+                            <Text
+                                style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: SEMIBOLD,
+                                    marginTop: 4,
+                                }}>
+                                {'*97'}
+                            </Text>
+                        </View>
+                        <View
+                            style={{
+                                paddingTop: 16,
+                                paddingBottom: 16,
+                                paddingHorizontal: 20,
+                                borderBottomWidth: 1,
+                                borderBottomColor: disableColor,
+                                marginHorizontal: -20,
+                            }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                }}>
+                                <Text
+                                    style={{
+                                        fontSize: FontSize.FS_12,
+                                        color: black,
+                                        fontFamily: MEDIUM,
+                                    }}>
+                                    {'VM Greeting'}
+                                </Text>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        openDestinationToBottomSheet();
+                                        navigate("ManageAudioFiles", { type: "vm_greeting", isEdit: false })
                                     }}
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        borderWidth: 1,
-                                        borderColor: grey,
-                                        paddingVertical: 6,
-                                        paddingHorizontal: 12,
-                                        marginVertical: 10,
-                                        marginLeft: 10,
-                                        borderRadius: 6,
-                                        flex: 1,
-                                    }}>
+                                    style={{ alignItems: 'center' }}>
                                     <Text
                                         style={{
                                             fontSize: FontSize.FS_12,
                                             color: grey,
-                                            fontFamily: MEDIUM,
+                                            fontFamily: SEMIBOLD,
                                         }}>
-                                        {DestinationTo == "" || DestinationTo == null ? "Select Destination" : DestinationTo}
+                                        {'Upload'}
                                     </Text>
-                                    <Icon name={'chevron-down'} size={22} color={grey} />
+                                    <Icon name="cloud-upload-outline" size={22} color={grey} />
                                 </TouchableOpacity>
-                                <TouchableOpacity
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    openAudioFileListBottomSheet();
+                                }}
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    marginTop: 14,
+                                    borderWidth: 1.5,
+                                    borderColor: grey,
+                                    borderRadius: 4,
+                                    paddingVertical: 6,
+                                    paddingHorizontal: 14,
+                                }}>
+                                <Text
+                                    style={{
+                                        fontSize: FontSize.FS_11,
+                                        color: grey,
+                                        fontFamily: MEDIUM,
+                                    }}>
+                                    {MainSelectedAudioFileName == ''
+                                        ? 'Choose Audio file'
+                                        : MainSelectedAudioFileName}
+                                </Text>
+                                <Icon name="chevron-down" size={22} color={grey} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )}
+                <Text
+                    style={{
+                        fontSize: FontSize.FS_14,
+                        color: black,
+                        fontFamily: SEMIBOLD,
+                        paddingVertical: 10,
+                        paddingHorizontal: 20,
+                        marginHorizontal: -20,
+                        backgroundColor: '#f0f0f0b5',
+                    }}>
+                    {'Forwarding'}
+                </Text>
+
+                <TouchableOpacity
+                    onPress={() => {
+                        openExtensionRingTimeoutBottomSheet();
+                    }}
+                    style={{
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}>
+                        <View>
+                            <Text
+                                style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>
+                                {'Initial Extension Ringtime'}
+                            </Text>
+                            <Text
+                                style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: grey,
+                                    fontFamily: SEMIBOLD,
+                                    marginTop: 4,
+                                }}>
+                                {ExtensionRingTIme == "" || ExtensionRingTIme == null ? "None" : ExtensionRingTIme + ' second'}
+                            </Text>
+                        </View>
+                        <Icon name="chevron-down" size={22} color={black} />
+                    </View>
+                </TouchableOpacity>
+
+                <View
+                    style={{
+                        paddingVertical: 16,
+                        paddingHorizontal: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: disableColor,
+                        marginHorizontal: -20,
+                    }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}>
+                        <View>
+                            <Text
+                                style={{
+                                    fontSize: FontSize.FS_12,
+                                    color: black,
+                                    fontFamily: MEDIUM,
+                                }}>
+                                {'Forward Destination'}
+                            </Text>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    marginTop: 4,
+                                }}>
+                                <Text
+                                    style={{
+                                        fontSize: FontSize.FS_11,
+                                        color: grey,
+                                        fontFamily: MEDIUM,
+                                        marginRight: 10,
+                                    }}>
+                                    {ForwardDesSwitch == false ? "Disabled" : 'Forward Route and Destination'}
+                                </Text>
+                                {ForwardDesSwitch == true && <TouchableOpacity
                                     onPress={() => {
-                                        setShowForwardDes(false);
+                                        setShowForwardDes(!ShowForwardDes);
                                     }}
                                     style={{
                                         backgroundColor: greenPrimary,
-                                        height: 36,
-                                        width: 40,
+                                        padding: 4,
+                                        borderRadius: 50,
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        borderRadius: 6,
-                                        marginLeft: 10,
+                                        marginTop: 4,
                                     }}>
-                                    <Icon name="check" size={22} color={white} />
+                                    <Icon name={'pencil'} size={14} color={white} />
                                 </TouchableOpacity>
+                                }
                             </View>
-                        )}
-                        {DestinationToError !== "" && ForwardDesSwitch == true && <Text
-                            style={{
-                                fontSize: FontSize.FS_10,
-                                color: red,
-                                fontFamily: MEDIUM,
-                                marginTop: 8
-
-                            }}>
-                            {DestinationToError}
-                        </Text>
-                        }
+                        </View>
+                        <Switch
+                            style={{ marginRight: -10 }}
+                            trackColor={{ false: '#767577', true: greenPrimary }}
+                            thumbColor={ForwardDesSwitch ? white : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={val => {
+                                setForwardDesSwitch(val);
+                            }}
+                            value={ForwardDesSwitch}
+                        />
                     </View>
-                    {/* <TouchableOpacity
+                    {ShowForwardDes == true && (
+                        <View
+                            style={{
+                                marginTop: 14,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    openRouteToBottomSheet();
+                                }}
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    borderWidth: 1,
+                                    borderColor: grey,
+                                    paddingVertical: 6,
+                                    paddingHorizontal: 12,
+                                    marginVertical: 10,
+                                    borderRadius: 6,
+                                    flex: 1,
+                                }}>
+                                <Text
+                                    style={{
+                                        fontSize: FontSize.FS_12,
+                                        color: grey,
+                                        fontFamily: MEDIUM,
+                                    }}>
+                                    {RouteTo == "" || RouteTo == null ? "Select Route" : RouteTo}
+                                </Text>
+                                <Icon name={'chevron-down'} size={22} color={grey} />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    openDestinationToBottomSheet();
+                                }}
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    borderWidth: 1,
+                                    borderColor: grey,
+                                    paddingVertical: 6,
+                                    paddingHorizontal: 12,
+                                    marginVertical: 10,
+                                    marginLeft: 10,
+                                    borderRadius: 6,
+                                    flex: 1,
+                                }}>
+                                <Text
+                                    style={{
+                                        fontSize: FontSize.FS_12,
+                                        color: grey,
+                                        fontFamily: MEDIUM,
+                                    }}>
+                                    {DestinationTo == "" || DestinationTo == null ? "Select Destination" : DestinationTo}
+                                </Text>
+                                <Icon name={'chevron-down'} size={22} color={grey} />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setShowForwardDes(false);
+                                }}
+                                style={{
+                                    backgroundColor: greenPrimary,
+                                    height: 36,
+                                    width: 40,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 6,
+                                    marginLeft: 10,
+                                }}>
+                                <Icon name="check" size={22} color={white} />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    {DestinationToError !== "" && ForwardDesSwitch == true && <Text
+                        style={{
+                            fontSize: FontSize.FS_10,
+                            color: red,
+                            fontFamily: MEDIUM,
+                            marginTop: 8
+
+                        }}>
+                        {DestinationToError}
+                    </Text>
+                    }
+                </View>
+                {/* <TouchableOpacity
                         onPress={() => {
                             navigate('Availability');
                         }}
@@ -1481,105 +1470,104 @@ const EditExtension = ({ navigation, route }) => {
                         <Icon name={'chevron-right'} size={25} color={black} />
                     </TouchableOpacity> */}
 
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (isEdit == true) {
-                                UpdateExtension()
-                            }
-                            else {
-                                CreateExtension()
-                            }
-                        }}
+                <TouchableOpacity
+                    onPress={() => {
+                        if (isEdit == true) {
+                            UpdateExtension()
+                        }
+                        else {
+                            CreateExtension()
+                        }
+                    }}
+                    style={{
+                        backgroundColor: greenPrimary,
+                        alignItems: 'center',
+                        paddingVertical: 10,
+                        marginVertical: 40,
+                        justifyContent: 'center',
+                        borderRadius: 4,
+                        width: '100%',
+                    }}>
+                    <Text
                         style={{
-                            backgroundColor: greenPrimary,
-                            alignItems: 'center',
-                            paddingVertical: 10,
-                            marginVertical: 40,
-                            justifyContent: 'center',
-                            borderRadius: 4,
-                            width: '100%',
+                            fontSize: FontSize.FS_14,
+                            color: white,
+                            fontFamily: SEMIBOLD,
+                            lineHeight: 24,
+                            marginLeft: 10,
                         }}>
-                        <Text
-                            style={{
-                                fontSize: FontSize.FS_14,
-                                color: white,
-                                fontFamily: SEMIBOLD,
-                                lineHeight: 24,
-                                marginLeft: 10,
-                            }}>
-                            {isEdit ? 'Update' : 'Add Extension'}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                        {isEdit ? 'Update' : 'Add Extension'}
+                    </Text>
+                </TouchableOpacity>
+            </View>
 
-                {/* bottomsheet */}
-                <SingleTimeoutBottomSheet
-                    data={SINGLETIMEOUT}
-                    headerTitle={'Waiting Timeout'}
-                    bottomSheetRef={bottomSheetRef}
-                    selectedValue={data => {
-                        setWaitingTime(data);
-                    }}
-                />
-                <SingleTimeoutBottomSheet
-                    data={SINGLETIMEOUT}
-                    headerTitle={'Ring Timeout'}
-                    bottomSheetRef={RingTimeOutbottomSheetRef}
-                    selectedValue={data => {
-                        setRingTimoutTime(data);
-                    }}
-                />
+            {/* bottomsheet */}
+            <SingleTimeoutBottomSheet
+                data={SINGLETIMEOUT}
+                headerTitle={'Waiting Timeout'}
+                bottomSheetRef={bottomSheetRef}
+                selectedValue={data => {
+                    setWaitingTime(data);
+                }}
+            />
+            <SingleTimeoutBottomSheet
+                data={SINGLETIMEOUT}
+                headerTitle={'Ring Timeout'}
+                bottomSheetRef={RingTimeOutbottomSheetRef}
+                selectedValue={data => {
+                    setRingTimoutTime(data);
+                }}
+            />
 
-                <SingleTimeoutBottomSheet
-                    data={SINGLETIMEOUT}
-                    headerTitle={'Ring Time'}
-                    bottomSheetRef={ExtensionRIngTimpoutebottomSheetRef}
-                    selectedValue={data => {
-                        setExtensionRingTIme(data);
-                    }}
-                />
-                <AudioFileListBottomSheet
-                    headerTitle={'Please select VM Greetings'}
-                    AudioFileList={AudioFileList}
-                    CurrantId={MainSelectedAudioFileId}
-                    bottomSheetRef={AudioFilebottomSheetRef}
-                    selectedValue={data => {
-                        setMainSelectedAudioFileName(data);
-                    }}
-                    selectedId={data => {
-                        setMainSelectedAudioFileId(data);
-                    }}
-                />
+            <SingleTimeoutBottomSheet
+                data={SINGLETIMEOUT}
+                headerTitle={'Ring Time'}
+                bottomSheetRef={ExtensionRIngTimpoutebottomSheetRef}
+                selectedValue={data => {
+                    setExtensionRingTIme(data);
+                }}
+            />
+            <AudioFileListBottomSheet
+                headerTitle={'Please select VM Greetings'}
+                AudioFileList={AudioFileList}
+                CurrantId={MainSelectedAudioFileId}
+                bottomSheetRef={AudioFilebottomSheetRef}
+                selectedValue={data => {
+                    setMainSelectedAudioFileName(data);
+                }}
+                selectedId={data => {
+                    setMainSelectedAudioFileId(data);
+                }}
+            />
 
-                <RouteDestinationBottomSheet
-                    data={ROUTE}
-                    headerTitle={'Select Route Type'}
-                    currentValue={RouteValue}
-                    bottomSheetRef={RouteTobottomSheetRef}
-                    selectedValue={data => {
-                        setRouteTo(data);
-                    }}
-                    selectedRoute={data => {
-                        setRouteValue(data)
-                    }}
-                />
+            <RouteDestinationBottomSheet
+                data={ROUTE}
+                headerTitle={'Select Route Type'}
+                currentValue={RouteValue}
+                bottomSheetRef={RouteTobottomSheetRef}
+                selectedValue={data => {
+                    setRouteTo(data);
+                }}
+                selectedRoute={data => {
+                    setRouteValue(data)
+                }}
+            />
 
-                <DestinationBottomSheet
-                    data={DestinationList}
-                    headerTitle={'Select Destination'}
-                    currentValue={DestinationValue}
-                    bottomSheetRef={DestinationTobottomSheetRef}
-                    selectedValue={data => {
-                        setDestinationTo(data);
-                        setDestinationToError("")
-                    }}
-                    selectedDestination={data => {
-                        setDestinationValue(data)
-                        setDestinationToError("")
-                    }}
-                />
+            <DestinationBottomSheet
+                data={DestinationList}
+                headerTitle={'Select Destination'}
+                currentValue={DestinationValue}
+                bottomSheetRef={DestinationTobottomSheetRef}
+                selectedValue={data => {
+                    setDestinationTo(data);
+                    setDestinationToError("")
+                }}
+                selectedDestination={data => {
+                    setDestinationValue(data)
+                    setDestinationToError("")
+                }}
+            />
 
-            </HeaderView>
             {isLoading && <LoadingView />}
         </>
     );

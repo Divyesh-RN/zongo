@@ -5,7 +5,7 @@ import {
   STATUS_PENDING,
   STATUS_REJECTED,
 } from '../../constants/ConstantKey';
-import {Get_Did_Routing, Get_Inbound_Number_List, Get_Number, Get_Prefix, Update_Inbound_Number, Update_Inbound_Number_Route} from '../api/Api';
+import {Get_Did_Routing, Get_Inbound_Number_List, Get_Number, Get_Prefix, Onboarding_Buy_Did, Update_Inbound_Number, Update_Inbound_Number_Route} from '../api/Api';
 import {Log} from '../../commonComponents/Log';
 
 export const InboundReducer = createSlice({
@@ -24,6 +24,7 @@ export const InboundReducer = createSlice({
     apiGetDidRouting: STATUS_IDLE,
     apiUpdateInboundNumber: STATUS_IDLE,
     apiGetNumberList: STATUS_IDLE,
+    apiBuyDid: STATUS_IDLE,
 
   },
 
@@ -38,6 +39,7 @@ export const InboundReducer = createSlice({
         (state.apiGetPrefix= STATUS_IDLE);
         (state.apiGetDidRouting = STATUS_IDLE);
         (state.apiGetNumberList = STATUS_IDLE);
+        (state.apiBuyDid = STATUS_IDLE);
     },
     clearInboundData: state => {
       state.inbound_number_list = null;
@@ -173,6 +175,28 @@ export const InboundReducer = createSlice({
         state.error_message = action.payload?.message;
         state.apiGetNumberList = STATUS_REJECTED;
       });
+
+      builder.addCase(Onboarding_Buy_Did.pending, (state, action) => {
+        state.apiBuyDid = STATUS_PENDING;
+        state.isLoader = true;
+        state.isError = false;
+        state.error_message = '';
+      });
+      builder.addCase(Onboarding_Buy_Did.fulfilled, (state, action) => {
+        Log('Onboarding_Buy_Did fulfilled : ', JSON.stringify(action));
+        state.apiBuyDid = STATUS_FULFILLED;
+        state.isLoader = false;
+        state.isError = false;
+        state.error_message = '';
+      });
+      builder.addCase(Onboarding_Buy_Did.rejected, (state, action) => {
+        Log('Onboarding_Buy_Did rejected : ', JSON.stringify(action));
+        state.isLoader = false;
+        state.isError = true;
+        state.error_message = action.payload?.message;
+        state.apiBuyDid = STATUS_REJECTED;
+      });
+
 
   },
 });

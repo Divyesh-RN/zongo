@@ -14,11 +14,12 @@ import { USER_DATA } from '@constants/ConstantKey';
 import { storeUserData } from '@redux/reducers/userReducer';
 import { Log } from '../../commonComponents/Log';
 import { changeIncomingAlertState } from '../../redux/reducers/userReducer';
+import { navigate } from '../../navigation/RootNavigation';
 
 const Splash = props => {
 
   const userData = useSelector(state => state.userRedux.user_data);
-  
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -34,16 +35,44 @@ const Splash = props => {
       Log('user_data splash: ' + JSON.stringify(data));
       if (data == null) {
         resetScreen('Login');
-        
+
       } else {
-        storeData(USER_DATA, data, () => {
-          dispatch(storeUserData(data));
-          resetScreen('Home');
-          // resetScreen('EditExtension');
-          // resetScreen('Availability');
-          // resetScreen('RingGroup');
-          // resetScreen('Call');
-        });
+        // storeData(USER_DATA, data, () => {
+        //   dispatch(storeUserData(data));
+        //   resetScreen('Home');
+        // });
+
+        if (data?.data?.role == "superadmin" || data?.data?.role == "admin") {
+          storeData(USER_DATA, data, () => {
+            dispatch(storeUserData(data));
+            resetScreen('Home');
+          });
+        }
+        else {
+          if (data?.data?.is_did_done == "YES" &&
+            data?.data?.is_e911_done == "YES" &&
+            data?.data?.is_email_config_done == "YES" &&
+            data?.data?.is_password_done == "YES") {
+            storeData(USER_DATA, data, () => {
+              dispatch(storeUserData(data));
+              resetScreen('Home');
+            });
+          }
+          else {
+            storeData(USER_DATA, data, () => {
+              dispatch(storeUserData(data));
+            });
+            var dict = {
+              is_did_done: data?.data?.is_did_done,
+              is_e911_done: data?.data?.is_e911_done,
+              is_email_config_done: data?.data?.is_email_config_done,
+              is_password_done: data?.data?.is_password_done
+            }
+            // navigate("UserOnBoarding", { onboarding_data: dict })
+            resetScreen('Login');
+          }
+        }
+
       }
     });
   };
@@ -59,8 +88,9 @@ const Splash = props => {
           justifyContent: 'center',
         }}>
         <Image
+        tintColor={greenPrimary}
           source={SplashImg}
-          style={{width: '100%', height: '100%'}}
+          style={{ width: '100%', height: '100%' }}
           resizeMode="cover"
         />
       </View>

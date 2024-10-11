@@ -1,8 +1,6 @@
 
 import { StyleSheet, TouchableOpacity, Text, View, Modal, LayoutAnimation, Alert } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
-import HeaderView from '@commonComponents/HeaderView';
-import { pixelSizeHorizontal } from '@commonComponents/ResponsiveScreen';
+import { useCallback, useEffect, useState } from 'react';
 import HeaderBackView from '@commonComponents/HeaderBackView';
 import { black, white } from '@constants/Color';
 import { FontSize, SEMIBOLD } from '@constants/Fonts';
@@ -348,7 +346,7 @@ const AutoAttendant = ({ navigation }) => {
             [
                 {
                     text: 'No',
-                    onPress: () => {}, style: 'cancel'
+                    onPress: () => { }, style: 'cancel'
                 },
                 {
                     text: 'Yes',
@@ -363,123 +361,111 @@ const AutoAttendant = ({ navigation }) => {
     }
     return (
         <>
-            <HeaderView
-                title={'Zongo'}
-                isProfilePic={true}
-                imgUri={
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-                }
-                containerStyle={{
-                    marginHorizontal: pixelSizeHorizontal(0),
+            <HeaderBackView
+                title="Auto-Attendant"
+                isBack={true}
+                onPressBack={() => {
+                    goBack();
+                }}
+                onPressMenu={() => {
+                    navigation.toggleDrawer();
+                }}
+            />
+            {isPermission == true ?
+                <>
+                    {
+                        AutoAttendantList !== null &&
+                        <>
+                            {AutoAttendantList.map((item, key) => (
+                                <ExpandableComponent
+                                    key={item.ivr_menu_extension}
+                                    onClickFunction={() => {
+                                        updateLayout(key);
+                                    }}
+                                    onDelete={() => {
+                                        checkAssingModule(item)
+                                    }}
+                                    item={item}
+                                />
+                            ))}
+                        </>
+                    }
+                    {add_per === "yes" &&
+                        <TouchableOpacity onPress={() => {
+                            navigate("ManageAutoAttendant", { isEdit: false })
+                        }}
+                            style={{
+                                backgroundColor: midGreen,
+                                flexDirection: "row",
+                                alignItems: "center",
+                                paddingVertical: 20,
+                                justifyContent: "center",
+                                position: "absolute",
+                                bottom: 0,
+                                width: "100%",
+                            }}>
+                            <Icon name="plus" size={25} color={white} />
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
+                                color: white,
+                                fontFamily: SEMIBOLD,
+                                lineHeight: 24,
+                                marginLeft: 10
+                            }}>{"Add New Auto-Attendant"}</Text>
+                        </TouchableOpacity>
+                    }
+                </>
+                :
+                <DoNotAccess />
+            }
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={AssignModuleModel}
+                onRequestClose={() => {
+                    setAssignModuleModel(!AssignModuleModel);
                 }}>
-                <View style={{ marginHorizontal: 20 }}>
-                    <HeaderBackView
-                        title="Auto-Attendant"
-                        isBack={true}
-                        onPressBack={() => {
-                            goBack();
-                        }}
-                        onPressMenu={() => {
-                            navigation.toggleDrawer();
-                        }}
-                    />
-                </View>
-                {isPermission == true ?
-                    <>
-                        {
-                            AutoAttendantList !== null &&
-                            <>
-                                {AutoAttendantList.map((item, key) => (
-                                    <ExpandableComponent
-                                        key={item.ivr_menu_extension}
-                                        onClickFunction={() => {
-                                            updateLayout(key);
-                                        }}
-                                        onDelete={() => {
-                                            checkAssingModule(item)
-                                        }}
-                                        item={item}
-                                    />
-                                ))}
-                            </>
-                        }
-                        {add_per === "yes" &&
-                            <TouchableOpacity onPress={() => {
-                                navigate("ManageAutoAttendant", { isEdit: false })
-                            }}
-                                style={{
-                                    backgroundColor: midGreen,
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    paddingVertical: 20,
-                                    justifyContent: "center",
-                                    position: "absolute",
-                                    bottom: 0,
-                                    width: "100%",
-                                }}>
-                                <Icon name="plus" size={25} color={white} />
-                                <Text style={{
-                                    fontSize: FontSize.FS_13,
-                                    color: white,
-                                    fontFamily: SEMIBOLD,
-                                    lineHeight: 24,
-                                    marginLeft: 10
-                                }}>{"Add New Auto-Attendant"}</Text>
-                            </TouchableOpacity>
-                        }
-                    </>
-                    :
-                    <DoNotAccess />
-                }
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={AssignModuleModel}
-                    onRequestClose={() => {
-                        setAssignModuleModel(!AssignModuleModel);
-                    }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={{
+                            fontSize: FontSize.FS_12,
+                            color: black,
+                            fontFamily: MEDIUM,
+                            marginTop: 10
+                        }}>{"This auto attendant is assign to following module."}</Text>
+                        <Text style={{
+                            fontSize: FontSize.FS_12,
+                            color: black,
+                            fontFamily: MEDIUM,
+                        }}>{"Please, remove from that to delete."}</Text>
+                        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
+
                             <Text style={{
-                                fontSize: FontSize.FS_12,
+                                fontSize: FontSize.FS_13,
+                                color: black,
+                                fontFamily: SEMIBOLD,
+                                marginRight: 5,
+                            }}>{assign_module_data[0]?.module + " : "}</Text>
+                            <Text style={{
+                                fontSize: FontSize.FS_13,
                                 color: black,
                                 fontFamily: MEDIUM,
-                                marginTop: 10
-                            }}>{"This auto attendant is assign to following module."}</Text>
-                            <Text style={{
-                                fontSize: FontSize.FS_12,
-                                color: black,
-                                fontFamily: MEDIUM,
-                            }}>{"Please, remove from that to delete."}</Text>
-                            <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
-
-                                <Text style={{
-                                    fontSize: FontSize.FS_13,
-                                    color: black,
-                                    fontFamily: SEMIBOLD,
-                                    marginRight: 5,
-                                }}>{assign_module_data[0]?.module + " : "}</Text>
-                                <Text style={{
-                                    fontSize: FontSize.FS_13,
-                                    color: black,
-                                    fontFamily: MEDIUM,
-                                }}>{assign_module_data[0]?.value}</Text>
-                            </View>
-
-                            <TouchableOpacity onPress={() => {
-                                setAssignModuleModel(false)
-                            }}
-                                style={{ backgroundColor: grey, height: 40, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 40, alignSelf: "center" }}>
-                                <Text style={{
-                                    fontSize: FontSize.FS_12,
-                                    color: white,
-                                    fontFamily: MEDIUM,
-                                }}>{"Close"}</Text>
-                            </TouchableOpacity>
+                            }}>{assign_module_data[0]?.value}</Text>
                         </View>
+
+                        <TouchableOpacity onPress={() => {
+                            setAssignModuleModel(false)
+                        }}
+                            style={{ backgroundColor: grey, height: 40, width: "100%", alignItems: "center", justifyContent: "center", borderRadius: 4, marginTop: 40, alignSelf: "center" }}>
+                            <Text style={{
+                                fontSize: FontSize.FS_12,
+                                color: white,
+                                fontFamily: MEDIUM,
+                            }}>{"Close"}</Text>
+                        </TouchableOpacity>
                     </View>
-                </Modal>
-            </HeaderView>
+                </View>
+            </Modal>
             {isLoading && <LoadingView />}
         </>
     );

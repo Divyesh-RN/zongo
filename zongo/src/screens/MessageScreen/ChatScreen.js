@@ -6,7 +6,7 @@ import {
   TextInput,
   Alert
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import HeaderView from '../../commonComponents/HeaderView';
 import { pixelSizeHorizontal } from '../../commonComponents/ResponsiveScreen';
 import HeaderBackView from '../../commonComponents/HeaderBackView';
@@ -26,6 +26,8 @@ import { resetApiStatus } from '../../redux/reducers/messageReducer';
 import { STATUS_FULFILLED, STATUS_REJECTED } from '../../constants/ConstantKey';
 import { Get_Sms_Chat, Send_sms } from '../../redux/api/Api';
 import moment from 'moment';
+import { useFocusEffect } from '@react-navigation/native';
+import LoadingView from '../../commonComponents/LoadingView';
 
 const ChatScreen = ({ route }) => {
   const [messageText, setMessageText] = useState('');
@@ -44,17 +46,22 @@ const ChatScreen = ({ route }) => {
   const user_data = useSelector(state => state.userRedux.user_data);
 
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetApiStatus());
-    };
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      console.log("1")
+      GetSmsChatData()
+      return () => {
+        dispatch(resetApiStatus());
+      };
+    }, [])
+  );
 
   useEffect(() => {
     Log('apiGetSmsChat :', apiGetSmsChat);
     if (apiGetSmsChat == STATUS_FULFILLED) {
       if (sms_chat_data !== null) {
-        ShortDataByTime(sms_chat_data?.data?.data)
+        console.log("sms_chat_data :", sms_chat_data)
+        ShortDataByTime(sms_chat_data)
         // setChatData(sms_chat_data?.data?.data)
       }
     } else if (apiGetSmsChat == STATUS_REJECTED) {
@@ -68,12 +75,7 @@ const ChatScreen = ({ route }) => {
     Log('apiSendSms :', apiSendSms);
     if (apiSendSms == STATUS_FULFILLED) {
       setMessageText("")
-      var dict = {};
-      dict.from_number = "+17869210666",
-        dict.to_number = route?.params?.to_number,
-        dict.main_uuid = user_data?.data?.main_uuid,
-        dict.createdby = user_data?.data?.user_uuid
-      dispatch(Get_Sms_Chat(dict))
+      GetSmsChatData()
     } else if (apiSendSms == STATUS_REJECTED) {
       if (isError) {
         Alert.alert('Alert', error_message);
@@ -81,15 +83,7 @@ const ChatScreen = ({ route }) => {
     }
   }, [apiSendSms]);
 
-  useEffect(() => {
-    var dict = {};
-    dict.from_number = "+17869210666",
-      dict.to_number = route?.params?.to_number,
-      dict.main_uuid = user_data?.data?.main_uuid,
-      dict.createdby = user_data?.data?.user_uuid
-      Log("CHAT DATA USER ",dict)
-    dispatch(Get_Sms_Chat(dict))
-  }, [])
+
 
   useEffect(() => {
     // Call the API function immediately when the component mounts
@@ -103,10 +97,11 @@ const ChatScreen = ({ route }) => {
 
   const GetSmsChatData = () => {
     var dict = {};
-    dict.from_number = "+17869210666",
+    dict.from_number = route?.params?.from_number,
       dict.to_number = route?.params?.to_number,
       dict.main_uuid = user_data?.data?.main_uuid,
       dict.createdby = user_data?.data?.user_uuid
+    console.log("dict", dict)
     dispatch(Get_Sms_Chat(dict))
   }
 
@@ -116,19 +111,25 @@ const ChatScreen = ({ route }) => {
       item.date_time = moment(item.date_time, 'MM/DD/YYYY HH:mm:ss').toDate();
     });
     copiedData.sort((a, b) => a.date_time - b.date_time);
+    console.log("copiedData", copiedData)
     setChatData(copiedData);
   };
+  
   const onSend = () => {
-    if (messageText !== "") {
+    const trimmedMessageText = messageText.trim();
+
+    if (trimmedMessageText !== "") {
       setMessageText("")
       var dict = {};
-      dict.from_number = "+17869210666",
-        dict.to_number = route?.params?.to_number,
+      dict.from_number = route?.params?.from_number,
+        dict.to_number = route?.params?.to_uuid,
         dict.message = messageText
       dict.main_uuid = user_data?.data?.main_uuid,
         dict.createdby = user_data?.data?.user_uuid
+        console.log("dict", dict)
+      dispatch(Send_sms(dict))
+
     }
-    dispatch(Send_sms(dict))
 
   }
 
@@ -155,22 +156,7 @@ const ChatScreen = ({ route }) => {
   }
   return (
     <>
-      <HeaderView
-        title={'Zongo'}
-        isProfilePic={true}
-        imgUri={
-          'https://www.shareicon.net/data/512x512/2016/05/24/770137_man_512x512.png'
-        }
-        onPressProfile={() => {
-          Log('Profile');
-        }}
-        onPressSearch={() => {
-          Log('Search');
-        }}
-        containerStyle={{
-          paddingHorizontal: pixelSizeHorizontal(0),
-        }}>
-        <View style={{ paddingHorizontal: pixelSizeHorizontal(20), }}>
+        <View>
           <HeaderBackView
             title={ToName == " " ? ToNumber : ToName}
             isBack={true}
@@ -194,8 +180,8 @@ const ChatScreen = ({ route }) => {
               ]}
             >
 
-              <View style={{ flexDirection: item.direction === 'inbound' ? "row" : "row-reverse", alignItems: "center" }}>
-                {item.contact_name !== " " && <View style={{
+              <View style={{ flexDirection: item.direction == 'inbound' ? "row" : "row-reverse", alignItems: "center" }}>
+                {/* {item.contact_name !== " " && <View style={{
                   borderWidth: 1,
                   borderColor: white,
                   backgroundColor: greenPrimary,
@@ -209,12 +195,12 @@ const ChatScreen = ({ route }) => {
 
                 }}>
                   <Text style={{ fontSize: 12, color: white, fontFamily: REGULAR, marginLeft: 2 }}>{GetName(item.contact_name)} </Text>
-                </View>}
+                </View>} */}
                 <View>
-                  <Text style={styles.messageText}>
+                  <Text style={[styles.messageText, { textAlign: item.direction == 'inbound' ? "left" : "right" }]}>
                     {item.message_text}
                   </Text>
-                  <Text style={styles.timeText}>
+                  <Text style={[styles.timeText, { textAlign: item.direction !== 'inbound' ? "left" : "right" }]}>
                     {moment(item.date_time).format('MM/DD/YYYY HH:mm:ss')}
                   </Text>
                 </View>
@@ -226,41 +212,10 @@ const ChatScreen = ({ route }) => {
             </View>
           )}
         />
-        {/* <View style={{ backgroundColor: greenPrimary, position: "absolute", bottom: 0, width: "100%", height: 90, flexDirection: "row", paddingHorizontal: 20 }} >
-        <TouchableOpacity style={{ flex: 0.10, alignSelf: "center" }}>
-          <Icon name="plus" size={30} color={white} />
-        </TouchableOpacity>
-        <View style={{ backgroundColor: white, flex: 0.90, height: 60, alignSelf: "center", borderRadius: 6, paddingHorizontal: 16, flexDirection: "row", alignItems: "center",shadowColor: "#000",
-shadowOffset: {
-	width: 0,
-	height: 2,
-},
-shadowOpacity: 0.25,
-shadowRadius: 3.84,
-
-elevation: 5, }}>
-          <TextInput
-            multiline={true}
-            style={{ color: black, fontSize: FontSize.FS_14, fontFamily: MEDIUM, flex: 0.90 }}
-            placeholder="Type a message...."
-            value={messageText}
-            onChangeText={setMessageText}
-          />
-          {messageText.length > 0 &&
-            <TouchableOpacity onPress={() => {
-              onSend()
-            }}
-              style={{ flex: 0.10 }}>
-              <Icon name="send" size={30} color={greenPrimary} />
-            </TouchableOpacity>}
-        </View>
-      </View> */}
-      </HeaderView>
-
-      <View style={{flexDirection:"row",alignItems:"center",marginHorizontal:10,backgroundColor:bgColor01}}>
+      <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 10, }}>
         <View style={{
           backgroundColor: white, height: 50, alignSelf: "center", borderRadius: 6, paddingHorizontal: 14, flexDirection: "row", alignItems: "center", shadowColor: "#000", marginBottom: 20, borderRadius: 50, borderWidth: 1, borderColor: light_grey,
-          width:"80%",
+          width: "80%",
           shadowOffset: {
             width: 0,
             height: 2,
@@ -268,7 +223,7 @@ elevation: 5, }}>
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
 
-          elevation: 5,
+          elevation: 2,
         }}>
           <TextInput
             multiline={true}
@@ -277,26 +232,26 @@ elevation: 5, }}>
             value={messageText}
             onChangeText={setMessageText}
           />
-          
-            <TouchableOpacity style={{ flex:0.10 }}>
-          <Icon name="plus" size={30} color={greenPrimary} />
-          
-        </TouchableOpacity>
-       
+
+          <TouchableOpacity style={{ flex: 0.10 }}>
+            {/* <Icon name="plus" size={30} color={greenPrimary} /> */}
+
+          </TouchableOpacity>
+
         </View>
-        <View style={{width:"5%"}}>
+        <View style={{ width: "5%" }}>
 
         </View>
         {/* {messageText.length > 0 && */}
-            <TouchableOpacity onPress={() => {
-              onSend()
-            }}
-              style={{width:"15%",backgroundColor:greenPrimary,width:50,height:50,borderRadius:50,alignItems:"center",justifyContent:"center", marginBottom: 16,}}>
-              <Icon name="send" size={30} color={white} />
-            </TouchableOpacity>
-            {/* } */}
-            </View>
-
+        <TouchableOpacity onPress={() => {
+          onSend()
+        }}
+          style={{ width: "15%", backgroundColor: greenPrimary, width: 50, height: 50, borderRadius: 50, alignItems: "center", justifyContent: "center", marginBottom: 16, }}>
+          <Icon name="send" size={28} color={white} />
+        </TouchableOpacity>
+        {/* } */}
+      </View>
+{isLoading && <LoadingView/>}
     </>
   );
 };
@@ -344,12 +299,12 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   messageText: {
-    fontSize: 16,
+    fontSize: FontSize.FS_14,
     color: black,
     fontFamily: MEDIUM
   },
   timeText: {
-    fontSize: 8,
+    fontSize: FontSize.FS_09,
     color: grey,
     fontFamily: REGULAR,
     textAlign: "right",
