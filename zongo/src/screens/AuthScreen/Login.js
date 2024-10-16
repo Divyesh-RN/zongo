@@ -57,11 +57,11 @@ const Login = () => {
   // const [Email, setEmail] = useState('ipnfullfullstack@gmail.com');
   // const [Password, setPassword] = useState('123456');
 
-  // const [Email, setEmail] = useState('divyeshgajera1111@gmail.com');
-  // const [Password, setPassword] = useState('Test@123');
+  const [Email, setEmail] = useState('divyeshgajera1111@gmail.com');
+  const [Password, setPassword] = useState('Test@123');
 
-  const [Email, setEmail] = useState('');
-  const [Password, setPassword] = useState('');
+  // const [Email, setEmail] = useState('');
+  // const [Password, setPassword] = useState('');
 
 
   const dispatch = useDispatch();

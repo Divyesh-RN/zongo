@@ -9,7 +9,6 @@ import global from '../../../constants/Global';
 import DeviceInfo from 'react-native-device-info';
 import { NetworkInfo } from 'react-native-network-info';
 import NetInfo from '@react-native-community/netinfo';
-import RNCallKeep from 'react-native-callkeep';
 
 let userAgent = null;
 let session = null;
@@ -17,58 +16,6 @@ let session = null;
 const RegisterAccount = ({ toggleLoading, registerData }) => {
   console.log("registerData", registerData)
   const dispatch = useDispatch()
-
-
-  useEffect(() => {
-    RNCallKeep.addEventListener('answerCall', ({ callUUID }) => {
-      console.log("global.session",global.session)
-      if (global.session) {
-        console.log("Answer from CALL-KEEP")
-        // global.session.answer();
-        const options = {
-          mediaConstraints: {
-            audio: {
-              optional: [{ minptime: '10' }, { useinbandfec: '1' }],
-              mandatory: {
-                offerToReceiveAudio: true,
-                offerToReceiveVideo: false,
-                echoCancellation: true,
-                noiseSuppression: true,
-                googEchoCancellation: true,
-              },
-            },
-            video: false,
-          },
-          rtcOfferConstraints: {
-            offerToReceiveAudio: true,
-            offerToReceiveVideo: false,
-          },
-          sessionTimersExpires: 120,
-          pcConfig: {
-            iceServers: [
-              {
-                urls: [
-                  'stun:stun.l.google.com:19302',
-                  'stun:stun1.l.google.com:19302',
-                ],
-              },
-            ],
-          },
-        };
-      global.session.answer(options);
-      }
-    });
-    
-    // End call
-    RNCallKeep.addEventListener('endCall', ({ callUUID }) => {
-      if (global.session) {
-        console.log("Answer from CALL-KEEP")
-        global.session.terminate();
-      }
-    });
-    
-    return () => { };
-  }, []);
 
   useEffect(() => {
     if (userAgent == null) {
@@ -137,18 +84,9 @@ const RegisterAccount = ({ toggleLoading, registerData }) => {
       console.log("================== DISPLAY NAME   ================:", session?._remote_identity?._display_name)
       console.log("================== USER_NAME   ================:", session?._remote_identity?._uri?._user)
       console.log("================== DIRECTION  ================:", session.direction)
-      const callerId = session.remote_identity.uri.user;
-    const displayName = session.remote_identity.display_name || callerId; RNCallKeep.displayIncomingCall(
-      'call-uuid', // a unique identifier for this call
-      callerId,    // SIP username
-      displayName, // caller's display name
-      'generic',   // call type ('generic', 'video')
-      false         // whether it's video call
-    );
-
       global.session = session
       if (session.direction === 'incoming') {
-        // dispatch(changeIncomingAlertState(true));
+        dispatch(changeIncomingAlertState(true));
 
 
 

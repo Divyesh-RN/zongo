@@ -6190,11 +6190,6 @@ react-native-calendars@^1.1302.0:
   optionalDependencies:
     moment "^2.29.4"
 
-react-native-callkeep@^4.3.14:
-  version "4.3.14"
-  resolved "https://registry.yarnpkg.com/react-native-callkeep/-/react-native-callkeep-4.3.14.tgz#a1f5c0d1d254c4af984dd13b6915a4c9c9f9a415"
-  integrity sha512-DtvJwwTxDLMWgkXLpXm/I/i12khya7nssTXVgXaNyvooClqU+af/b18rXEPhUfd0Wf8uOxONgUIrk5f3ZoMCaA==
-
 react-native-communications@2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-native-communications/-/react-native-communications-2.2.1.tgz#7883b56b20a002eeb790c113f8616ea8692ca795"

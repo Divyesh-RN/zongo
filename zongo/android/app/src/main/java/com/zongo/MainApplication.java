@@ -11,7 +11,6 @@ import com.facebook.soloader.SoLoader;
 import com.zxcpoiu.incallmanager.InCallManagerPackage;
 import com.rnfs.RNFSPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
-import io.wazo.callkeep.RNCallKeepPackage; // Add this import line
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -32,7 +31,6 @@ public class MainApplication extends Application implements ReactApplication {
             new InCallManagerPackage();
             new RNFSPackage();
             new RNFetchBlobPackage();
-            new RNCallKeepPackage(); // Add this line
             return packages;
         }
 
