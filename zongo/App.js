@@ -26,8 +26,12 @@ import { useFocusEffect } from '@react-navigation/native';
 import { navigate, resetScreen } from './src/navigation/RootNavigation';
 import { storeUserData } from './src/redux/reducers/userModuleReducer';
 import RNCallKeep from 'react-native-callkeep';
+import usePushNotification from './src/commonComponents/PushNotification/usePushNotification';
+import PushNotification from 'react-native-push-notification';
+
 
 let persistedStore = persistStore(store)
+//REACT NATIVE WEB RTC
 window.RTCPeerConnection = window.RTCPeerConnection || RTCPeerConnection;
 window.RTCIceCandidate = window.RTCIceCandidate || RTCIceCandidate;
 window.RTCSessionDescription =
@@ -38,138 +42,150 @@ window.navigator.mediaDevices = window.navigator.mediaDevices || mediaDevices;
 window.navigator.getUserMedia =
   window.navigator.getUserMedia || mediaDevices.getUserMedia;
 
+// REACT_NATIVE CALL_KEEP
+const options = {
+  ios: {
+    appName: 'My app name',
+  },
+  android: {
+    alertTitle: 'Permissions required',
+    alertDescription: 'This application needs to access your phone accounts',
+    cancelButton: 'Cancel',
+    okButton: 'ok',
+    imageName: 'phone_account_icon',
+    foregroundService: {
+      channelId: 'com.zongo',
+      channelName: 'Foreground service for my app',
+      notificationTitle: 'My app is running on background',
+      notificationIcon: 'Path to the resource icon of the notification',
+    },
+  }
+};
+
 function App() {
 
-  const options = {
-    ios: {
-      appName: 'My app name',
-    },
-    android: {
-      alertTitle: 'Permissions required',
-      alertDescription: 'This application needs to access your phone accounts',
-      cancelButton: 'Cancel',
-      okButton: 'ok',
-      imageName: 'phone_account_icon',
-      // additionalPermissions: [PermissionsAndroid.PERMISSIONS.example],
-      // Required to get audio in background when using Android 11
-      foregroundService: {
-        channelId: 'com.zongo',
-        channelName: 'Foreground service for my app',
-        notificationTitle: 'My app is running on background',
-        notificationIcon: 'Path to the resource icon of the notification',
-      }, 
-    }
-  };
-  
-  RNCallKeep.setup(options)
-  .then(accepted => console.log("Callkeep setup done", accepted))
-  .catch(err => console.error("Callkeep setup failed", err));
-
-RNCallKeep.setAvailable(true);
-
-
+  const {
+    requestUserPermission,
+    getFCMToken,
+    listenToBackgroundNotifications,
+    listenToForegroundNotifications,
+    onNotificationOpenedAppFromBackground,
+    onNotificationOpenedAppFromQuit,
+  } = usePushNotification();
 
   useEffect(() => {
-    if (Platform.OS == 'ios') {
-      requestUserPermission();
-    } else {
-      getFcmToken()
+  showStickyNotification()
 
+    const listenToNotifications = () => {
+      try {
+        getFCMToken();
+        requestUserPermission();
+        onNotificationOpenedAppFromQuit();
+        listenToBackgroundNotifications();
+        listenToForegroundNotifications();
+        onNotificationOpenedAppFromBackground();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    listenToNotifications();
+  }, []);
+
+  useEffect(() => {
+    setupCallKeep();
+  }, []);
+
+  const setupCallKeep = async () => {
+    try {
+      // Request permissions for Android
+      if (Platform.OS === 'android') {
+        await PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        ]);
+      }
+
+      // Initialize CallKeep
+      RNCallKeep.setup(options)
+        .then((accepted) => console.log('CallKeep setup done', accepted))
+        .catch((err) => console.error('CallKeep setup failed', err));
+
+      // RNCallKeep.setAvailable(true);
+
+      // Event listeners for handling call events
+      // RNCallKeep.addEventListener('answerCall', onAnswerCall);
+      // RNCallKeep.addEventListener('endCall', onEndCall);
+
+      // If you want to display an incoming call UI
+      // RNCallKeep.displayIncomingCall('callUUID', 'Caller Name');
+    } catch (error) {
+      console.error('Error setting up CallKeep', error);
     }
-    /** Use when Tap on Notification & app is in backgroud state to foreground */
-    messaging().onNotificationOpenedApp(remoteMessage => {
+  };
 
-      Log(
-        'Notification caused app to open from background state:',
-        remoteMessage.notification,
-        'Data Is ',
-        remoteMessage.data,
-      );
+  PushNotification.configure({
+    onNotification: function(notification) {
+      console.log("NOTIFICATION:", notification);
+      // process the notification here
+    },
+    // (optional) Called when Token is generated (iOS and Android)
+    onRegister: function(token) {
+      console.log("TOKEN:", token);
+    },
+  });
 
-      let data = remoteMessage.data
+  PushNotification.createChannel(
+    {
+      channelId: "voip-channel", // unique channel ID
+      channelName: "VoIP Notifications", // user-visible name
+      importance: PushNotification.Importance.HIGH, // Set importance to high
+      vibrate: true,
+    },
+    (created) => {
+      if (created) {
+        console.log(`Channel created: ${created}`);
+      } else {
+        console.log("Channel already exists or was not created.");
+      }
+    }
+  );
 
-      setTimeout(() => {
-        Log("BACKGROUND STATE TO FOREGROUND STATE")
-      }, 3000);
+  const showStickyNotification = () => {
+    console.log("1")
+    PushNotification.localNotification({
+      id: 123, // Unique ID for the notification
+    channelId: "voip-channel", // Must match the channel ID you created
+    title: "VoIP Service Active ", // Title of the notification
+    message: "You are registered for calls.", // Message of the notification
+    ongoing: true, // Makes the notification non-removable
+    autoCancel: false, // Prevents the notification from being canceled by the user
+    priority: "high", // Sets the priority
+    visibility: "public", // Makes the notification visible to everyone
+    vibrate: true, // Enables vibration
+    playSound: false, // Disable sound
+    repeatType: 'minute',
 
-    })
 
-    /** Use when Tap on Notification & app is in Kill state to foreground */
-    messaging().getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          Log(
-            'Notification caused app to open from quit state:',
-            remoteMessage.notification,
-            'Data Is ',
-            remoteMessage.data,
-          );
-          let data = remoteMessage.data
-          setTimeout(() => {
-            Log("KILL STATE TO FOREGROUND STATE")
-          }, 3000);
-        }
-      });
-
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      // Handle the background message here.
-      Log('Received background message', remoteMessage);
     });
+  };
 
-    /** Use when app is in foreground state & display a notification*/
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Log("A new FCM message arrived!" + JSON.stringify(remoteMessage));
 
-      let notification = remoteMessage.notification
 
-      DisplayMessage({
-        title: notification.title,
-        description: notification.body,
-        type: 'success',
-        onPress: () => {
+  // const onAnswerCall = ({ callUUID }) => {
+  //   console.log('Call answered:');
+  //   // Add your call answering logic here
+  // };
 
-          let data = remoteMessage.data
-          // navigate("Notification")
-        }
-      })
+  // const onEndCall = ({ callUUID }) => {
+  //   console.log('Call ended:');
+  //   // Add your call ending logic here
+  // };
 
-    });
-    return unsubscribe;
 
-  },)
 
-  const requestUserPermission = async () => {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-    if (enabled) {
 
-      Log('Authorization status:', authStatus);
-
-      getFcmToken()
-
-    } else {
-      await messaging().requestPermission({
-        sound: true,
-        alert: true,
-        badge: true,
-        announcement: true,
-      });
-    }
-  }
-  const getFcmToken = async () => {
-    const fcmToken = await messaging().getToken();
-    if (fcmToken) {
-
-      Log(" Firebase Token :", fcmToken);
-      storeData(FCM_TOKEN, fcmToken)
-
-    } else {
-      Log("Failed", "No token received");
-    }
-  }
 
   return (
     <Provider store={store} >

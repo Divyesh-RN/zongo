@@ -138,17 +138,17 @@ const RegisterAccount = ({ toggleLoading, registerData }) => {
       console.log("================== USER_NAME   ================:", session?._remote_identity?._uri?._user)
       console.log("================== DIRECTION  ================:", session.direction)
       const callerId = session.remote_identity.uri.user;
-    const displayName = session.remote_identity.display_name || callerId; RNCallKeep.displayIncomingCall(
-      'call-uuid', // a unique identifier for this call
-      callerId,    // SIP username
-      displayName, // caller's display name
-      'generic',   // call type ('generic', 'video')
-      false         // whether it's video call
-    );
+    // const displayName = session.remote_identity.display_name || callerId; RNCallKeep.displayIncomingCall(
+    //   'call-uuid', // a unique identifier for this call
+    //   callerId,    // SIP username
+    //   displayName, // caller's display name
+    //   'generic',   // call type ('generic', 'video')
+    //   false         // whether it's video call
+    // );
 
       global.session = session
       if (session.direction === 'incoming') {
-        // dispatch(changeIncomingAlertState(true));
+        dispatch(changeIncomingAlertState(true));
 
 
 
