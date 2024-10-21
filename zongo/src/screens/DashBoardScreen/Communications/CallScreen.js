@@ -56,6 +56,7 @@ const CallScreen = ({ route }) => {
   const [ShowBlutoothName, setShowBlutoothName] = useState(false);
 
   const user_extension_data = useSelector(state => state.userRedux.user_extension_data);
+  const user_agent = useSelector(state => state.userRedux.user_agent);
 
   useEffect(() => {
 
@@ -194,22 +195,22 @@ const CallScreen = ({ route }) => {
     };
 
     if (from == "CALLS") {
-      session = global.userAgent.call(`sip:8${User}@${domainName}`, options);
+      session = user_agent.call(`sip:8${User}@${domainName}`, options);
     }
     else if (from == "DIALER") {
       if (User?.length == 4) {
-        console.log("step 4")
-        session = global.userAgent.call(`sip:${User}@${domainName}`, options);
-        // session = global.userAgent.call(`sip:8${User}@${domainName}`, options);
+        console.log("step 4",user_agent)
+        session = user_agent.call(`sip:${User}@${domainName}`, options);
+        // session = user_agent.call(`sip:8${User}@${domainName}`, options);
       }
       else {
         console.log("step 3")
-        // session = global.userAgent.call(`sip:9${User}@default`, options);
-        session = global.userAgent.call(`sip:${User}@${domainName}`, options);
+        // session = user_agent.call(`sip:9${User}@default`, options);
+        session = user_agent.call(`sip:${User}@${domainName}`, options);
       }
     }
     else {
-      session = global.userAgent.call(`sip:9${User}@default`, options);
+      session = user_agent.call(`sip:9${User}@default`, options);
     }
 
     session.on('connecting', () => {

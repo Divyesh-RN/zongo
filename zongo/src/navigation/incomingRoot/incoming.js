@@ -14,11 +14,12 @@ import { changeIncomingAlertState } from '../../redux/reducers/userReducer';
 const Incoming = () => {
 
     const incoming_call_alert = useSelector(state => state.userRedux.incoming_call_alert);
+    const user_session = useSelector(state => state.userRedux.user_session);
     const dispatch = useDispatch()
 
     const handleDismiss = () => {
-        if(global.session !== null){
-            global.session.terminate();
+        if(user_session !== null){
+            user_session.terminate();
             dispatch(changeIncomingAlertState(false));
         }
         else{
@@ -27,7 +28,7 @@ const Incoming = () => {
     };
 
     const handleAnswer = () => {
-        if (global.session !== null) {
+        if (user_session !== null) {
             const options = {
                 mediaConstraints: {
                   audio: {
@@ -69,8 +70,8 @@ const Incoming = () => {
             //         offerToReceiveVideo: false
             //     }
             // };
-            console.log("global.session",global.session)
-            global.session.answer(options);
+            console.log("user_session",user_session)
+            user_session.answer(options);
               navigate("InComingCallScreen", { item: null, from: "INCOMING" })
             dispatch(changeIncomingAlertState(false));
         }
@@ -89,8 +90,8 @@ const Incoming = () => {
 
 
                     <IncomingCall
-                        callerName={global.session?._remote_identity?._display_name}
-                        callerNumber={global.session?._remote_identity?._uri?._user}
+                        callerName={user_session?._remote_identity?._display_name}
+                        callerNumber={user_session?._remote_identity?._uri?._user}
                         onDismiss={handleDismiss}
                         onAnswer={handleAnswer}
                     />

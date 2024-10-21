@@ -25,6 +25,7 @@ const DashBoard = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const [IsLoading, setIsLoading] = useState(false);
+  const [AllPermissionSetup, setAllPermissionSetup] = useState(false);
   const [UserData, setUserData] = useState(null);
   const [RegisterData, setRegisterData] = useState(null);
   const [DisplayName, setDisplayName] = useState(user_data?.data?.first_name || "");
@@ -133,6 +134,7 @@ const DashBoard = ({ navigation }) => {
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE,
         PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
       ];
 
       PermissionsAndroid.requestMultiple(permissions)
@@ -143,10 +145,13 @@ const DashBoard = ({ navigation }) => {
             granted[PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT] === PermissionsAndroid.RESULTS.GRANTED &&
             granted[PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN] === PermissionsAndroid.RESULTS.GRANTED &&
             granted[PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE] === PermissionsAndroid.RESULTS.GRANTED &&
-            granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED
+            granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED &&
+            granted[PermissionsAndroid.PERMISSIONS.RECORD_AUDIO] === PermissionsAndroid.RESULTS.GRANTED
+
 
           ) {
             Log('User accepted all  permissions');
+            setAllPermissionSetup(true)
           } else {
             Log('One or more permissions were denied');
             // requestPermissions()
@@ -238,7 +243,7 @@ const DashBoard = ({ navigation }) => {
           </TouchableOpacity>
         }
         <CustomBottomSheet bottomSheetRef={bottomSheetRef} />
-        {RegisterData !== null ?
+        {(RegisterData !== null && AllPermissionSetup) ?
           <RegisterAccount toggleLoading={Loading} registerData={RegisterData} />
           : null}
         {/* <FloatingBtn iconName={"message-text"} onPress={() =>{

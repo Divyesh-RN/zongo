@@ -26,7 +26,8 @@ export const userReducer = createSlice({
     email_config_data: null,
     user_extension_data : null,
     user_register_status : false,
-    user_agent : {}
+    user_agent : null,
+    user_session : null
   },
 
   reducers: {
@@ -54,6 +55,9 @@ export const userReducer = createSlice({
     },
     storeUseStatus: (state, action) => {
       state.user_register_status = action.payload;
+    }, 
+    storeUserSession: (state, action) => {
+      state.user_session = action.payload;
     }, 
     storeUseAgent: (state, action) => {
       state.user_agent = action.payload;
@@ -287,7 +291,7 @@ export const userReducer = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const {storeUserData,storeUseAgent, storeUseExtensionData, clearData, resetAuthApiStatus,storeUseStatus,changeIncomingAlertState} = userReducer.actions;
+export const {storeUserData,storeUseAgent,storeUserSession, storeUseExtensionData, clearData, resetAuthApiStatus,storeUseStatus,changeIncomingAlertState} = userReducer.actions;
 
 export const user_data = state => state.userRedux.user_data;
 

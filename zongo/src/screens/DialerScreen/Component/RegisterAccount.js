@@ -1,21 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  DeviceEventEmitter,
+  NativeModules,
   SafeAreaView
 } from 'react-native';
 import JsSIP from 'jssip';
-import { useDispatch } from 'react-redux';
-import { changeIncomingAlertState, storeUseStatus } from '../../../redux/reducers/userReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeIncomingAlertState, storeUseAgent, storeUserSession, storeUseStatus } from '../../../redux/reducers/userReducer';
 import global from '../../../constants/Global';
 import DeviceInfo from 'react-native-device-info';
 import { NetworkInfo } from 'react-native-network-info';
 import NetInfo from '@react-native-community/netinfo';
+import Heartbeat from '../../../../Heartbeat';
 
 let userAgent = null;
-let session = null;
 
 const RegisterAccount = ({ toggleLoading, registerData }) => {
   console.log("registerData", registerData)
   const dispatch = useDispatch()
+
+  const user_extension_data = useSelector(state => state.userRedux.user_extension_data);
+
+  useEffect(() => {
+    DeviceEventEmitter.addListener('HeartBeat', () => {
+      console.log('Receiving heartbeat event');
+    });
+  });
 
   useEffect(() => {
     if (userAgent == null) {
@@ -72,7 +82,14 @@ const RegisterAccount = ({ toggleLoading, registerData }) => {
     console.log("config", config)
     userAgent = new JsSIP.UA(config);
     console.log('User Agent', userAgent);
-    global.userAgent = userAgent
+    dispatch(storeUseAgent(userAgent));
+
+    const options = {
+      title: user_extension_data.data[0]?.extension,
+      text: `Register extension ${user_extension_data.data[0]?.extension}`
+    };
+    Heartbeat.startService(options)
+    // global.userAgent = userAgent
 
     userAgent.on("newRTCSession", (e) => {
       console.log("================== E  ================:", e)
@@ -84,7 +101,8 @@ const RegisterAccount = ({ toggleLoading, registerData }) => {
       console.log("================== DISPLAY NAME   ================:", session?._remote_identity?._display_name)
       console.log("================== USER_NAME   ================:", session?._remote_identity?._uri?._user)
       console.log("================== DIRECTION  ================:", session.direction)
-      global.session = session
+      // global.session = session
+      dispatch(storeUserSession(session));
       if (session.direction === 'incoming') {
         dispatch(changeIncomingAlertState(true));
 

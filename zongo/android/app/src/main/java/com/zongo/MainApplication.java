@@ -31,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
             new InCallManagerPackage();
             new RNFSPackage();
             new RNFetchBlobPackage();
+            packages.add(new HeartbeatPackage());
             return packages;
         }
 

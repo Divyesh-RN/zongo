@@ -9,6 +9,7 @@ import {
   Platform,
   Dimensions,
   Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import TextInputView from '../../commonComponents/TextInputView';
@@ -73,6 +74,8 @@ const Login = () => {
   const user_data = useSelector(state => state.userRedux.user_data);
 
   useEffect(() => {
+    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+
     return () => {
       dispatch(resetAuthApiStatus());
     };

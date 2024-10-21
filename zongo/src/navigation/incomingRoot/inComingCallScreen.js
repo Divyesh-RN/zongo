@@ -14,7 +14,7 @@ import { ic_call_bg } from '../../constants/Images';
 import { HEIGHT,WIDTH } from '../../constants/ConstantKey';
 import global from '../../constants/Global';
 
-// let session = global.session;
+// let session = user_session;
 var interval = null;
 let startTime = null;
 let endTime = null;
@@ -48,9 +48,10 @@ const InComingCallScreen = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const user_extension_data = useSelector(state => state.userRedux.user_extension_data);
+  const user_session = useSelector(state => state.userRedux.user_session);
 
   useEffect(() => {
-    if(global.session !== null ){
+    if(user_session !== null ){
         AcceptCall()
     }
     Log("GET USER FROM SCREEN", route?.params?.from)
@@ -64,7 +65,7 @@ const InComingCallScreen = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    if (global.session !== null) {
+    if (user_session !== null) {
       toggleSpeaker()
     }
     return () => {
@@ -82,12 +83,12 @@ const InComingCallScreen = ({ route }) => {
 
    
 
-    global.session.on('ended', (res) => {
+    user_session.on('ended', (res) => {
       console.log('Call ended', res);
       setCallStatus('Ended');
     });
 
-    global.session.on('failed', response => {
+    user_session.on('failed', response => {
       console.log('Session failed');
       console.log('Call failed with response: ', response);
       ToastAndroid.show(response?.cause, ToastAndroid.SHORT);
@@ -97,15 +98,15 @@ const InComingCallScreen = ({ route }) => {
       }, 1000);
     });
 
-    global.session.on('newRefer', (referRequest) => {
+    user_session.on('newRefer', (referRequest) => {
       console.log("referRequest",referRequest)
     })
 
-    global.session.on('accepted', () => {
+    user_session.on('accepted', () => {
       console.log('Session accepted');
     });
 
-    global.session.on('ended', (res) => {
+    user_session.on('ended', (res) => {
       console.log('Session ended', res);
       setCallStatus('Ended');
       setConnected(false)
@@ -145,14 +146,14 @@ const InComingCallScreen = ({ route }) => {
   };
   const handleMute = () => {
     if (isMuted == true) {
-      if (global.session) {
-        global.session.unmute();
+      if (user_session) {
+        user_session.unmute();
         setMuted(false);
       }
     }
     else {
-      if (global.session) {
-        global.session.mute();
+      if (user_session) {
+        user_session.mute();
         console.log("Mute")
         setMuted(true);
       }
@@ -163,14 +164,14 @@ const InComingCallScreen = ({ route }) => {
 
     if (isHold == true) {
       console.log("if")
-      if (global.session) {
-        global.session.unhold();
+      if (user_session) {
+        user_session.unhold();
         setHold(false)
       }
     }
     else {
       console.log("else")
-      global.session.hold();
+      user_session.hold();
       setHold(true)
     }
 
@@ -196,10 +197,10 @@ const InComingCallScreen = ({ route }) => {
 
 
   const endCall = () => {
-    console.log("session",global.session)
-    if (global.session) {
+    console.log("session",user_session)
+    if (user_session) {
       console.log("terminate")
-      global.session.terminate();
+      user_session.terminate();
       // goBack()
     }
   };
@@ -254,7 +255,7 @@ const InComingCallScreen = ({ route }) => {
 
     }
     Log("newTarget :",newTarget)
-    global.session.refer(newTarget, {});
+    user_session.refer(newTarget, {});
   }
 
   const handleTransferModel = () => {
@@ -268,7 +269,7 @@ const InComingCallScreen = ({ route }) => {
       },
     };
 
-    global.session.renegotiate(options)
+    user_session.renegotiate(options)
       .then(() => {
         console.log('Call upgraded to video');
         // Handle UI changes - e.g., show video stream, toggle audio/video elements
@@ -316,14 +317,14 @@ const InComingCallScreen = ({ route }) => {
                       color: black,
                       fontFamily: MEDIUM,
                     }}>
-                      {global.session?._remote_identity?._display_name ?  global.session?._remote_identity?._display_name : global.session?._remote_identity?._uri?._user }
+                      {user_session?._remote_identity?._display_name ?  user_session?._remote_identity?._display_name : user_session?._remote_identity?._uri?._user }
                     </Text>
                     <Text style={{
                       fontSize: FontSize.FS_14,
                       color: black,
                       fontFamily: REGULAR,
                     }}>
-                   {route?.params?.from == "INCOMING" ? "Incoming from " + global.session?._remote_identity?._uri?._user: ""} 
+                   {route?.params?.from == "INCOMING" ? "Incoming from " + user_session?._remote_identity?._uri?._user: ""} 
                     </Text>
                   </View>
                   <View style={{
@@ -605,7 +606,7 @@ const InComingCallScreen = ({ route }) => {
 
                   </View>
                   <TouchableOpacity onPress={() => {
-                    if (global.session !== null) {
+                    if (user_session !== null) {
                       endCall()
                     }
                     else {
