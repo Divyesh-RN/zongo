@@ -14,4 +14,13 @@ const MyHeadlessTask = async () => {
   // }, 1000);
 };
 AppRegistry.registerHeadlessTask('Heartbeat', () => MyHeadlessTask);
+
+AppRegistry.registerHeadlessTask('RNCallKeepBackgroundMessage', () => ({ name, callUUID, handle }) => {
+  // Make your call here
+  console.log("name ",name)
+  console.log("callUUID ",callUUID)
+  console.log("handle ",handle)
+  return Promise.resolve();
+});
+
 AppRegistry.registerComponent(appName, () => App);

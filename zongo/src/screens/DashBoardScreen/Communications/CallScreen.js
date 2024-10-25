@@ -125,7 +125,6 @@ const CallScreen = ({ route }) => {
 
   const handleHold = () => {
     if (isHold == true) {
-      console.log("session", session)
       if (session) {
         session.unhold();
         setHold(false)

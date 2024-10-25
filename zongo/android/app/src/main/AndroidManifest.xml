@@ -15,7 +15,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+    <uses-permission android:name="android.permission.BIND_TELECOM_CONNECTION_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -58,6 +63,16 @@
 
         </intent-filter>
       </activity>
+        <service android:name="io.wazo.callkeep.VoiceConnectionService"
+            android:exported="true"
+            android:label="Wazo"
+            android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE"
+            android:foregroundServiceType="camera|microphone"
+            >
+            <intent-filter>
+                <action android:name="android.telecom.ConnectionService" />
+            </intent-filter>
+        </service>
         <service
         android:name="com.zongo.HeartbeartService"
             android:enabled="true"

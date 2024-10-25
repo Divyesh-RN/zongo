@@ -12,6 +12,7 @@ import com.zxcpoiu.incallmanager.InCallManagerPackage;
 import com.rnfs.RNFSPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import java.util.List;
+import io.wazo.callkeep.RNCallKeepPackage; // Add this import line
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFSPackage();
             new RNFetchBlobPackage();
             packages.add(new HeartbeatPackage());
+            new RNCallKeepPackage(); // Add this line
             return packages;
         }
 

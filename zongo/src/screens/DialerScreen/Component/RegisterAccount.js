@@ -12,21 +12,132 @@ import DeviceInfo from 'react-native-device-info';
 import { NetworkInfo } from 'react-native-network-info';
 import NetInfo from '@react-native-community/netinfo';
 import Heartbeat from '../../../../Heartbeat';
+import RNCallKeep from 'react-native-callkeep';
+import { mediaDevices } from 'react-native-webrtc';
 
 let userAgent = null;
-
+let session = null
 const RegisterAccount = ({ toggleLoading, registerData }) => {
-  console.log("registerData", registerData)
   const dispatch = useDispatch()
 
   const user_extension_data = useSelector(state => state.userRedux.user_extension_data);
-
+  const user_session = useSelector(state => state.userRedux.user_session);
+  
   useEffect(() => {
-    DeviceEventEmitter.addListener('HeartBeat', () => {
-      console.log('Receiving heartbeat event');
-    });
-  });
+    
+    
+    const onAnswerCall =async ({ callUUID }) => {
+      console.log("onAnswerCall - callUUID : ",callUUID)
+      if (session) {
+        RNCallKeep.answerIncomingCall(callUUID); // Use dynamic callUUID
+        const options = {
+          mediaConstraints: {
+            audio: {
+              optional: [{ minptime: '10' }, { useinbandfec: '1' }],
+              mandatory: {
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: false,
+                echoCancellation: true,
+                noiseSuppression: true,
+                googEchoCancellation: true,
+              },
+            },
+            video: false,
+          },
+          rtcOfferConstraints: {
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: false,
+          },
+          sessionTimersExpires: 120,
+          pcConfig: {
+            iceServers: [
+              {
+                urls: [
+                  'stun:stun.l.google.com:19302',
+                  'stun:stun1.l.google.com:19302',
+                ],
+              },
+            ],
+          },
+        };
+        session.answer(options);
 
+      }
+    };
+  
+    const onEndCall = ({ callUUID }) => {
+      console.log("onEndCall - callUUID : ",callUUID)
+      if (session) {
+        session.terminate();
+        RNCallKeep.endCall(callUUID); // Use dynamic callUUID
+      }
+    };
+  
+    RNCallKeep.addEventListener('answerCall', onAnswerCall);
+    RNCallKeep.addEventListener('endCall', onEndCall);
+  
+    return () => {
+      // RNCallKeep.removeEventListener('answerCall', onAnswerCall);
+      // RNCallKeep.removeEventListener('endCall', onEndCall);
+    };
+  }, [session]);
+  
+
+  // useEffect(() => {
+  //   RNCallKeep.addEventListener('answerCall', ({ callUUID }) => {
+  //     if (session) {
+  //       RNCallKeep.answerIncomingCall("call-uuid")
+  //       console.log("Answer from CALL-KEEP",session)
+  //       const options = {
+  //         mediaConstraints: {
+  //           audio: {
+  //             optional: [{ minptime: '10' }, { useinbandfec: '1' }],
+  //             mandatory: {
+  //               offerToReceiveAudio: true,
+  //               offerToReceiveVideo: false,
+  //               echoCancellation: true,
+  //               noiseSuppression: true,
+  //               googEchoCancellation: true,
+  //             },
+  //           },
+  //           video: false,
+  //         },
+  //         rtcOfferConstraints: {
+  //           offerToReceiveAudio: true,
+  //           offerToReceiveVideo: false,
+  //         },
+  //         sessionTimersExpires: 120,
+  //         pcConfig: {
+  //           iceServers: [
+  //             {
+  //               urls: [
+  //                 'stun:stun.l.google.com:19302',
+  //                 'stun:stun1.l.google.com:19302',
+  //               ],
+  //             },
+  //           ],
+  //         },
+  //       };
+  //       session.answer(options);
+  //     }
+  //   });
+    
+  //   // End call
+  //   RNCallKeep.addEventListener('endCall', ({ callUUID }) => {
+  //     if (user_session) {
+  //       console.log("endCall from CALL-KEEP",session)
+  //       if (session) {
+  //         session.terminate();
+  //       }
+  //       RNCallKeep.endCall("call-uuid");
+
+  //     }
+  //   });
+    
+  //   return () => { };
+  // }, []);
+
+ 
   useEffect(() => {
     if (userAgent == null) {
       dispatch(storeUseStatus(false));
@@ -40,16 +151,16 @@ const RegisterAccount = ({ toggleLoading, registerData }) => {
     }
   }, [registerData])
 
-  useEffect(() => {
-    // Subscribe to network changes
-    const unsubscribe = NetInfo.addEventListener(state => {
-      console.log("ConnectionType",state.type)
-      console.log("IsConnected",state.isConnected)
-    });
+  // useEffect(() => {
+  //   // Subscribe to network changes
+  //   const unsubscribe = NetInfo.addEventListener(state => {
+  //     console.log("ConnectionType",state.type)
+  //     console.log("IsConnected",state.isConnected)
+  //   });
 
-    // Unsubscribe when component unmounts
-    return () => unsubscribe();
-  }, []);
+  //   // Unsubscribe when component unmounts
+  //   return () => unsubscribe();
+  // }, []);
 
 
   const registerAccount = data => {
@@ -79,9 +190,7 @@ const RegisterAccount = ({ toggleLoading, registerData }) => {
       // contact_uri: 'sip:' + data?.PrivateIdentity + '@' + data?.Realm,
 
     };
-    console.log("config", config)
     userAgent = new JsSIP.UA(config);
-    console.log('User Agent', userAgent);
     dispatch(storeUseAgent(userAgent));
 
     const options = {
@@ -96,27 +205,49 @@ const RegisterAccount = ({ toggleLoading, registerData }) => {
       console.log("================== data.originator  ================:", data?.originator)
       if (data.originator === 'remote') {
       }
-      const session = e.session;
-      console.log("================== session  ================:", session)
+       session = e.session;
       console.log("================== DISPLAY NAME   ================:", session?._remote_identity?._display_name)
       console.log("================== USER_NAME   ================:", session?._remote_identity?._uri?._user)
       console.log("================== DIRECTION  ================:", session.direction)
-      // global.session = session
+      // user_session = session
       dispatch(storeUserSession(session));
       if (session.direction === 'incoming') {
-        dispatch(changeIncomingAlertState(true));
+        // dispatch(changeIncomingAlertState(true));
+        const callerId = session.remote_identity.uri.user;
+        const displayName = session.remote_identity.display_name || callerId; RNCallKeep.displayIncomingCall(
+          'call-uuid', // a unique identifier for this call
+          callerId,    // SIP username
+          displayName, // caller's display name
+          'generic',   // call type ('generic', 'video')
+          false         // whether it's video call
+        );
+        RNCallKeep.setMutedCall('call-uuid', false);
 
 
+        session.on('accepted', () => {
+          // Here, you can show the RTCView and render the remote stream
+          console.log("session - accepted")
+          let remoteStream = session.connection.getRemoteStreams()[0];
+          console.log("remoteStream",remoteStream)
+          RNCallKeep.setMutedCall('call-uuid', false);
 
-        // session.on('accepted', () => {
-        //   // Here, you can show the RTCView and render the remote stream
-        //   let remoteStream = session.connection.getRemoteStreams()[0];
-        //   // ... render remoteStream using RTCView
-        // });
+          // ... render remoteStream using RTCView
+        });
 
-        // session.on('ended', () => {
-        //   // Handle call termination
-        // })
+        session.on('ended', () => {
+          console.log("session - ended")
+          RNCallKeep.endCall('call-uuid')
+          // Handle call termination
+        })
+
+        session.on('failed', response => {
+          console.log('Call failed with response: ', response);
+          RNCallKeep.endCall('call-uuid')
+        });
+        session.on('bye', response => {
+          console.log('Call failed with response: ', response);
+          RNCallKeep.endCall('call-uuid')
+        });
       }
 
     })
